@@ -107,18 +107,14 @@ function Employer() {
                   <div className="rounded-md border w-20 p-2 bg-slate-200"></div>
                   <div className="rounded-md border w-20 p-2 bg-slate-200"></div>
                   <div className="rounded-md border w-20 p-2 bg-slate-200"></div>
-                  <span className="text-blue-500 cursor-pointer">
-                    View Resume
-                  </span>
+                  <span className=" cursor-pointer">View Resume</span>
                 </div>
                 <div className="flex flex-wrap justify-between items-center gap-4 mt-10">
                   <p>Caro B</p>
                   <div className="rounded-md border w-20 p-2 bg-slate-200"></div>
                   <div className="rounded-md border w-20 p-2 bg-slate-200"></div>
                   <div className="rounded-md border w-20 p-2 bg-slate-200"></div>
-                  <span className="text-blue-500 cursor-pointer">
-                    View Resume
-                  </span>
+                  <span className=" cursor-pointer">View Resume</span>
                 </div>
               </div>
               <div className="shadow-[1px_1px_2px_2px] p-6 flex flex-wrap justify-between items-center gap-4 mt-10 shadow-slate-300 mb-10 rounded-md">
@@ -126,9 +122,7 @@ function Employer() {
                 <div className="rounded-md border w-20 p-2 bg-slate-200"></div>
                 <div className="rounded-md border w-20 p-2 bg-slate-200"></div>
                 <div className="rounded-md border w-20 p-2 bg-slate-200"></div>
-                <span className="text-blue-500 cursor-pointer">
-                  View Resume
-                </span>
+                <span className=" cursor-pointer">View Resume</span>
               </div>
             </div>
           </div>
