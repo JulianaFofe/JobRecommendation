@@ -100,7 +100,7 @@ const Footer = () => {
 
       {/* Floating Chat Icon */}
       <div className="fixed bottom-6 right-6 z-50 cursor-pointer">
-        <IoIosChatboxes size={40} className="text-secondary shadow-lg rounded-full bg-primary p-2 hover:bg-secondary transition" />
+        <IoIosChatboxes size={40} className="text-secondary hover:text-primary shadow-lg rounded-full bg-primary p-2 hover:bg-secondary transition" />
       </div>
     </footer>
   );

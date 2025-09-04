@@ -17,7 +17,7 @@ type Props = { cards: JobCard[] };
 export default function Dashboard({ cards }: Props) {
   // sidebar data (mapped in Sidebar)
   const sidebarItems: SidebarItem[] = [
-    { id: "home", title: "Home", path: "/", icon: Home },
+    { id: "home", title: "Home", path: "/employeedash", icon: Home },
     { id: "review", title: "Review Jobs", path: "/review", icon: FileText },
     { id: "applicants", title: "Applicants", path: "/applicants", icon: Users },
     { id: "profile", title: "Profile", path: "/profile", icon: UserCircle },
@@ -25,8 +25,7 @@ export default function Dashboard({ cards }: Props) {
     { id: "logout", title: "Logout", path: "/logout", icon: LogOut },
   ];
   return (
-    <div>
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex flex-col lg:flex-row  min-h-screen lg:justify-between bg-gray-50">
       <SidebarWrapper items={sidebarItems} />
       <section className="flex-1 flex flex-col ">
         <Navbar />
@@ -80,7 +79,6 @@ export default function Dashboard({ cards }: Props) {
           </div>
         </div>
       </section>
-      </div>
       </div>
   );
 }

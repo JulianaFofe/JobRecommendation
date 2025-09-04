@@ -11,7 +11,7 @@ export default function Sidebar({ items }: Props) {
     <aside className="h-[calc(100vh-64px)] translate-x-0-translate-x-full lg:translate-x-0 lg:static inset-y-0 left-0 z-50 w-65 bg-white/70 backdrop-blur-sm shadow-lg rounded-lg m-2 lg:m-4 mr-0 transition-transform duration-300 ease-in-out">
       {/* Brand */}
       <div className="flex items-center gap-2 mb-8">
-        <div className="w-40 h-40 rounded-full  grid place-items-center text-white font-bold"><img src={logo} alt="" /></div>
+        <div className="w-40 h-40 rounded-full  grid place-items-center text-white font-bold"> <a href="/"><img src={logo} alt="" /></a> </div>
       </div>
 
       {/* Nav */}
