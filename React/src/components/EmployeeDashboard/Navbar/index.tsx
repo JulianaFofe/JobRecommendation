@@ -9,7 +9,8 @@ export default function Navbar({ onSearch }: Props) {
   const [q, setQ] = useState("");
 
   return (
-    <header className="fix shadow bg-white border border-white">
+    <div className="px-15 ">
+    <header className="translate-x-0-translate-x-full lg:translate-x-0  lg:static inset-y-0 left-0 z-50 w-250  bg-white/70 shadow-lg rounded-lg m-2 lg:m-4 mr-0 transition-transform duration-300 ease-in-out">
       {/* Small tabs row (Section 1 / 2) */}
       {/* <div className="px-4 pt-2 flex gap-2">
         {tabs.map((t) => (
@@ -41,5 +42,6 @@ export default function Navbar({ onSearch }: Props) {
         </div>
       </div>
     </header>
+    </div>
   );
 }
