@@ -25,7 +25,8 @@ export default function Dashboard({ cards }: Props) {
     { id: "logout", title: "Logout", path: "/logout", icon: LogOut },
   ];
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div>
+    <div className="flex min-h-screen bg-gray-50">
       <SidebarWrapper items={sidebarItems} />
       <section className="flex-1 flex flex-col ">
         <Navbar />
@@ -79,6 +80,7 @@ export default function Dashboard({ cards }: Props) {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+      </div>
   );
 }

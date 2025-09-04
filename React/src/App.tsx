@@ -1,6 +1,9 @@
 
 import Dashboard from "./components//EmployeeDashboard/Dashboard";
 import DashView from "./components/dashboardView";
+import Footer from "./containers/footer";
+
+import Home from "./containers/home";
 
 import type { JobCard } from "./types/jobcard";
 
@@ -16,9 +19,12 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/Dashview" element={<DashView/>} />
+        <Route path="/" element = {<Home/>}></Route>
+        <Route path="/dashview" element={<DashView/>} />
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
+        {/* <Footer/> */}
       </Routes>
+      <Footer/>
     </div>
   );
 }
