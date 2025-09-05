@@ -1,18 +1,19 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-DB_URL = 'postgresql+psycopg2://juliana:qwerty@localhost:5432/jobrecommendation'
+# MySQL URL format: "mysql+mysqlconnector://user:password@host:port/dbname"
+DATABASE_URL = "mysql+mysqlconnector://root:@127.0.0.1:3306/JobRecommendation"
 
-engine = create_engine(DB_URL)
+engine = create_engine(DATABASE_URL, echo=True)
+#echo=True, enables the sql commands to be logged on the console
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
 
-sessionLocal = sessionmaker(bind = engine)
-Base = declarative_base() 
-
-# Dependency for FastAPI routes
+# Dependency
 def get_db():
-    db = sessionLocal()  # create a new session
+    db = SessionLocal()
     try:
-        yield db          # provide it to the endpoint
+        yield db
     finally:
         db.close()
