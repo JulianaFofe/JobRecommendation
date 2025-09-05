@@ -2,6 +2,7 @@
 import Dashboard from "./components//EmployeeDashboard/Dashboard";
 import DashView from "./components/dashboardView";
 import Employer from "./components/Employer";
+import Management from "./components/usermanagement";
 import Footer from "./containers/footer";
 
 import Home from "./containers/home";
@@ -23,6 +24,7 @@ function App() {
         <Route path="/" element = {<Home/>}></Route>
         <Route path="/employer" element={<Employer/>}/>
         <Route path="/dashview" element={<DashView/>} />
+        <Route path="management" element={<Management/>}></Route>
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         {/* <Footer/> */}
       </Routes>

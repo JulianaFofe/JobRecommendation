@@ -131,11 +131,11 @@ function DashView() {
         >
           <div className="p-4 lg:p-6">
             <div className="flex flex-col items-center gap-1 mb-6 lg:mb-8">
-              <img
+              <a href="/"><img
                 src="WhatsApp_Image_2025-09-03_at_12.18.10-removebg-preview.png"
                 alt="SmartHire Logo"
                 className="w-32 lg:w-45 h-auto object-cover"
-              />
+              /></a>
               <p className="text-xs lg:text-sm text-gray-500 mt-1">Admin Portal</p>
             </div>
 
@@ -143,7 +143,7 @@ function DashView() {
               <div className="text-xs lg:text-md font-medium text-black uppercase tracking-wider mb-3">MAIN MENU</div>
 
               <a
-                href="#"
+                href="dashview"
                 className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base"
               >
                 <TrendingUp className="w-5 h-5 text-primary" />
@@ -157,7 +157,7 @@ function DashView() {
                 <span className="hidden sm:inline">Job Management</span>
               </a>
               <a
-                href="#"
+                href="management"
                 className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
               >
                 <User className="w-5 h-5 text-primary" />
