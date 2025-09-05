@@ -12,6 +12,7 @@ import Home from "./containers/home";
 import type { JobCard } from "./types/jobcard";
 
 import { Route, Routes } from "react-router-dom";
+import Hero from "./components/getstarted";
 
 function App() {
   const cards: JobCard[] = [
@@ -24,6 +25,7 @@ function App() {
     <div>
       <Routes>
         <Route path="/" element = {<Home/>}></Route>
+        <Route path="/get" element = {<Hero/>}/>
         <Route path="/employer" element={<Employer/>}/>
         <Route path="/dashview" element={<DashView/>} />
         <Route path="management" element={<Management/>}></Route>

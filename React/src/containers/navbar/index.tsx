@@ -3,6 +3,7 @@ import { NavProps, type NavBarProps } from "../../types/data"
 import { NavLink } from "react-router-dom"
 import { FiMenu, FiX } from "react-icons/fi"
 import { motion } from "framer-motion"
+import logo from "../../assets/images/img.png"
 
 const NavBar = () => {
   const [items] = useState<NavBarProps[]>(NavProps)
@@ -14,7 +15,7 @@ const NavBar = () => {
     <nav className="fixed top-0 left-0 w-full z-50 bg-white shadow-md flex items-center justify-between px-6 py-3">
       {/* Logo */}
       <div>
-        <img src="team_logo.png" alt="Team Logo" className="h-24" />
+       <a href="/"> <img src={logo} alt="Team Logo" className="w-40 h-15" /></a>
       </div>
 
       {/* Desktop Links */}
@@ -37,9 +38,9 @@ const NavBar = () => {
 
       {/* Desktop Button */}
       <div className="hidden md:block">
-        <button className="py-2 px-6 bg-white hover:bg-primary hover:text-white text-primary border border-primary rounded-sm transition">
+        <a href="/get"><button className="py-2 px-6 bg-white hover:bg-primary hover:text-white text-primary border border-primary rounded-sm transition">
           Get Started
-        </button>
+        </button></a>
       </div>
 
       {/* Mobile Menu Button */}
