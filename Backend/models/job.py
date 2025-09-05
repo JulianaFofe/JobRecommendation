@@ -2,6 +2,7 @@ from sqlalchemy import DateTime, Float, ForeignKey, String, Column, Integer, Tex
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from database import Base
+from models import users
 
 class Job(Base):
     __tablename__ = "jobs"
