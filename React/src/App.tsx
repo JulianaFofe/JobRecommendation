@@ -4,6 +4,8 @@ import DashView from "./components/dashboardView";
 import Employer from "./components/Employer";
 import Management from "./components/usermanagement";
 import Footer from "./containers/footer";
+import Signup from "./components/signup";
+import Login from "./components/login"
 
 import Home from "./containers/home";
 
@@ -25,6 +27,8 @@ function App() {
         <Route path="/employer" element={<Employer/>}/>
         <Route path="/dashview" element={<DashView/>} />
         <Route path="management" element={<Management/>}></Route>
+        <Route path="/signup" element={<Signup/>} />
+        <Route path="/login" element={<Login/>} />
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         {/* <Footer/> */}
       </Routes>
