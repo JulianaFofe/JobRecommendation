@@ -14,7 +14,7 @@ const NavBar = () => {
     <nav className="fixed top-0 left-0 w-full z-50 bg-white shadow-md flex items-center justify-between px-6 py-3">
       {/* Logo */}
       <div>
-        <img src="team_logo.png" alt="Team Logo" className="w-28 h-auto" />
+        <img src="team_logo.png" alt="Team Logo" className="h-24" />
       </div>
 
       {/* Desktop Links */}
