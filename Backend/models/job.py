@@ -2,6 +2,7 @@ from sqlalchemy import DateTime, Float, ForeignKey, String, Column, Integer, Tex
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from database import Base
+from models import users
 
 class Job(Base):
     __tablename__ = "jobs"
@@ -11,7 +12,9 @@ class Job(Base):
     requirements=Column(Text, nullable=False)
     salary=Column(Float, nullable=True)
     location=Column(String(255), nullable=False)
+    status = Column(String, default="Available")
     job_type=Column(String(255), nullable=False)
+    status = Column(String(20), nullable=False, server_default="available")
     posted_at=Column(DateTime(timezone=True), default=lambda:datetime.now(timezone.utc))
 
     employer_id=Column(Integer, ForeignKey("users.id"))

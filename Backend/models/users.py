@@ -3,6 +3,12 @@ from sqlalchemy.orm import relationship
 from enums.enums import UserRole
 from database import Base
 from datetime import datetime, timezone
+import enum
+
+class UserRole(enum.Enum):
+    employe="employee"
+    employer="employer"
+    admin="admin"
 
 class User(Base):
     __tablename__ = "users"
