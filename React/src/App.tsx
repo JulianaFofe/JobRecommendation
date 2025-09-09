@@ -1,14 +1,12 @@
-
 import Dashboard from "./components//EmployeeDashboard/Dashboard";
 import DashView from "./components/dashboardView";
 import Employer from "./components/Employer";
 import Management from "./components/usermanagement";
 import Footer from "./containers/footer";
 import Signup from "./components/signup";
-import Login from "./components/login"
+import Login from "./components/login";
 import Testimonials from "./components/tesmimonials/index";
-
-
+import Job from "./components/Jobmanagement";
 
 import Home from "./containers/home";
 
@@ -29,19 +27,28 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/" element = {<Home/>}></Route>
-        <Route path="/works" element = {<Goals/>}/>
-        <Route path="/getstarted" element = {<Hero/>}/>
-        <Route path="/employer" element={<Employer/>}/>
-        <Route path="/dashview" element={<DashView/>} />
-        <Route path="management" element={<Management/>}></Route>
-        <Route path="/signup" element={<Signup/>} />
-        <Route path="/login" element={<Login/>} />
-        <Route path="/stories" element={<Testimonials/>} />
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/works" element={<Goals />} />
+        <Route path="/getstarted" element={<Hero />} />
+        <Route path="/employer" element={<Employer />} />
+        <Route path="/dashview" element={<DashView />} />
+        <Route path="management" element={<Management />}></Route>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/stories" element={<Testimonials />} />
 
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/employer" element={<Employer />} />
+        <Route path="/dashview" element={<DashView />} />
+        <Route path="management" element={<Management />}></Route>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/employeedash" element={<Dashboard cards={cards} />} />
+        <Route path="/jobmanagement" element={<Job />} />
+        {/* <Footer/> */}
       </Routes>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
