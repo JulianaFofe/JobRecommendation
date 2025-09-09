@@ -15,7 +15,7 @@ import type { JobCard } from "./types/jobcard";
 import { Route, Routes } from "react-router-dom";
 import Hero from "./components/getstarted";
 import Goals from "./components/how_it_work";
-import Navbar from "./components/EmployeeDashboard/Navbar";
+import FeedbackPage from "./components/feedback";
 
 function App() {
   const cards: JobCard[] = [
@@ -27,15 +27,16 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/works" element={<Goals />} />
-        <Route path="/getstarted" element={<Hero />} />
-        <Route path="/employer" element={<Employer />} />
-        <Route path="/dashview" element={<DashView />} />
-        <Route path="management" element={<Management />}></Route>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/stories" element={<Testimonials />} />
+        <Route path="/" element = {<Home/>}></Route>
+        <Route path="/works" element = {<Goals/>}/>
+        <Route path="/getstarted" element = {<Hero/>}/>
+        <Route path="/employer" element={<Employer/>}/>
+        <Route path="/dashview" element={<DashView/>} />
+        <Route path="management" element={<Management/>}></Route>
+        <Route path="/signup" element={<Signup/>} />
+        <Route path="/login" element={<Login/>} />
+        <Route path="/stories" element={<Testimonials/>} />
+        <Route path="/feedback" element = {<FeedbackPage/>}/>
 
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         <Route path="/" element={<Home />}></Route>
