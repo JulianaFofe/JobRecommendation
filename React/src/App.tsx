@@ -16,6 +16,7 @@ import { Route, Routes } from "react-router-dom";
 import Hero from "./components/getstarted";
 import Goals from "./components/how_it_work";
 import FeedbackPage from "./components/feedback";
+import Services from "./components/service";
 
 function App() {
   const cards: JobCard[] = [
@@ -37,6 +38,7 @@ function App() {
         <Route path="/login" element={<Login/>} />
         <Route path="/stories" element={<Testimonials/>} />
         <Route path="/feedback" element = {<FeedbackPage/>}/>
+        <Route path="/service" element ={<Services/>}/>
 
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         <Route path="/" element={<Home />}></Route>
