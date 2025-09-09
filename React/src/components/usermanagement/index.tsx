@@ -1,7 +1,6 @@
 // src/pages/Management.tsx
 import { useState } from "react";
 import {
-  Eye,
   Trash2,
   Plus,
   Search,
@@ -199,9 +198,9 @@ export default function Management() {
 
                 <div className="flex items-center gap-4">
                   <p className="text-sm text-gray-500">Joined {user.joined}</p>
-                  <button className="text-yellow-600 hover:text-yellow-800">
+                  {/* <button className="text-yellow-600 hover:text-yellow-800">
                     <Eye className="w-5 h-5" />
-                  </button>
+                  </button> */}
                   <button className="text-red-500 hover:text-red-700">
                     <Trash2 className="w-5 h-5" />
                   </button>
