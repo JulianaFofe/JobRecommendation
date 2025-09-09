@@ -3,9 +3,12 @@ import { MdEmail } from "react-icons/md";
 import { FaFacebookF, FaInstagramSquare, FaLinkedinIn, FaYoutube } from "react-icons/fa";
 import { RiTwitterXLine } from "react-icons/ri";
 import { IoIosChatboxes } from "react-icons/io";
+import Navbar from "../../containers/navbar";
 
 const Footer = () => {
   return (
+    <>
+    <Navbar/>
     <footer className="bg-primary text-white px-6 py-10 relative rounded-tl-4xl rounded-tr-4xl">
       {/* Top section */}
       <div className="flex flex-col lg:flex-row lg:justify-between items-start gap-10 lg:gap-20">
@@ -32,9 +35,9 @@ const Footer = () => {
             <h3 className="text-footerHead font-lalezar mb-3">Company</h3>
             <div className="flex flex-col gap-1">
               <a href="" className="hover:underline hover:text-secondary">About Us</a>
-              <a href="" className="hover:underline hover:text-secondary">Services</a>
+              <a href="/service" className="hover:underline hover:text-secondary">Services</a>
               <a href="" className="hover:underline hover:text-secondary">Community</a>
-              <a href="" className="hover:underline hover:text-secondary">Testimonials</a>
+              <a href="/stories" className="hover:underline hover:text-secondary">Testimonials</a>
             </div>
           </div>
           <div className="flex-1 text-center sm:text-left mb-6 sm:mb-0">
@@ -51,7 +54,7 @@ const Footer = () => {
             <div className="flex flex-col gap-1">
               <a href="" className="hover:underline hover:text-secondary">Courses</a>
               <a href="" className="hover:underline hover:text-secondary">Employers</a>
-              <a href="" className="hover:underline hover:text-secondary">Services</a>
+              <a href="/service" className="hover:underline hover:text-secondary">Services</a>
               <a href="" className="hover:underline hover:text-secondary">All In One</a>
             </div>
           </div>
@@ -103,6 +106,7 @@ const Footer = () => {
         <IoIosChatboxes size={40} className="text-secondary hover:text-primary shadow-lg rounded-full bg-primary p-2 hover:bg-secondary transition" />
       </div>
     </footer>
+    </>
   );
 };
 
