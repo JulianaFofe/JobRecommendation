@@ -38,9 +38,11 @@ const NavBar = () => {
 
       {/* Desktop Button */}
       <div className="hidden md:block">
-        <a href="/getstarted"><button className="py-2 px-6 bg-white hover:bg-primary hover:text-white text-primary border border-primary rounded-sm transition">
-          Get Started
-        </button></a>
+        <a href="/signup">
+          <button className="py-2 px-6 bg-white hover:bg-primary hover:text-white text-primary border border-primary rounded-sm transition">
+            Get Started
+          </button>
+        </a>
       </div>
 
       {/* Mobile Menu Button */}
