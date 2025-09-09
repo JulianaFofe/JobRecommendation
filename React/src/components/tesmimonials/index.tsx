@@ -1,4 +1,3 @@
-import React from 'react'
 import jobs from "../../assets/images/jobs.jpeg"
 import img from './../../assets/images/img_tes1 copy 4.jpeg'
 import card from "../../assets/images/ReviewModals.png"
@@ -10,18 +9,20 @@ import slide5 from "../../assets/images/profile4.png"
 import slide6 from "../../assets/images/profile5.png"
 import ImageSlider from './ImageSlider'
 import Faq from "../../assets/images/photo.png"
+import Navbar from "../../containers/navbar"
 
 const IMAGES = [slide1,slide2,slide3,slide4,slide4,slide5,slide6]
 
 const Testimonials = () => {
   return (
     <>
+    <Navbar/>
 <section
-  className="relative bg-center bg-cover h-full w-full py-15 flex justify-center text-white flex-col items-center"
+  className="relative bg-center bg-cover h-full w-full py-60 rounded-4xl flex justify-center text-white flex-col items-center"
   style={{ backgroundImage: `url(${jobs})` }}
 >
   {/* Overlay */}
-  <div className="absolute inset-0 bg-black/70 py-7"></div>
+  <div className="absolute inset-0 rounded-4xl bg-black/70 py-7"></div>
 
   {/* Content */}
   <div className="relative z-10 flex flex-col gap-4 items-center">
