@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from database import engine, Base
 from routers import users
 import models.users as userModel
+from routers import recommendations
+from routers import job
+from database import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 
 userModel.Base.metadata.create_all(bind=engine)
@@ -26,3 +29,13 @@ app.include_router(users.router)
 @app.get("/")
 def root():
     return{"message":"Backend is running"}
+app.add_middleware(
+    CORSMiddleware, 
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+                   )
+
+app.include_router(job.router)
+app.include_router(recommendations.router)
