@@ -32,7 +32,7 @@ const Footer = () => {
             <h3 className="text-footerHead font-lalezar mb-3">Company</h3>
             <div className="flex flex-col gap-1">
               <a href="" className="hover:underline hover:text-secondary">About Us</a>
-              <a href="" className="hover:underline hover:text-secondary">Services</a>
+              <a href="/service" className="hover:underline hover:text-secondary">Services</a>
               <a href="" className="hover:underline hover:text-secondary">Community</a>
               <a href="" className="hover:underline hover:text-secondary">Testimonials</a>
             </div>
@@ -51,7 +51,7 @@ const Footer = () => {
             <div className="flex flex-col gap-1">
               <a href="" className="hover:underline hover:text-secondary">Courses</a>
               <a href="" className="hover:underline hover:text-secondary">Employers</a>
-              <a href="" className="hover:underline hover:text-secondary">Services</a>
+              <a href="/service" className="hover:underline hover:text-secondary">Services</a>
               <a href="" className="hover:underline hover:text-secondary">All In One</a>
             </div>
           </div>
