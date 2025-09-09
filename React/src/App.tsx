@@ -6,6 +6,9 @@ import Management from "./components/usermanagement";
 import Footer from "./containers/footer";
 import Signup from "./components/signup";
 import Login from "./components/login"
+import Testimonials from "./components/tesmimonials/index";
+
+
 
 import Home from "./containers/home";
 
@@ -14,6 +17,7 @@ import type { JobCard } from "./types/jobcard";
 import { Route, Routes } from "react-router-dom";
 import Hero from "./components/getstarted";
 import Goals from "./components/how_it_work";
+import Navbar from "./components/EmployeeDashboard/Navbar";
 
 function App() {
   const cards: JobCard[] = [
@@ -33,6 +37,8 @@ function App() {
         <Route path="management" element={<Management/>}></Route>
         <Route path="/signup" element={<Signup/>} />
         <Route path="/login" element={<Login/>} />
+        <Route path="/stories" element={<Testimonials/>} />
+
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
       </Routes>
       <Footer/>
