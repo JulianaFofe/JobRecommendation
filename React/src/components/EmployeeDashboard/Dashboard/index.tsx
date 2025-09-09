@@ -34,7 +34,7 @@ export default function Dashboard({ cards }: Props) {
           <h2 className="text-xl font-bold mb-9">Job Posting</h2>
 
           {/* Filters */}
-          <div className=" flex-col sm:flex-row flex-1 flex flex-wrap gap-20 space-x-20 mb-15 ">
+          <div className=" flex-col sm:flex-row flex-1 flex flex-wrap gap-20 space-x-15 mb-15 ">
             {["Industry", "Salary Range", "Location"].map((label) => (
               <button
                 key={label}
@@ -54,11 +54,11 @@ export default function Dashboard({ cards }: Props) {
           </div>
 
           {/* Cards */}
-          <div className="space-y-4">
+          <div className="space-y-4 ">
             {cards.map((c) => (
               <article
                 key={c.id}
-                className="bg-white rounded-md shadow px-4 py-4 flex  items-center justify-between"
+                className="bg-white md:flex-col-1 md:px-2 rounded-md shadow px-4 py-4 flex  items-center justify-between"
               >
                 <div className="pr-3">
                   <h4 className="font-semibold mb-1">{c.title}</h4>
