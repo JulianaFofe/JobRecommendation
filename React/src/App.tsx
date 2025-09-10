@@ -18,6 +18,7 @@ import Hero from "./components/getstarted";
 import Goals from "./components/how_it_work";
 import FeedbackPage from "./components/feedback";
 import Services from "./components/service";
+import JobForm from "./components/JobForm";
 
 function App() {
   const cards: JobCard[] = [
@@ -51,6 +52,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         <Route path="/jobmanagement" element={<Job />} />
+        <Route path="/jobform" element={<JobForm />} />          {/* Create */}
+        <Route path="/jobform/:id" element={<JobForm />} />      {/* Update */}
         {/* <Footer/> */}
       </Routes>
       <Footer />
