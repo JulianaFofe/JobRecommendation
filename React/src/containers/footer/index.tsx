@@ -3,6 +3,7 @@ import { MdEmail } from "react-icons/md";
 import { FaFacebookF, FaInstagramSquare, FaLinkedinIn, FaYoutube } from "react-icons/fa";
 import { RiTwitterXLine } from "react-icons/ri";
 import { IoIosChatboxes } from "react-icons/io";
+import { NavLink } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -31,7 +32,7 @@ const Footer = () => {
           <div className="flex-1 text-center sm:text-left mb-6 sm:mb-0">
             <h3 className="text-footerHead font-lalezar mb-3">Company</h3>
             <div className="flex flex-col gap-1">
-              <a href="" className="hover:underline hover:text-secondary">About Us</a>
+              <a href="/about" className="hover:underline hover:text-secondary">About Us</a>
               <a href="/service" className="hover:underline hover:text-secondary">Services</a>
               <a href="" className="hover:underline hover:text-secondary">Community</a>
               <a href="" className="hover:underline hover:text-secondary">Testimonials</a>
