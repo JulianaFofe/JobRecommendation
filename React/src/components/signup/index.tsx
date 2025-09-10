@@ -6,6 +6,7 @@ import mail from "../../assets/icons/envelope-1.svg";
 import usernameIcon from "../../assets/icons/username.svg";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { NavLink } from "react-router-dom";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -45,6 +46,11 @@ const Signup = () => {
           <p className="mt-3 text-sm">
             Create Your account, unlock opportunities and start your journey with us today!
           </p>
+          <NavLink to={"/login"}>
+          <button className="mt-20 bg-white text-quatenary px-16 py-2 font-bold  rounded-xl shadow hover:bg-primary hover:text-white active:opacity-50 transition-bg duration-700">
+              Login
+            </button>
+          </NavLink>
         </div>
 
         {/* Right Section */}

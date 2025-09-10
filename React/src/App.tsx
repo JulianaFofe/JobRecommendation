@@ -7,6 +7,7 @@ import Signup from "./components/signup";
 import Login from "./components/login";
 import Testimonials from "./components/tesmimonials/index";
 import Job from "./components/Jobmanagement";
+import About from "./components/about";
 
 import Home from "./containers/home";
 
@@ -39,6 +40,7 @@ function App() {
         <Route path="/stories" element={<Testimonials/>} />
         <Route path="/feedback" element = {<FeedbackPage/>}/>
         <Route path="/service" element ={<Services/>}/>
+        <Route path="/about" element={<About/>} />
 
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         <Route path="/" element={<Home />}></Route>
