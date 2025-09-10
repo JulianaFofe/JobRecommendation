@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 import os
 from typing import Optional
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
@@ -43,11 +43,8 @@ def verifyAccessToken(token: str):
     except JWTError:
         return None
 
-def getCurrentUser(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    data = verifyAccessToken(token)
-    if data is None:
-        return ('Invalid token')
-    user = db.query(User).get(data["id"])
-    if user is None:
-        return ('User not found')
-    return {"id": user.id, "email": user.email, "role": user.role}
+def getCurrentUser(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
