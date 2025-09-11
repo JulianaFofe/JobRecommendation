@@ -12,7 +12,6 @@ class Job(Base):
     requirements=Column(Text, nullable=False)
     salary=Column(Float, nullable=True)
     location=Column(String(255), nullable=False)
-    status = Column(String, default="Available")
     job_type=Column(String(255), nullable=False)
     status = Column(String(20), nullable=False, server_default="available")
     posted_at=Column(DateTime(timezone=True), default=lambda:datetime.now(timezone.utc))

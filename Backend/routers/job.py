@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List
 from models import Job
 import models
+from models.users import User, UserRole
+from routers.auth import getCurrentUser
 from database import get_db
 from schema import job as schema
 from crud import job_crud as crud
@@ -12,20 +14,14 @@ from crud import job_crud as crud
 
 router=APIRouter(prefix="/jobs", tags=["Jobs"]) #all routes here will start with ""
 
-def get_dummy_user():
-  class DummyUser:#will get the "get_currennt_user" function from juliana
-    id=1
-    role="employer"
-  return DummyUser()
-
 
 @router.post("/create", response_model=schema.Job)#endpoint to post a job
 def create_job(
     job:schema.JobCreate,
     db:Session=Depends(get_db),
-    current_user=Depends(get_dummy_user)
+    current_user: User = Depends(getCurrentUser)
 ):
-    if current_user.role != "employer":
+    if current_user.role != UserRole.EMPLOYER:
         raise HTTPException(status_code=403, detail="only employers can post jobs")
     return crud.create_job(db=db,job=job, employer_id=current_user.id)
 
@@ -38,7 +34,7 @@ def update_job_endpoint(
     job_id: int,
     job_data: schema.JobUpdate,
     db: Session = Depends(get_db),
-    current_user= Depends(get_dummy_user)
+    current_user= Depends(getCurrentUser)
 ):
     job = db.query(models.Job).filter(models.Job.id == job_id).first()
 
@@ -58,7 +54,7 @@ def update_job_endpoint(
 def delete_job_endpoint(
     job_id: int,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_dummy_user)
+    current_user: models.User = Depends(getCurrentUser)
 ):
     job = db.query(models.Job).filter(models.Job.id == job_id).first()
 
