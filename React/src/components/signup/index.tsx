@@ -26,12 +26,22 @@ const Signup = () => {
         role,
       });
 
-      console.log("User signed up:", response.data);
+      const { message } = response.data;
 
-      navigate("/login");
-    } catch (err) {
+      // Show success message
+      alert(message);
+
+      // Optional: short delay to let user see the message
+      setTimeout(() => {
+        navigate("/login");
+      }, 500); // 0.5 seconds delay
+    } catch (err:any) {
       console.error("Signup failed:", err);
-      alert("Signup failed. Please try again.");
+      if (err.response && err.response.data && err.response.data.detail) {
+        alert(`Signup failed: ${err.response.data.detail}`);
+      } else {
+        alert("Signup failed. Please try again.");
+      }
     }
   };
 

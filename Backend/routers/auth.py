@@ -10,12 +10,18 @@ from passlib.context import CryptContext
 from models.users import User
 from database import get_db
 
+
 secretKey = os.getenv("JWT_SECRET")
 expiresIn = os.getenv("JWT_EXPIRES_IN")
 algorithm = os.getenv("ALGORITHM")
 
 pwdContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+print("JWT_SECRET:", secretKey, type(secretKey))
+print("ALGORITHM:", algorithm, type(algorithm))
+print("JWT_EXPIRES_IN:", expiresIn, type(expiresIn))
+
 
 router = APIRouter()
 

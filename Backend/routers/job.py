@@ -8,6 +8,7 @@ from routers.auth import getCurrentUser
 from database import get_db
 from schema import job as schema
 from crud import job_crud as crud
+from routers.auth import getCurrentUser
 
 
 #from ..dependencies import get_current_user
@@ -15,19 +16,41 @@ from crud import job_crud as crud
 router=APIRouter(prefix="/jobs", tags=["Jobs"]) #all routes here will start with ""
 
 
+
+# def get_dummy_user():
+#   class DummyUser:#will get the "get_currennt_user" function from juliana
+#     id=1
+#     role="employer"
+#   return DummyUser()
+
+
 @router.post("/create", response_model=schema.Job)#endpoint to post a job
 def create_job(
     job:schema.JobCreate,
     db:Session=Depends(get_db),
+
     current_user: User = Depends(getCurrentUser)
 ):
     if current_user.role != UserRole.EMPLOYER:
+
+       current_user=Depends(getCurrentUser)
+
+    if current_user["role"] != "employer":
+
         raise HTTPException(status_code=403, detail="only employers can post jobs")
-    return crud.create_job(db=db,job=job, employer_id=current_user.id)
+    return crud.create_job(db=db,job=job, employer_id=current_user["id"])
 
 @router.get("/read", response_model=List[schema.Job])
-def list_jobs( skip:int=0, limit:int=100, db:Session=Depends(get_db)):
-    return crud.get_job(db=db, skip=skip, limit=limit)
+def list_jobs( skip:int=0, limit:int=100, db:Session=Depends(get_db), current_user=Depends(getCurrentUser)):
+    if current_user["role"] != "employer":
+        raise HTTPException(status_code=403, detail="Only employers can view their jobs")
+
+    jobs = db.query(models.Job)\
+             .filter(models.Job.employer_id == current_user["id"])\
+             .offset(skip)\
+             .limit(limit)\
+             .all()
+    return jobs 
 
 @router.put("/update/{job_id}", response_model=schema.Job)
 def update_job_endpoint(
@@ -42,7 +65,7 @@ def update_job_endpoint(
         raise HTTPException(status_code=404, detail ="Job not found")
     
     # Only the employer who posted the job can update it
-    if job.employer_id != current_user.id:
+    if job.employer_id != current_user["id"]:
         raise HTTPException(status_code=403, detail="Not authorized to update this job")
     
     updated_job = crud.update_job(db, job_id, job_data)
@@ -62,7 +85,7 @@ def delete_job_endpoint(
         raise HTTPException(status_code=404, detail="Job not found")
     
     # Only the employer who posted the job can delete it
-    if job.employer_id != current_user.id:
+    if job.employer_id != current_user["id"]:
         raise HTTPException(status_code=403, detail="Not authorized to delete this job")
     
     deleted_job = crud.delete_job(db, job_id)

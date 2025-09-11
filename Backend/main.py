@@ -1,3 +1,4 @@
+
 from fastapi import FastAPI
 from database import engine, Base
 from routers import users
@@ -9,22 +10,35 @@ from routers import admins
 from database import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 
+from dotenv import load_dotenv
+load_dotenv()  # MUST be first
+
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from database import engine, Base
+from routers import users, recommendations, job
+import models.users as userModel
+
+# Create tables
 userModel.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-origins = [
-    "http://localhost:5173",  
-    "http://127.0.0.1:5173",
-]
+# CORS setup
+# origins = [
+#     "http://localhost:5173",  
+#     "http://127.0.0.1:5173",
+# ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,     
+    allow_origins="http://localhost:5173",
     allow_credentials=True,
-    allow_methods=["*"],          
-    allow_headers=["*"],          
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 @app.get("/")
 def root():
@@ -35,3 +49,13 @@ app.include_router(apllication.router)
 app.include_router(admins.router)
 app.include_router(job.router)
 app.include_router(recommendations.router)
+
+# Routers
+app.include_router(users.router)
+app.include_router(job.router)
+app.include_router(recommendations.router)
+
+@app.get("/")
+def root():
+    return {"message": "Backend is running"}
+

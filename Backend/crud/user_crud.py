@@ -1,22 +1,24 @@
-from datetime import timedelta
 from sqlalchemy.orm import Session
-from routers.auth import createAccessToken, hashPassword, verifyPassword
+from routers.auth import hashPassword, verifyPassword
 from schema import users as schema
 import models.users as models
+from fastapi import HTTPException, status
 
-
-def signup(db:Session, user: schema.UserCreate):
+def signup(db: Session, user: schema.UserCreate):
     userExists = db.query(models.User).filter(models.User.email == user.email).first()
     if userExists:
-        return('Email already registered')
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
     
     hashedPassword = hashPassword(user.password)
 
     newUser = models.User(
-        username = user.username,
-        email = user.email,
-        hashed_password = hashedPassword,
-        role = user.role
+        username=user.username,
+        email=user.email,
+        hashed_password=hashedPassword,
+        role=user.role
     )
     db.add(newUser)
     db.commit()
@@ -27,14 +29,17 @@ def signup(db:Session, user: schema.UserCreate):
 def authenticateUser(db: Session, email: str, password: str):
     user = db.query(models.User).filter(models.User.email == email).first()
     if not user:
-        return ('User not found')
+        return None
     if not verifyPassword(password, user.hashed_password):
-        return ('Invalid password')
+        return None
     return user
 
 
 def loginUser(db: Session, email: str, password: str):
     user = authenticateUser(db, email, password)
     if not user:
-        return ('Invalid credentials')
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials"
+        )
     return user
