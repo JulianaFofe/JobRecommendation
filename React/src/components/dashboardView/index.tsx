@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   LineChart,
   Line,
@@ -14,6 +14,7 @@ import {
   Cell,
 } from "recharts"
 import { TrendingUp, FileText, Clock, Award, Plus, Calendar, Briefcase, User, ShieldCheck, Menu, X } from "lucide-react"
+import axios from "axios"
 
 // ----- Card Components -----
 
@@ -101,6 +102,19 @@ const jobCategoriesData = [
 
 function DashView() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [stats, setStats] = useState({ total_jobs: 0, total_users: 0, total_applications: 0 })
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/admin/stats")
+        setStats(response.data)
+      } catch (error) {
+        console.error("Error fetching stats:", error)
+      }
+    }
+    fetchStats()
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
@@ -195,9 +209,9 @@ function DashView() {
           {/* Top Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 lg:mb-8">
             {[
-              { title: "Total Jobs Posted", value: "1,547", growth: "+3%", icon: Briefcase },
-              { title: "Active Users", value: "1,547", growth: "+4%", icon: User },
-              { title: "Total Application", value: "1,547", growth: "+3%", icon: FileText },
+              { title: "Total Jobs Posted", value: stats.total_jobs, growth: "+3%", icon: Briefcase },
+              { title: "Active Users", value: stats.total_users, growth: "+4%", icon: User },
+              { title: "Total Application", value: stats.total_applications, growth: "+3%", icon: FileText },
             ].map(({ title, value, growth, icon: Icon }, idx) => (
               <Card key={idx} className="hover:shadow-xl transition-all duration-300 hover:bg-white/80">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-6 lg:p-6">
