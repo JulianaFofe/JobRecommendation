@@ -1,4 +1,4 @@
-#!/home/ekei/Desktop/Job-Search/Backend/venv/bin/python
+#!/home/fedjio/Desktop/project_app/Job-Recommendation/Backend/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
