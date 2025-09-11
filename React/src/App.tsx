@@ -7,7 +7,7 @@ import Signup from "./components/signup";
 import Login from "./components/login";
 import Testimonials from "./components/tesmimonials";
 import Job from "./components/Jobmanagement";
-import About from "./components/about";
+//import About from "./components/about";
 
 import Home from "./containers/home";
 import type { JobCard } from "./types/jobcard";

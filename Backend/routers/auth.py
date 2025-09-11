@@ -10,9 +10,10 @@ from passlib.context import CryptContext
 from models.users import User
 from database import get_db
 
+
 secretKey = os.getenv("JWT_SECRET")
 expiresIn = os.getenv("JWT_EXPIRES_IN")
-algorithm = os.getenv("ALGORITHM", 1)
+algorithm = os.getenv("ALGORITHM")
 
 pwdContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
