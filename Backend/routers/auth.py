@@ -12,10 +12,15 @@ from database import get_db
 
 secretKey = os.getenv("JWT_SECRET")
 expiresIn = os.getenv("JWT_EXPIRES_IN")
-algorithm = os.getenv("ALGORITHM")
+algorithm = os.getenv("ALGORITHM", 1)
 
 pwdContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+print("JWT_SECRET:", secretKey, type(secretKey))
+print("ALGORITHM:", algorithm, type(algorithm))
+print("JWT_EXPIRES_IN:", expiresIn, type(expiresIn))
+
 
 router = APIRouter()
 

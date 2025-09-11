@@ -17,8 +17,7 @@ function JobForm() {
   });
 
   const [loading, setLoading] = useState(false);
-
-  const primaryColor = "#34A853"; // Primary color for borders and buttons
+  const [toast, setToast] = useState<string | null>(null);
 
   // Fetch job if updating
   useEffect(() => {
@@ -51,37 +50,59 @@ function JobForm() {
   };
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const method = id ? "PUT" : "POST";
-      const url = id
-        ? `http://127.0.0.1:8000/jobs/update/${id}`
-        : `http://127.0.0.1:8000/jobs/create`;
-
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(jobData),
-      });
-
-      if (res.ok) {
-        navigate("/employer");
-      } else {
-        console.error("Failed to submit job");
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
+  try {
+    const token = localStorage.getItem("access_token"); // get the JWT
+    if (!token) {
+      setToast("You must be logged in.");
+      return;
     }
-  };
+
+    const method = id ? "PUT" : "POST";
+    const url = id
+      ? `http://127.0.0.1:8000/jobs/update/${id}`
+      : `http://127.0.0.1:8000/jobs/create`;
+
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // <- add this
+      },
+      body: JSON.stringify(jobData),
+    });
+
+    if (res.ok) {
+      setToast(id ? "Job updated successfully!" : "Job posted successfully!");
+      setTimeout(() => {
+        navigate("/employer");
+      }, 1500);
+    } else {
+      const errorData = await res.json();
+      setToast(errorData.detail || "Failed to submit job.");
+    }
+  } catch (err) {
+    console.error(err);
+    setToast("An error occurred.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex justify-center items-start" style={{ backgroundColor: "#F0FFF4" }}>
-      <div className="max-w-3xl w-full p-6 mt-10 bg-white shadow rounded-md">
-        <h1 className="text-2xl font-bold mb-6 text-green-700">
+      <div className="max-w-3xl w-full p-6 mt-10 bg-white shadow rounded-md relative">
+        {/* Toast */}
+        {toast && (
+          <div className="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-md animate-fade-in-out">
+            {toast}
+          </div>
+        )}
+
+        <h1 className="text-2xl font-bold mb-6 text-primary">
           {id ? "Update Job" : "Post Job"}
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -94,8 +115,7 @@ function JobForm() {
               value={jobData.title}
               onChange={handleChange}
               required
-              className={`w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 border-${primaryColor}`}
-              style={{ borderColor: primaryColor }}
+              className="w-full border border-primary px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
@@ -107,8 +127,7 @@ function JobForm() {
               value={jobData.description}
               onChange={handleChange}
               required
-              className={`w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400`}
-              style={{ borderColor: primaryColor }}
+              className="w-full border border-primary px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
@@ -120,8 +139,7 @@ function JobForm() {
               value={jobData.requirements}
               onChange={handleChange}
               required
-              className={`w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400`}
-              style={{ borderColor: primaryColor }}
+              className="w-full border border-primary px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
@@ -133,8 +151,7 @@ function JobForm() {
               name="salary"
               value={jobData.salary ?? ""}
               onChange={handleChange}
-              className={`w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400`}
-              style={{ borderColor: primaryColor }}
+              className="w-full border border-primary px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
@@ -147,8 +164,7 @@ function JobForm() {
               value={jobData.location}
               onChange={handleChange}
               required
-              className={`w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400`}
-              style={{ borderColor: primaryColor }}
+              className="w-full border border-primary px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
@@ -160,8 +176,7 @@ function JobForm() {
               value={jobData.job_type}
               onChange={handleChange}
               required
-              className={`w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400`}
-              style={{ borderColor: primaryColor }}
+              className="w-full border border-primary px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">Select type</option>
               <option value="Full-time">Full-time</option>
@@ -178,8 +193,7 @@ function JobForm() {
               name="status"
               value={jobData.status}
               onChange={handleChange}
-              className={`w-full border px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400`}
-              style={{ borderColor: primaryColor }}
+              className="w-full border border-primary px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="Available">Available</option>
               <option value="Closed">Closed</option>
@@ -191,8 +205,7 @@ function JobForm() {
             <button
               type="submit"
               disabled={loading}
-              className="text-white px-6 py-2 rounded-md hover:bg-green-600"
-              style={{ backgroundColor: primaryColor }}
+              className="text-white px-6 py-2 rounded-md hover:bg-green-600 bg-primary"
             >
               {loading ? "Submitting..." : id ? "Update Job" : "Post Job"}
             </button>

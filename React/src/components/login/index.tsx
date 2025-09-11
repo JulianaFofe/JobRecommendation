@@ -10,27 +10,44 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(""); 
+  const [error, setError] = useState("");     
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    setMessage("");
+    setError("");
+
     try {
       const response = await axios.post("http://localhost:8000/users/login", {
         email,
         password,
       });
 
-      const { access_token, role } = response.data;
+      const { access_token, role, message } = response.data;
 
       // Save JWT in localStorage
-      localStorage.setItem("token", access_token);
+      localStorage.setItem("access_token", access_token);
       localStorage.setItem("role", role);
 
-      // Redirect based on role
+      // Show success message
+      setMessage(message);
+
+      // Redirect immediately based on role
       if (role === "admin") navigate("/dashview");
       else if (role === "employer") navigate("/employer");
       else navigate("/employeedash");
-    } catch{
-      alert("Login failed. Check your credentials.");
+
+      // Clear input fields
+      setEmail("");
+      setPassword("");
+
+    } catch (err: any) {
+      if (err.response && err.response.data.detail) {
+        setError(err.response.data.detail);
+      } else {
+        setError("Login failed. Check your credentials.");
+      }
     }
   };
 
@@ -42,7 +59,9 @@ const Login = () => {
         <div className="md:w-1/2 flex flex-col justify-center items-center p-8">
           <h2 className="text-2xl font-semibold mb-4 pb-12 text-gray-500">Login</h2>
 
-          {/* Email */}
+          {message && <p className="text-green-500 mb-4">{message}</p>}
+          {error && <p className="text-red-500 mb-4">{error}</p>}
+
           <div className="flex items-center w-full max-w-sm bg-gray-50 rounded-md px-3 py-2 mb-4 focus-within:ring-1 focus-within:ring-quatenary">
             <img src={mail} alt="email icon" className="w-5 h-5 mr-2 opacity-50" />
             <input
@@ -54,7 +73,6 @@ const Login = () => {
             />
           </div>
 
-          {/* Password */}
           <div className="flex items-center w-full max-w-sm bg-gray-50 rounded-md px-3 py-2 mb-6 focus-within:ring-1 focus-within:ring-quatenary">
             <input
               type={showPassword ? "text" : "password"}
@@ -72,7 +90,6 @@ const Login = () => {
             </button>
           </div>
 
-          {/* Login Button */}
           <button
             onClick={handleLogin}
             className="hover:opacity-75 border-1 border-white hover:text-primary hover:bg-white hover:border-primary active:text-primary active:border-primary active:bg-green-100 font-bold bg-primary text-white px-14 py-2 rounded-xl transition"

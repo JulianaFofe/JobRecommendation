@@ -1,53 +1,75 @@
 import { useState, useEffect } from "react";
-import { Menu, User, AppWindow, Briefcase, Send } from "lucide-react";
+import { Menu, User, AppWindow, Briefcase, Send, Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import m from "../../assets/images/img.png?url";
 import type { Job } from "../../types/jobposting";
-import React from "react";
+import { jwtDecode } from "jwt-decode"; // consistent import
+
+interface JwtPayload {
+  sub: string; // employer ID
+  role: string;
+  name?: string;
+}
 
 function Employer() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [activeLink, setActiveLink] = useState("My Jobs");
-  const [employeeName, setEmployeeName] = useState("Loading...");
+  const [employeeName, setEmployeeName] = useState("John Doe");
+  const [employerId, setEmployerId] = useState<string>("");
 
-  // Fetch jobs
+  // Decode JWT token
   useEffect(() => {
-    fetchJobs();
-    getEmployeeName();
-  }, []);
-
-  const fetchJobs = async () => {
-    try {
-      const res = await fetch("http://127.0.0.1:8000/jobs/read");
-      const data = await res.json();
-      setJobs(data);
-    } catch (err) {
-      console.error("Error fetching jobs:", err);
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      navigate("/login");
+      return;
     }
-  };
 
-  // Get employee name from JWT
-  const getEmployeeName = () => {
-    const token = localStorage.getItem("token"); // JWT stored after login
-    if (!token) return;
     try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      setEmployeeName(payload.name || "Employee");
+      const decoded: JwtPayload = jwtDecode(token);
+      setEmployeeName(decoded.name ?? "John Doe");
+      setEmployerId(decoded.sub); // store employer ID
     } catch (err) {
       console.error("Invalid token", err);
-      setEmployeeName("Employee");
+      localStorage.removeItem("access_token");
+      navigate("/login");
     }
-  };
+  }, [navigate]);
+
+  // Fetch jobs for this employer
+  useEffect(() => {
+    if (!employerId) return;
+    const fetchJobs = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const res = await fetch(
+          `http://127.0.0.1:8000/jobs/read?employer_id=${employerId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await res.json();
+        setJobs(data);
+      } catch (err) {
+        console.error("Error fetching jobs:", err);
+      }
+    };
+    fetchJobs();
+  }, [employerId]);
 
   const handleDelete = async (id: number) => {
     try {
+      const token = localStorage.getItem("access_token");
       const res = await fetch(`http://127.0.0.1:8000/jobs/delete/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-      if (res.ok) {
-        setJobs((prev) => prev.filter((job) => job.id !== id));
-      }
+      if (res.ok) setJobs((prev) => prev.filter((job) => job.id !== id));
     } catch (err) {
       console.error("Error deleting job:", err);
     }
@@ -57,28 +79,22 @@ function Employer() {
     navigate(jobId ? `/jobform/${jobId}` : "/jobform");
   };
 
-  const primaryColor = "#34A853"; // set your primary color here
-
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen">
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg p-6 flex flex-col">
-        <div className="flex flex-col items-center mb-8">
-          <img
-            src={m}
-            alt="logo"
-            className="w-full object-contain mb-2"
-          />
+      <div className="w-64 bg-white shadow-lg p-6 flex flex-col fixed h-full">
+        <div className="flex flex-col items-start mb-8">
+          <img src={m} alt="logo" className="w-full object-contain mb-4" />
           <h1 className="text-green-500 font-bold text-xl">Employer</h1>
         </div>
 
         <nav className="flex flex-col gap-4">
           {[
-            { name: "Post Job", icon: <Send className="w-5 h-5" /> },
-            { name: "My Jobs", icon: <Briefcase className="w-5 h-5" /> },
-            { name: "Applications", icon: <AppWindow className="w-5 h-5" /> },
-            { name: "Profile", icon: <User className="w-5 h-5" /> },
-            { name: "Settings", icon: <Menu className="w-5 h-5" /> },
+            { name: "Post Job", icon: <Send className="w-5 h-5 text-primary" /> },
+            { name: "My Jobs", icon: <Briefcase className="w-5 h-5 text-primary" /> },
+            { name: "Applications", icon: <AppWindow className="w-5 h-5 text-primary" /> },
+            { name: "Profile", icon: <User className="w-5 h-5 text-primary" /> },
+            { name: "Settings", icon: <Menu className="w-5 h-5 text-primary" /> },
           ].map((link) => (
             <span
               key={link.name}
@@ -86,13 +102,13 @@ function Employer() {
                 setActiveLink(link.name);
                 if (link.name === "Post Job") goToForm();
               }}
-              className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition
-                ${activeLink === link.name
-                  ? "bg-yellow-100 text-green-700 font-semibold"
-                  : "hover:bg-green-50 text-gray-700"
-                }`}
+              className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition ${
+                activeLink === link.name
+                  ? "bg-yellow-100 text-primary font-semibold"
+                  : "hover:bg-green-50"
+              }`}
             >
-              {React.cloneElement(link.icon, { color: primaryColor })}
+              {link.icon}
               {link.name}
             </span>
           ))}
@@ -100,70 +116,68 @@ function Employer() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 ml-64 flex flex-col">
         {/* Navbar */}
-        <div className="bg-white shadow px-6 py-4 flex justify-between items-center">
+        <div className="bg-white shadow px-6 py-4 flex justify-between items-center sticky top-0 z-10">
           <h1 className="text-lg font-semibold">
-            Welcome, <span className="text-green-500">{employeeName}</span>
+            Welcome, <span className="text-primary">{employeeName}</span>
           </h1>
+          <div className="flex items-center gap-4">
+            <Bell className="w-6 h-6 text-primary cursor-pointer" />
+            <User className="w-6 h-6 text-primary cursor-pointer" />
+          </div>
         </div>
 
         {/* Job Listings */}
-        <div className="p-6 space-y-4 flex-1 overflow-auto">
+        <div className="p-6 flex-1 overflow-auto bg-gray-50">
           <h2 className="text-xl font-bold mb-4">Job Postings</h2>
 
-          {jobs.length === 0 ? (
-            <p className="text-gray-500">No jobs posted yet.</p>
-          ) : (
-            jobs.map((job) => (
-              <div
-                key={job.id}
-                className="bg-white shadow-md rounded-md p-3 flex justify-between items-start"
-              >
-                <div className="flex-1">
-                  <h3 className="font-semibold text-md">{job.title}</h3>
-                  <p className="text-gray-600 text-sm mt-1">
-                    {job.location} • {job.job_type} •{" "}
-                    <span
-                      className={`font-bold ${
-                        job.status === "Available"
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {job.status}
-                    </span>
-                  </p>
-                  <p className="mt-1 text-gray-700 text-sm line-clamp-2">
-                    {job.description}
-                  </p>
-                  <p className="text-gray-600 text-sm mt-1 line-clamp-1">
-                    Requirements: {job.requirements}
-                  </p>
-                  {job.salary && (
-                    <p className="text-gray-800 text-sm mt-1">
-                      Salary: XAF{job.salary}
+          <div className="space-y-4">
+            {jobs.length === 0 ? (
+              <p className="text-gray-500">No jobs posted yet.</p>
+            ) : (
+              jobs.map((job) => (
+                <div
+                  key={job.id}
+                  className="bg-white shadow-md rounded-md p-4 flex justify-between items-start max-h-40 overflow-hidden"
+                >
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg">{job.title}</h3>
+                    <p className="text-gray-600 text-sm mt-1">
+                      {job.location} • {job.job_type} •{" "}
+                      <span
+                        className={`font-bold ${
+                          job.status === "Available" ? "text-green-600" : "text-red-600"
+                        }`}
+                      >
+                        {job.status}
+                      </span>
                     </p>
-                  )}
-                </div>
+                    <p className="mt-1 text-gray-700 text-sm line-clamp-2">{job.description}</p>
+                    <p className="text-gray-600 text-sm mt-1 line-clamp-1">
+                      Requirements: {job.requirements}
+                    </p>
+                    {job.salary && <p className="text-gray-800 text-sm mt-1">Salary: XAF{job.salary}</p>}
+                  </div>
 
-                <div className="flex flex-col gap-6 ml-4">
-                  <button
-                    onClick={() => goToForm(job.id)}
-                    className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 text-sm"
-                  >
-                    Update
-                  </button>
-                  <button
-                    onClick={() => handleDelete(job.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 text-sm"
-                  >
-                    Delete
-                  </button>
+                  <div className="flex flex-col gap-2 ml-4">
+                    <button
+                      onClick={() => goToForm(job.id)}
+                      className="bg-primary text-white px-4 py-1 rounded-md hover:bg-green-600"
+                    >
+                      Update
+                    </button>
+                    <button
+                      onClick={() => handleDelete(job.id)}
+                      className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>
