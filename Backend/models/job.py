@@ -14,8 +14,9 @@ class Job(Base):
     location=Column(String(255), nullable=False)
     job_type=Column(String(255), nullable=False)
     status = Column(String(20), nullable=False, server_default="available")
-    posted_at=Column(DateTime(timezone=True), default=lambda:datetime.now(timezone.utc))
+    posted_at = Column(DateTime(timezone=True), default=lambda:datetime.now(timezone.utc))
 
     employer_id=Column(Integer, ForeignKey("users.id"))
     employer=relationship("User", back_populates="jobs")
     applications=relationship("Application", back_populates="job")
+    saved_jobs = relationship("SavedJob", back_populates="job")

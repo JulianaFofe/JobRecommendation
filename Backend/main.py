@@ -7,7 +7,9 @@ from routers import recommendations
 from routers import job
 from routers import apllication
 from routers import admins
-from database import Base, engine
+from routers import profile
+from routers import saveJob
+from database import engine
 from fastapi.middleware.cors import CORSMiddleware
 
 from dotenv import load_dotenv
@@ -47,6 +49,8 @@ def root():
 app.include_router(users.router)
 app.include_router(apllication.router)
 app.include_router(admins.router)
+app.include_router(profile.router)
+app.include_router(saveJob.router)
 app.include_router(job.router)
 app.include_router(recommendations.router)
 

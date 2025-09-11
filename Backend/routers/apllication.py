@@ -4,6 +4,7 @@ from schema.application import ApplicationCreate, ApplicationResponse, Applicati
 from sqlalchemy.orm import Session
 from database import get_db
 from models.users import User
+from crud import user_crud
 from routers.auth import getCurrentUser
 from crud.application_crud import create_application, get_applications_by_Jobs, update_application_status
 
@@ -55,3 +56,11 @@ def change_application_status(
         employer_id=current_user.id
     )
     return {"message": f"Application status updated to {status_update.status.value}", "application": updated_application}
+
+
+@router.get("/me", response_model=List[ApplicationResponse])
+def list_my_applications(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(getCurrentUser)
+):
+    return user_crud.get_user_applications(db, current_user)
