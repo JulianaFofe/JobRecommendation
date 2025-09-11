@@ -1,8 +1,12 @@
 from datetime import timedelta
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
-from routers.auth import createAccessToken
+from routers.auth import createAccessToken, getCurrentUser
 from database import get_db
+import schema.users as schema
+from models.users import User
 from sqlalchemy.orm import Session
+from schema.application import ApplicationResponse
 from crud import user_crud
 from models import User
 import schema.users as schema

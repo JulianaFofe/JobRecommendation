@@ -10,7 +10,6 @@ from schema.users import UserRead
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
-
 def check_admin(user: User):
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Only admins can access this resource")
@@ -65,11 +64,8 @@ def get_all_applications(
 
 @router.get("/stats")
 def get_admin_stats(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(getCurrentUser)
+    db: Session = Depends(get_db)
 ):
-    check_admin(current_user)
-
     total_jobs = db.query(Job).count()
     total_applications = db.query(Application).count()
     total_users = db.query(User).count()

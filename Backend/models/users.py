@@ -16,3 +16,5 @@ class User(Base):
 
     jobs=relationship("Job", back_populates="employer")
     applications= relationship("Application",back_populates="applicant")
+    profile = relationship("Profile", back_populates="user", uselist=False)
+    saved_jobs = relationship("SavedJob", back_populates="employee")
