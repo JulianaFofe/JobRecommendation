@@ -20,7 +20,7 @@ import FeedbackPage from "./components/feedback";
 import Services from "./components/service";
 import JobForm from "./components/JobForm";
 import ProtectedRoute from "./components/ProtectedRoute";
-import About from "./components/about";
+import PublicProfile from "./components/profileview";
 
 function App() {
   const cards: JobCard[] = [
@@ -32,10 +32,58 @@ function App() {
   return (
     <div>
       <Routes>
+        <Route
+          path="/profile"
+          element={
+            <PublicProfile
+              person={{
+                name: "Fedjio Noumbissi",
+                education: [
+                  {
+                    degree: "B.Sc. Computer Science",
+                    school: "University of yaounde",
+                    year: "2017 – 2021",
+                  },
+                  {
+                    degree: "High School Diploma",
+                    school: "GBHS Bafoussam",
+                    year: "2013 – 2017",
+                  },
+                ],
+                skills: [
+                  "React",
+                  "Node.js",
+                  "TypeScript",
+                  "TailwindCSS",
+                  "FastAPI",
+                ],
+                experience: [
+                  {
+                    role: "Frontend Developer",
+                    company: "Tech Solutions Inc.",
+                    duration: "Jan 2022 – Present",
+                  },
+                  {
+                    role: "Intern Software Engineer",
+                    company: "InnovateHub",
+                    duration: "Jun 2020 – Dec 2021",
+                  },
+                ],
+              }}
+            />
+          }
+        />
         <Route path="/" element={<Home />} />
         <Route path="/works" element={<Goals />} />
         <Route path="/getstarted" element={<Hero />} />
-        <Route path="/employer" element={<ProtectedRoute><Employer /></ProtectedRoute>} />
+        <Route
+          path="/employer"
+          element={
+            <ProtectedRoute>
+              <Employer />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/dashview" element={<DashView />} />
         <Route path="/management" element={<Management />} />
         <Route path="/signup" element={<Signup />} />
@@ -46,9 +94,8 @@ function App() {
         <Route path="/about" element={<About/>}/>
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         <Route path="/jobmanagement" element={<Job />} />
-        <Route path="/jobform" element={<JobForm />} />          {/* Create */}
-        <Route path="employee_form" element={<Employee_Form/>}/>
-        <Route path="/jobform/:id" element={<JobForm />} />      {/* Update */}
+        <Route path="/jobform" element={<JobForm />} /> {/* Create */}
+        <Route path="/jobform/:id" element={<JobForm />} /> {/* Update */}
       </Routes>
       <Footer />
     </div>
