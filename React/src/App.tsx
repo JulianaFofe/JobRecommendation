@@ -6,6 +6,7 @@ import Management from "./components/usermanagement";
 import Footer from "./containers/footer";
 import Signup from "./components/signup";
 import Login from "./components/login";
+import About from "./components/about";
 import Testimonials from "./components/tesmimonials";
 import Job from "./components/Jobmanagement";
 //import About from "./components/about";
@@ -31,12 +32,18 @@ function App() {
   return (
     <div>
       <Routes>
-<<<<<<< HEAD
         <Route path="/" element={<Home />} />
         <Route path="/works" element={<Goals />} />
         <Route path="/getstarted" element={<Hero />} />
-        <Route path="/employer" element={<ProtectedRoute><Employer /></ProtectedRoute>} />
-=======
+        <Route
+          path="/employer"
+          element={
+            <ProtectedRoute>
+              <Employer />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/Blog" element={<Blog />}></Route>
         <Route path="/" element={<Home />}></Route>
         <Route path="/works" element={<Goals />} />
         <Route path="/getstarted" element={<Hero />} />
@@ -52,7 +59,6 @@ function App() {
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         <Route path="/" element={<Home />}></Route>
         <Route path="/employer" element={<Employer />} />
->>>>>>> f8b8f39f (blog)
         <Route path="/dashview" element={<DashView />} />
         <Route path="/management" element={<Management />} />
         <Route path="/signup" element={<Signup />} />
@@ -62,13 +68,10 @@ function App() {
         <Route path="/service" element={<Services />} />
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         <Route path="/jobmanagement" element={<Job />} />
-<<<<<<< HEAD
-        <Route path="/jobform" element={<JobForm />} />          {/* Create */}
-        <Route path="/jobform/:id" element={<JobForm />} />      {/* Update */}
-=======
+        <Route path="/jobform" element={<JobForm />} /> {/* Create */}
+        <Route path="/jobform/:id" element={<JobForm />} /> {/* Update */}
         <Route path="/ourblog" element={<Blog />} />
         {/* <Footer/> */}
->>>>>>> f8b8f39f (blog)
       </Routes>
       <Footer />
     </div>

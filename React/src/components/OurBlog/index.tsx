@@ -1,4 +1,5 @@
 import React from "react";
+import Navbar from "../../containers/navbar";
 import { useState, useEffect } from "react";
 import b from "../../assets/images/download.jpeg";
 import c from "../../assets/images/download (1).jpeg";
@@ -22,22 +23,22 @@ function Blog() {
     {
       img: b,
       title: "Backend Engineer: Cloud Solutions",
-      desc: "Happy Mother's Day! - The Bloom Shop Offer: Hey there! Don't miss out on our exclusive Mother",
+      desc: "Hey there! Don't miss out on our exclusive Job seeking platform offer! Get ready to find all your amazing jobs types in just few clicks.",
     },
     {
       img: c,
       title: "UI/UX Designer: Future Vision",
-      desc: "Happy Mother's Day! - The Bloom Shop Offer: Hey there! Don't miss out on our exclusive Mother",
+      desc: "Hey there! Don't miss out on our exclusive Job seeking platformoffer! Get ready to find all your amazing jobs types in just few clicks.",
     },
     {
       img: d,
       title: "AI Engineer: NextGen Tech",
-      desc: "Happy Mother's Day! - The Bloom Shop Offer: Hey there! Don't miss out on our exclusive Mother",
+      desc: "Hey there! Don't miss out on our exclusive Job seeking platform offer! Get ready to find all your amazing jobs types in just few clicks.",
     },
     {
       img: b,
       title: "Fullstack Developer: Startup Lab",
-      desc: "Happy Mother's Day! - The Bloom Shop Offer: Hey there! Don't miss out on our exclusive Mother",
+      desc: "Hey there! Don't miss out on our exclusive Job seeking platform offer! Get ready to find all your amazing jobs types in just few clicks.",
     },
   ];
 
@@ -57,21 +58,7 @@ function Blog() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row gap-4 sm:gap-150 mt-5 shadow-lg shadow-slate-500 rounded-b font-bold  sm:justify-start">
-        <img src={f} alt="Logo" className="w-32 sm:w-23" />
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-20 mt-2 sm:mt-3 sm:pl-5">
-          <span className="text-green-500 hover:text-yellow-300 cursor-pointer">
-            Home
-          </span>
-          <span className="text-green-500 hover:text-yellow-500 cursor-pointer">
-            Profile
-          </span>
-          <span className="text-green-500 hover:text-yellow-500 cursor-pointer">
-            Our Blog
-          </span>
-        </div>
-      </div>
+      {<Navbar />}
 
       {/* Featured Section */}
       <div className="relative w-full h-[400px] sm:h-[500px] mt-5 mx-4 sm:mx-0">
@@ -81,8 +68,9 @@ function Blog() {
             WELCOME TO OUR BLOG
           </h1>
           <p className="text-white text-sm sm:text-base">
-            Hey there! Don't miss out on our exclusive Mother’s Day offer! Get
-            30% off all floral arrangements this weekend only.
+            Hey there! Don't miss out on our exclusive Job seeking platform
+            offer! Get ready to find all your amazing jobs types in just few
+            clicks.
             <span className="block mt-2 sm:mt-4 sm:pl-50">
               Visit our website or drop by our store to avail the discount.
             </span>
