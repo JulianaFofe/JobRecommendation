@@ -1,11 +1,6 @@
-<<<<<<< HEAD
-"use client"
-
-import React, { useEffect, useState } from "react"
-=======
 "use client";
 import React, { useEffect, useState } from "react";
->>>>>>> c2a50785 (our blog)
+import axios from "axios";
 import {
   LineChart,
   Line,
@@ -17,11 +12,6 @@ import {
   PieChart,
   Pie,
   Cell,
-<<<<<<< HEAD
-} from "recharts"
-import { TrendingUp, FileText, Clock, Award, Plus, Calendar, Briefcase, User, ShieldCheck, Menu, X } from "lucide-react"
-import axios from "axios"
-=======
 } from "recharts";
 import {
   TrendingUp,
@@ -36,9 +26,6 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import axios from "axios";
-const API_URL = "http://127.0.0.1:8000/admin";
->>>>>>> c2a50785 (our blog)
 
 // ----- Card Components -----
 
@@ -156,70 +143,26 @@ const jobCategoriesData = [
   { name: "Education", value: 10, color: "#a7f3d0" },
 ];
 
-interface Stats {
-  total_jobs: number;
-  total_users: number;
-  total_applications: number;
-}
-
-<<<<<<< HEAD
 function DashView() {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [stats, setStats] = useState({ total_jobs: 0, total_users: 0, total_applications: 0 })
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/admin/stats")
-        setStats(response.data)
-      } catch (error) {
-        console.error("Error fetching stats:", error)
-      }
-    }
-    fetchStats()
-  }, [])
-=======
-function DashView({ token }: { token: string }) {
-  const [users, setUsers] = useState([]);
-  const [jobs, setJobs] = useState([]);
-  const [applications, setApplications] = useState([]);
-  const [stats, setStats] = useState<Stats>({
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [stats, setStats] = useState({
     total_jobs: 0,
     total_users: 0,
     total_applications: 0,
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
->>>>>>> c2a50785 (our blog)
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchStats = async () => {
       try {
-        const headers = { Authorization: `Bearer ${token}` };
-        const [usersRes, jobsRes, appsRes, statsRes] = await Promise.all([
-          axios.get(`${API_URL}/users`, { headers }),
-          axios.get(`${API_URL}/jobs`, { headers }),
-          axios.get(`${API_URL}/applications`, { headers }),
-          axios.get(`${API_URL}/stats`, { headers }),
-        ]);
-        setUsers(usersRes.data);
-        setJobs(jobsRes.data);
-        setApplications(appsRes.data);
-        setStats(statsRes.data);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load admin data");
-      } finally {
-        setLoading(false);
+        const response = await axios.get("http://localhost:8000/admin/stats");
+        setStats(response.data);
+      } catch (error) {
+        console.error("Error fetching stats:", error);
       }
     };
-    if (token) {
-      fetchData();
-    } else {
-      setLoading(false);
-    }
-  }, [token]);
+    fetchStats();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       <div className="lg:hidden fixed top-4 left-4 z-50">
@@ -281,14 +224,14 @@ function DashView({ token }: { token: string }) {
                 <span className="hidden sm:inline">Dashboard Overview</span>
               </a>
               <a
-                href="#"
+                href="/jobmanagement"
                 className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
               >
                 <Briefcase className="w-5 h-5 text-primary" />
                 <span className="hidden sm:inline">Job Management</span>
               </a>
               <a
-                href="management"
+                href="/management"
                 className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
               >
                 <User className="w-5 h-5 text-primary" />
@@ -330,11 +273,25 @@ function DashView({ token }: { token: string }) {
           {/* Top Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 lg:mb-8">
             {[
-<<<<<<< HEAD
-              { title: "Total Jobs Posted", value: stats.total_jobs, growth: "+3%", icon: Briefcase },
-              { title: "Active Users", value: stats.total_users, growth: "+4%", icon: User },
-              { title: "Total Application", value: stats.total_applications, growth: "+3%", icon: FileText },
-=======
+              {
+                title: "Total Jobs Posted",
+                value: stats.total_jobs,
+                growth: "+3%",
+                icon: Briefcase,
+              },
+              {
+                title: "Active Users",
+                value: stats.total_users,
+                growth: "+4%",
+                icon: User,
+              },
+              {
+                title: "Total Application",
+                value: stats.total_applications,
+                growth: "+3%",
+                icon: FileText,
+              },
+
               {
                 title: "Total jobs posted",
                 value: stats.total_jobs,
@@ -353,7 +310,6 @@ function DashView({ token }: { token: string }) {
                 growth: "+3%",
                 icon: FileText,
               },
->>>>>>> c2a50785 (our blog)
             ].map(({ title, value, growth, icon: Icon }, idx) => (
               <Card
                 key={idx}
@@ -530,5 +486,4 @@ function DashView({ token }: { token: string }) {
     </div>
   );
 }
-
 export default DashView;

@@ -10,9 +10,6 @@ import { Menu } from "lucide-react";
 import { Filter } from "lucide-react";
 import { Eye } from "lucide-react";
 import { NotebookPen } from "lucide-react";
-import { motion } from "framer-motion";
-
-
 
 const Job = () => {
   return (
@@ -45,28 +42,51 @@ const Job = () => {
         <div className="shadow-lg shadow-slate-500 p-6 w-full lg:w-1/3">
           <p>QUICK</p>
           <div className="mt-5">
-            <span className="flex mt-6 text-sm gap-2">
-              <LineChart color="green" /> Dashboard Overview
-            </span>
-            <span className="flex mt-6 gap-2">
-              <Briefcase color="green" /> Job Management
-            </span>
-            <span className="flex mt-6 gap-2">
-              <User color="green" /> User Management
-            </span>
-            <span className="flex mt-6 gap-2">
-              <List color="green" /> User Management
-            </span>
+            <a
+              href="/dashview"
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
+            >
+              <span className="flex mt-6 text-sm gap-2 hover:text-secondary cursor-pointer">
+                <LineChart color="green" /> Dashboard Overview
+              </span>
+            </a>
+
+            <a
+              href="/jobmanagement"
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
+            >
+              <span className="flex mt-6 gap-2 hover:text-secondary  cursor-pointer ">
+                <Briefcase color="green" /> Job Management
+              </span>
+            </a>
+
+            <a
+              href="/management"
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
+            >
+              <span className="flex mt-6 gap-2 hover:text-secondary  cursor-pointer ">
+                <User color="green" /> User Management
+              </span>
+            </a>
+
+            <a
+              href="/management"
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
+            >
+              <span className="flex mt-6 gap-2 hover:text-secondary  cursor-pointer">
+                <List color="green" /> User Management
+              </span>
+            </a>
           </div>
           <div>
             <h1 className="text-gray-500 mt-10">QUICK ACTION</h1>
-            <span className="flex mt-6 gap-2 mb-3 ">
+            <span className="flex mt-6 gap-2 mb-3 hover:text-secondary  cursor-pointer ">
               <Plus color="green" /> Add New Job
             </span>
-            <span className="flex mt-6 gap-2">
+            <span className="flex mt-6 gap-2 hover:text-secondary  cursor-pointer">
               <Calendar color="green" /> Schedule Report
             </span>
-            <span className="flex mt-6 gap-2">
+            <span className="flex mt-6 gap-2 hover:text-secondary  cursor-pointer">
               <Menu color="green" /> Schedule Report
             </span>
           </div>

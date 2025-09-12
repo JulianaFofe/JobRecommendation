@@ -49,7 +49,7 @@ function App() {
         <Route path="/getstarted" element={<Hero />} />
         <Route path="/employer" element={<Employer />} />
         <Route path="/dashview" element={<DashView />} />
-        <Route path="management" element={<Management />}></Route>
+        <Route path="/management" element={<Management />}></Route>
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/stories" element={<Testimonials />} />
@@ -59,7 +59,6 @@ function App() {
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         <Route path="/" element={<Home />}></Route>
         <Route path="/employer" element={<Employer />} />
-        <Route path="/dashview" element={<DashView />} />
         <Route path="/management" element={<Management />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
