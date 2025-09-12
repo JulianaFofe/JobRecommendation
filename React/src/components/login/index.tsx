@@ -52,7 +52,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4 py-4">
       <div className="bg-white shadow-lg rounded-2xl flex flex-col md:flex-row w-full max-w-4xl overflow-hidden">
 
         {/* Left Section */}
@@ -73,7 +73,7 @@ const Login = () => {
             />
           </div>
 
-          <div className="flex items-center w-full max-w-sm bg-gray-50 rounded-md px-3 py-2 mb-6 focus-within:ring-1 focus-within:ring-quatenary">
+          <div className="flex items-center w-full max-w-sm bg-gray-50 rounded-md px-3 pt-2 focus-within:ring-1 focus-within:ring-quatenary">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
@@ -89,6 +89,7 @@ const Login = () => {
               />
             </button>
           </div>
+          <p className="mb-5 font-light text-sm p-1 hover:text-primary cursor-pointer text-gray-500">password forgitten?</p>
 
           <button
             onClick={handleLogin}

@@ -1,6 +1,8 @@
 import jobs from "../../assets/images/jobs.jpeg"
 import img from './../../assets/images/img_tes1 copy 4.jpeg'
-import card from "../../assets/images/ReviewModals.png"
+import card1 from "../../assets/images/Review Modals (1).png"
+import card2 from "../../assets/images/Review Modals (2).png"
+import card3 from "../../assets/images/Review Modals.png"
 import slide1 from "../../assets/images/profile1.png"
 import slide2 from "../../assets/images/ReviewModals.png"
 import slide3 from "../../assets/images/profile2.png"
@@ -8,7 +10,7 @@ import slide4 from "../../assets/images/profile3.png"
 import slide5 from "../../assets/images/profile4.png"
 import slide6 from "../../assets/images/profile5.png"
 import ImageSlider from './ImageSlider'
-import Faq from "../../assets/images/photo.png"
+import Faq from "../../assets/images/photo.jpg"
 import Navbar from "../../containers/navbar"
 import { useState } from "react"
 
@@ -69,11 +71,11 @@ const Testimonials = () => {
           <img src={img} alt="Person reading" className="w-full md:w-1/2 h-64 md:h-auto object-cover" />
         </section>
 
-        {/* Review Cards */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <img key={i} src={card} alt={`review-${i}`} className="w-full h-auto object-cover rounded shadow-md" />
-          ))}
+        {/* Review cards */}
+        <section className="grid grid-cols-1 md:grid-cols-3 items-center gap-4">
+          <img src={card1} alt="profile" className="md:w-full h-auto object-cover rounded" />
+          <img src={card2} alt="profile" className="md:w-full h-auto object-cover rounded" />
+          <img src={card3} alt="profile" className="md:w-full h-auto object-cover rounded" />
         </section>
 
         {/* Button */}
