@@ -1,9 +1,11 @@
-import React from 'react'
-import { User,BriefcaseBusiness,Globe, Award, TrendingUp} from "lucide-react"
+import {BriefcaseBusiness,Globe, Award, TrendingUp} from "lucide-react"
+import Navbar from "../../containers/navbar"
 
 const About = () => {
   return (
     <>
+    <Navbar/>
+    <div className="py-10"></div>
     <div>
       <div className='h-full w-full text-white flex flex-col justify-center align-center items-align insert-none bg-gray-50 '>
       <section className='mb-20 px-12 py-26 flex shadow rounded-bl rounded-br  flex-col justify-center gap-2 align-center items-center bg-primary '>
