@@ -12,123 +12,99 @@ import Faq from "../../assets/images/photo.png"
 import Navbar from "../../containers/navbar"
 import { useState } from "react"
 
-const IMAGES = [slide1,slide2,slide3,slide4,slide4,slide5,slide6]
+const IMAGES = [slide1, slide2, slide3, slide4, slide5, slide6]
 
 // FAQ data
 const FAQS = [
-  {
-    q: "1. How do I create an account?",
-    a: "Go to the signup page, fill in your details, and follow the instructions to create your account."
-  },
-  {
-    q: "2. Do I need to pay to apply for jobs?",
-    a: "No, applying for jobs is completely free on our platform."
-  },
-  {
-    q: "3. How do I improve my chances of getting hired?",
-    a: "Make sure your profile is complete, upload a professional resume, and apply to jobs that match your skills."
-  },
-  {
-    q: "4. Can I apply to jobs without uploading a resume?",
-    a: "Some employers may allow it, but we recommend uploading a resume for better chances."
-  },
-  {
-    q: "5. How do I know if my application was successful?",
-    a: "You will receive a confirmation email and can track your application status in your dashboard."
-  },
-  {
-    q: "6. How do I set up job alerts?",
-    a: "Go to your settings and enable job alerts to get notified about new opportunities."
-  },
-  {
-    q: "7. Can I edit or delete my profile after creating it?",
-    a: "Yes, you can always edit or delete your profile from the account settings page."
-  },
-  {
-    q: "8. Are the jobs on this site verified?",
-    a: "Yes, all jobs are reviewed and verified before being published on the site."
-  },
+  { q: "1. How do I create an account?", a: "Go to the signup page, fill in your details, and follow the instructions to create your account." },
+  { q: "2. Do I need to pay to apply for jobs?", a: "No, applying for jobs is completely free on our platform." },
+  { q: "3. How do I improve my chances of getting hired?", a: "Make sure your profile is complete, upload a professional resume, and apply to jobs that match your skills." },
+  { q: "4. Can I apply to jobs without uploading a resume?", a: "Some employers may allow it, but we recommend uploading a resume for better chances." },
+  { q: "5. How do I know if my application was successful?", a: "You will receive a confirmation email and can track your application status in your dashboard." },
+  { q: "6. How do I set up job alerts?", a: "Go to your settings and enable job alerts to get notified about new opportunities." },
+  { q: "7. Can I edit or delete my profile after creating it?", a: "Yes, you can always edit or delete your profile from the account settings page." },
+  { q: "8. Are the jobs on this site verified?", a: "Yes, all jobs are reviewed and verified before being published on the site." },
 ]
 
 const Testimonials = () => {
-  const [openIndex, setOpenIndex] = useState(null) // track which question is open
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
 
-  const toggleFAQ = (index) => {
-    setOpenIndex(openIndex === index ? null : index) // close if already open, otherwise open new
+  const toggleFAQ = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index)
   }
 
   return (
     <>
-      <Navbar/>
+      <Navbar />
 
-      {/* Hero section */}
+      {/* Hero Section */}
       <section
-        className="relative bg-center bg-cover h-full w-full py-60 rounded-4xl flex justify-center text-white flex-col items-center"
+        className="relative bg-center bg-cover min-h-[60vh] w-full flex justify-center items-center text-white"
         style={{ backgroundImage: `url(${jobs})` }}
       >
-        <div className="absolute inset-0 rounded-4xl bg-black/70 py-7"></div>
-        <div className="relative z-10 flex flex-col gap-4 items-center">
-          <h1 className="text-3xl text-center font-bold">
+        <div className="absolute inset-0 bg-black/70"></div>
+        <div className="relative z-10 px-4 text-center max-w-3xl">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4">
             Moving From Job Search to Dream Job
           </h1>
-          <p className="text-white text-md font-medium text-center">
+          <p className="text-sm md:text-base lg:text-lg font-medium">
             Our users found new opportunities and career paths with our help. We are proud to be part of their success.
           </p>
         </div>
       </section>
 
-      <div className='overflow-hidden bg-gray-100 h-full w-full flex flex-col px-7 gap-9'>
+      <div className="bg-gray-100 w-full flex flex-col px-4 sm:px-6 lg:px-12 gap-9">
 
         {/* Career Story Section */}
         <section className="bg-white shadow-lg rounded-2xl mt-9 overflow-hidden flex flex-col md:flex-row">
-          <div className="flex-1 bg-green-400 p-8 flex py-15 flex-col justify-center">
-            <h1 className="text-2xl md:text-5xl font-bold text-white leading-snug">
+          <div className="flex-1 bg-green-400 p-6 sm:p-10 flex flex-col justify-center text-center md:text-left">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white leading-snug">
               Your Career, Your Story
             </h1>
-            <p className="mt-4 font-bold text-sm text-white max-w-md">
+            <p className="mt-4 font-medium text-sm md:text-base text-white max-w-md mx-auto md:mx-0">
               Our community of job seekers and employers is growing every day.
               Read how we've helped others navigate the job market and find fulfilling work. Your future starts here.
             </p>
           </div>
-          <img src={img} alt="Person reading" className="rounded object-cover w-90 hidden sm:block lg:flex-1" />
+          <img src={img} alt="Person reading" className="w-full md:w-1/2 h-64 md:h-auto object-cover" />
         </section>
 
-        {/* Review cards */}
-        <section className="grid grid-cols-1 md:grid-cols-3 items-center gap-4">
-          <img src={card} alt="profile" className="md:w-full h-auto object-cover rounded" />
-          <img src={card} alt="profile" className="md:w-full h-auto object-cover rounded" />
-          <img src={card} alt="profile" className="md:w-full h-auto object-cover rounded" />
+        {/* Review Cards */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <img key={i} src={card} alt={`review-${i}`} className="w-full h-auto object-cover rounded shadow-md" />
+          ))}
         </section>
 
         {/* Button */}
-        <section className='flex justify-center m-7 mb-0'>
-          <button className='border border-white hover:bg-white hover:text-primary bg-primary rounded-md py-2 px-10 text-sm text-white font-bold transition duration-300 ease-in-out'>
-            Read More comments
+        <section className="flex justify-center">
+          <button className="border border-primary hover:bg-primary hover:text-white bg-white text-primary rounded-md py-2 px-8 text-sm md:text-base font-bold transition duration-300 ease-in-out">
+            Read More Comments
           </button>
         </section>
 
         {/* Image Slider */}
-        <section className='pb-10'>
-          <ImageSlider imageURLs={IMAGES}/>
+        <section className="pb-10">
+          <ImageSlider imageURLs={IMAGES} />
         </section>
 
         {/* FAQ Section */}
         <section className="bg-secondary shadow-lg rounded-2xl mt-9 mb-9 overflow-hidden flex flex-col md:flex-row">
-          <div className="flex-1 px-6 py-15 lg:pl-20 flex flex-col gap-2">
-            <h1 className="text-2xl md:text-5xl font-bold text-white leading-snug mb-4">
+          <div className="flex-1 px-6 py-10 lg:pl-16 flex flex-col gap-2">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
               FAQ
             </h1>
 
             {FAQS.map((faq, index) => (
               <div key={index}>
                 <p
-                  className="py-2 px-5 mt-4 text-sm text-white max-w-md border-t border-white font-medium cursor-pointer"
+                  className="py-2 px-3 text-sm md:text-base text-white border-t border-white font-medium cursor-pointer"
                   onClick={() => toggleFAQ(index)}
                 >
                   {faq.q}
                 </p>
                 {openIndex === index && (
-                  <p className="py-2 px-5 text-sm text-white max-w-md">
+                  <p className="py-2 px-3 text-xs md:text-sm text-white max-w-md">
                     {faq.a}
                   </p>
                 )}
@@ -136,7 +112,7 @@ const Testimonials = () => {
             ))}
           </div>
 
-          <img src={Faq} alt="faq" className="rounded object-cover w-90 hidden sm:block lg:flex-1" />
+          <img src={Faq} alt="faq" className="hidden md:block lg:flex-1 object-cover w-full md:w-1/2 h-64 md:h-auto" />
         </section>
       </div>
     </>
