@@ -101,10 +101,10 @@ def delete_job(
     db: Session = Depends(get_db),
     current_user: User = Depends(getCurrentUser)  
 ):
-    # Only admins can delete jobs
+   
     check_admin(current_user)
 
-    # Fetch the job by id
+    
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
