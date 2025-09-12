@@ -8,6 +8,8 @@ from schema.application import ApplicationResponse
 from schema.job import Job as JobSchema
 from schema.users import UserRead
 
+
+
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
 def check_admin(user: User):
@@ -62,6 +64,8 @@ def get_all_applications(
     return response
 
 
+
+
 @router.get("/stats")
 def get_admin_stats(
     db: Session = Depends(get_db)
@@ -75,3 +79,38 @@ def get_admin_stats(
         "total_jobs": total_jobs,
         "total_applications": total_applications
     }
+
+
+@router.delete("/users/{user_id}")
+def delete_users(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(getCurrentUser)
+):
+    check_admin(current_user)
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(user)
+    db.commit()
+    return
+
+@router.delete("/jobs/{job_id}")
+def delete_job(
+    job_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(getCurrentUser)  
+):
+    # Only admins can delete jobs
+    check_admin(current_user)
+
+    # Fetch the job by id
+    job = db.query(Job).filter(Job.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+   
+    db.delete(job)
+    db.commit()
+
+    return {"detail": f"Job with id {job_id} has been deleted"}

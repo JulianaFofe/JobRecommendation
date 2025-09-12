@@ -10,6 +10,8 @@ from routers import admins
 from routers import profile
 from routers import saveJob
 from database import engine
+from database import Base, engine
+
 from fastapi.middleware.cors import CORSMiddleware
 
 from dotenv import load_dotenv
@@ -27,11 +29,11 @@ userModel.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# CORS setup
-# origins = [
-#     "http://localhost:5173",  
-#     "http://127.0.0.1:5173",
-# ]
+origins = [
+    "http://localhost:5173",  
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
+]
 
 app.add_middleware(
     CORSMiddleware,
