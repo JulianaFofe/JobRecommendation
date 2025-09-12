@@ -22,7 +22,7 @@ export default function Dashboard({ cards }: Props) {
     { id: "applicants", title: "Applicants", path: "/applicants", icon: Users },
     { id: "profile", title: "Profile", path: "/profile", icon: UserCircle },
     { id: "settings", title: "Settings", path: "/settings", icon: Settings },
-    { id: "logout", title: "Logout", path: "/logout", icon: LogOut },
+    { id: "logout", title: "Logout", path: "/", icon: LogOut },
   ];
 
   return (
@@ -34,7 +34,7 @@ export default function Dashboard({ cards }: Props) {
       <section className="flex-1 flex flex-col">
         <Navbar />
 
-        <div className="mx-auto w-full max-w-6xl p-4 sm:p-6 lg:px-12">
+        <div className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:px-12">
           {/* Title */}
           <h2 className="text-xl font-bold mb-6 sm:mb-9">Job Searching</h2>
 

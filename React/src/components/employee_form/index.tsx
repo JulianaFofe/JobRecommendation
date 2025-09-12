@@ -25,7 +25,7 @@ const Employee_Form: React.FC = () => {
   const handleToggleView = (e?: FormEvent) => {
     if (e) e.preventDefault();
 
-    // ✅ Validation: Require Experience & Skills
+    // Validation: Require Experience & Skills
     if (isEditView) {
       if (!experienceAchievements.trim() || !skills.trim()) {
         alert("Please fill in both Experience and Skills fields.");
@@ -59,11 +59,11 @@ const Employee_Form: React.FC = () => {
           <aside className="md:col-span-1 flex flex-col items-center md:items-start" >
             <div className="w-full mt-4">
               <div className="flex justify-center items-center pt-10 pb-7 align-center">
-                {/* ✅ Slightly larger logo */}
+                {/*  Slightly larger logo */}
                 <img src={logo} alt="SmartHire Logo" className="w-32 mb-6" />
               </div>
               <div className="text-primary flex justify-center items-center pb-10">
-                {/* ✅ Better styled Profile heading */}
+                {/*  Better styled Profile heading */}
                 <p className="text-center font-bold text-3xl tracking-wide uppercase border-b-2 border-primary pb-1">
                   Profile
                 </p>

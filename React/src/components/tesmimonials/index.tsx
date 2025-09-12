@@ -13,6 +13,7 @@ import ImageSlider from './ImageSlider'
 import Faq from "../../assets/images/photo.jpg"
 import Navbar from "../../containers/navbar"
 import { useState } from "react"
+import { motion } from "framer-motion"
 
 const IMAGES = [slide1, slide2, slide3, slide4, slide5, slide6]
 
@@ -40,9 +41,12 @@ const Testimonials = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section
+      <motion.section
         className="relative bg-center bg-cover min-h-[60vh] w-full flex justify-center items-center text-white"
         style={{ backgroundImage: `url(${jobs})` }}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
       >
         <div className="absolute inset-0 bg-black/70"></div>
         <div className="relative z-10 px-4 text-center max-w-3xl">
@@ -53,12 +57,18 @@ const Testimonials = () => {
             Our users found new opportunities and career paths with our help. We are proud to be part of their success.
           </p>
         </div>
-      </section>
+      </motion.section>
 
       <div className="bg-gray-100 w-full flex flex-col px-4 sm:px-6 lg:px-12 gap-9">
 
         {/* Career Story Section */}
-        <section className="bg-white shadow-lg rounded-2xl mt-9 overflow-hidden flex flex-col md:flex-row">
+        <motion.section
+          className="bg-white shadow-lg rounded-2xl mt-9 overflow-hidden flex flex-col md:flex-row"
+          initial={{ x: -100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
           <div className="flex-1 bg-green-400 p-6 sm:p-10 flex flex-col justify-center text-center md:text-left">
             <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white leading-snug">
               Your Career, Your Story
@@ -69,36 +79,75 @@ const Testimonials = () => {
             </p>
           </div>
           <img src={img} alt="Person reading" className="w-full md:w-1/2 h-64 md:h-auto object-cover" />
-        </section>
+        </motion.section>
 
         {/* Review cards */}
-        <section className="grid grid-cols-1 md:grid-cols-3 items-center gap-4">
-          <img src={card1} alt="profile" className="md:w-full h-auto object-cover rounded" />
-          <img src={card2} alt="profile" className="md:w-full h-auto object-cover rounded" />
-          <img src={card3} alt="profile" className="md:w-full h-auto object-cover rounded" />
-        </section>
+        <motion.section
+          className="grid grid-cols-1 md:grid-cols-3 items-center gap-4"
+          initial="hidden"
+          whileInView="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.3 } },
+          }}
+          viewport={{ once: true }}
+        >
+          {[card1, card2, card3].map((card, i) => (
+            <motion.img
+              key={i}
+              src={card}
+              alt="profile"
+              className="md:w-full h-auto object-cover rounded"
+              variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
+              transition={{ duration: 0.8 }}
+            />
+          ))}
+        </motion.section>
 
         {/* Button */}
-        <section className="flex justify-center">
+        <motion.section
+          className="flex justify-center"
+          initial={{ scale: 0.9, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
           <button className="border border-primary hover:bg-primary hover:text-white bg-white text-primary rounded-md py-2 px-8 text-sm md:text-base font-bold transition duration-300 ease-in-out">
             Read More Comments
           </button>
-        </section>
+        </motion.section>
 
         {/* Image Slider */}
-        <section className="pb-10">
+        <motion.section
+          className="pb-10"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          viewport={{ once: true }}
+        >
           <ImageSlider imageURLs={IMAGES} />
-        </section>
+        </motion.section>
 
         {/* FAQ Section */}
-        <section className="bg-secondary shadow-lg rounded-2xl mt-9 mb-9 overflow-hidden flex flex-col md:flex-row">
+        <motion.section
+          className="bg-secondary shadow-lg rounded-2xl mt-9 mb-9 overflow-hidden flex flex-col md:flex-row"
+          initial={{ y: 50, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
           <div className="flex-1 px-6 py-10 lg:pl-16 flex flex-col gap-2">
             <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
               FAQ
             </h1>
 
             {FAQS.map((faq, index) => (
-              <div key={index}>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: openIndex === index ? 1 : 0.8 }}
+                transition={{ duration: 0.4 }}
+              >
                 <p
                   className="py-2 px-3 text-sm md:text-base text-white border-t border-white font-medium cursor-pointer"
                   onClick={() => toggleFAQ(index)}
@@ -110,12 +159,12 @@ const Testimonials = () => {
                     {faq.a}
                   </p>
                 )}
-              </div>
+              </motion.div>
             ))}
           </div>
 
           <img src={Faq} alt="faq" className="hidden md:block lg:flex-1 object-cover w-full md:w-1/2 h-64 md:h-auto" />
-        </section>
+        </motion.section>
       </div>
     </>
   )

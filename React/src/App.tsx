@@ -7,7 +7,7 @@ import Signup from "./components/signup";
 import Login from "./components/login";
 import Testimonials from "./components/tesmimonials";
 import Job from "./components/Jobmanagement";
-import Employee_Form from "./components/employee_form/index"
+import Employee_Form from "./components/employee_form/index";
 //import About from "./components/about";
 
 import Home from "./containers/home";
@@ -20,6 +20,7 @@ import FeedbackPage from "./components/feedback";
 import Services from "./components/service";
 import JobForm from "./components/JobForm";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicProfile from "./components/profileview";
 import About from "./components/about";
 
 function App() {
@@ -28,14 +29,50 @@ function App() {
     { id: "c2", title: "Save Jobs Easily", ctaText: "Apply" },
     { id: "c3", title: "Track Applicants", ctaText: "Apply" },
   ];
-
+  const person = {
+    name: "Fedjio Noumbissi",
+    skills: ["React", "Node.js", "TypeScript", "TailwindCSS", "FastAPI"],
+    experience: [
+      {
+        role: "Frontend Developer",
+        company: "Tech Solutions Inc.",
+        duration: "Jan 2022 – Present",
+      },
+      {
+        role: "Intern Software Engineer",
+        company: "InnovateHub",
+        duration: "Jun 2020 – Dec 2021",
+      },
+    ],
+    education: [
+      {
+        degree: "B.Sc. Computer Science",
+        school: "University of Yaounde",
+        year: "2017 – 2021",
+      },
+      {
+        degree: "High School Diploma",
+        school: "GBHS Bafoussam",
+        year: "2013 – 2017",
+      },
+    ],
+  };
   return (
     <div>
       <Routes>
+        <Route path="/emplo" element={<Employee_Form />} />
+        <Route path="/profile" element={<PublicProfile person={person} />} />
         <Route path="/" element={<Home />} />
         <Route path="/works" element={<Goals />} />
         <Route path="/getstarted" element={<Hero />} />
-        <Route path="/employer" element={<ProtectedRoute><Employer /></ProtectedRoute>} />
+        <Route
+          path="/employer"
+          element={
+            <ProtectedRoute>
+              <Employer />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/dashview" element={<DashView />} />
         <Route path="/management" element={<Management />} />
         <Route path="/signup" element={<Signup />} />
@@ -43,12 +80,11 @@ function App() {
         <Route path="/stories" element={<Testimonials />} />
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/service" element={<Services />} />
-        <Route path="/about" element={<About/>}/>
+        <Route path="/about" element={<About />} />
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         <Route path="/jobmanagement" element={<Job />} />
-        <Route path="/jobform" element={<JobForm />} />          {/* Create */}
-        <Route path="employee_form" element={<Employee_Form/>}/>
-        <Route path="/jobform/:id" element={<JobForm />} />      {/* Update */}
+        <Route path="/jobform" element={<JobForm />} /> {/* Create */}
+        <Route path="/jobform/:id" element={<JobForm />} /> {/* Update */}
       </Routes>
       <Footer />
     </div>

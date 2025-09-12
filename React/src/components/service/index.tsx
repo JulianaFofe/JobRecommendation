@@ -91,7 +91,7 @@ export default function Services() {
         </motion.h2>
         <div className="py-6"></div>
         <motion.a
-          href="/getstarted"
+          href="/signup"
           whileHover={{ y: -2 }}
           whileTap={{ scale: 0.95 }}
           className="bg-primary text-white font-semibold px-6 py-3 rounded-md shadow-md hover:bg-green-600 transition"

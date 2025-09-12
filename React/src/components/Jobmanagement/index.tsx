@@ -1,4 +1,3 @@
-import React from "react";
 import n from "../../assets/images/img.png";
 import { Briefcase } from "lucide-react";
 import { LineChart } from "lucide-react";
