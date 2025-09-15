@@ -22,12 +22,15 @@ class JobUpdate(BaseModel):
     status: Optional[str] = None
 
 class JobCreate(JobBase):#input model(when creating a job to post)
+    """Used when employer creates a job.
+    Employer cannot set is_approved here."""
     pass 
 
 class Job(JobBase):#output model(how the job reaches the job seeker)
     id:int
     employer_id:int
     posted_at:datetime
+    is_approved: bool
 
     class Config:#helps to convert sqlalchemy models into json(readable forat)
         orm_mode = True  
@@ -44,4 +47,6 @@ class JobResponse(BaseModel):
     posted_at: datetime
 
     class Config:
+        orm_mode = True
+        from_attribute=True 
         orm_mode = True

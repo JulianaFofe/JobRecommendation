@@ -19,7 +19,6 @@ router=APIRouter(prefix="/jobs", tags=["Jobs"]) #all routes here will start with
 def create_job(
     job:schema.JobCreate,
     db:Session=Depends(get_db),
-
     current_user: User = Depends(getCurrentUser)
 ):
     if current_user.role != UserRole.EMPLOYER:
@@ -29,7 +28,9 @@ def create_job(
     if current_user.role != "employer":
 
         raise HTTPException(status_code=403, detail="only employers can post jobs")
-    return crud.create_job(db=db,job=job, employer_id=current_user.id)
+    
+      
+    return crud.create_job(db=db,job=job, employer_id=current_user["id"])
 
 @router.get("/read", response_model=List[schema.Job])
 def list_jobs( skip:int=0, limit:int=100, db:Session=Depends(get_db), current_user=Depends(getCurrentUser)):
@@ -41,6 +42,7 @@ def list_jobs( skip:int=0, limit:int=100, db:Session=Depends(get_db), current_us
              .offset(skip)\
              .limit(limit)\
              .all()
+    
     return jobs 
 
 @router.put("/update/{job_id}", response_model=schema.Job)
@@ -59,7 +61,7 @@ def update_job_endpoint(
     if job.employer_id != current_user["id"]:
         raise HTTPException(status_code=403, detail="Not authorized to update this job")
     
-    updated_job = crud.update_job(db, job_id, job_data)
+    updated_job = crud.update_job(db, job_id, job_data,is_approved=False,employer_id=current_user["id"])
     return updated_job
 
 

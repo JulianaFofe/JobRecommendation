@@ -12,6 +12,7 @@ def create_job(db:Session, job:schema.JobCreate, employer_id:int):
     job_data["posted_at"]= datetime.now(timezone.utc)
     job_data["status"] = getattr(job,"status","available")
     db_job=models.Job(**job_data, employer_id=employer_id)
+    is_approved=is_approved 
     db.add(db_job)
     db.commit()
     db.refresh(db_job)
