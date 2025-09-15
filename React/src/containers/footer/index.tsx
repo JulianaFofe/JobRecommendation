@@ -41,7 +41,7 @@ const Footer = () => {
           <div className="flex-1 text-center sm:text-left mb-6 sm:mb-0">
             <h3 className="text-footerHead font-lalezar mb-3">Support</h3>
             <div className="flex flex-col gap-1">
-              <a href="" className="hover:underline hover:text-secondary">Help Center</a>
+              <a href="/helpcenter" className="hover:underline hover:text-secondary">Help Center</a>
               <a href="" className="hover:underline hover:text-secondary">Tweet @Us</a>
               <a href="" className="hover:underline hover:text-secondary">Web</a>
               <a href="/feedback" className="hover:underline hover:text-secondary">Feedback</a>
@@ -101,7 +101,9 @@ const Footer = () => {
 
       {/* Floating Chat Icon */}
       <div className="fixed bottom-6 right-6 z-50 cursor-pointer">
-        <IoIosChatboxes size={40} className="text-secondary hover:text-primary shadow-lg rounded-full bg-primary p-2 hover:bg-secondary transition" />
+        <NavLink to="/feedback">
+         <IoIosChatboxes size={40} className="text-secondary hover:text-primary shadow-lg rounded-full bg-primary p-2 hover:bg-secondary transition" />
+        </NavLink>
       </div>
     </footer>
   );

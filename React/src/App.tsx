@@ -7,7 +7,7 @@ import Signup from "./components/signup";
 import Login from "./components/login";
 import Testimonials from "./components/tesmimonials";
 import Job from "./components/Jobmanagement";
-import Employee_Form from "./components/employee_form/index";
+import Help_Center from "./components/helpcenter/index";
 //import About from "./components/about";
 
 import Home from "./containers/home";
@@ -22,6 +22,7 @@ import JobForm from "./components/JobForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicProfile from "./components/profileview";
 import About from "./components/about";
+import Employee_Form from "./components/employee_form/index"
 
 function App() {
   const cards: JobCard[] = [
@@ -75,6 +76,7 @@ function App() {
         />
         <Route path="/dashview" element={<DashView />} />
         <Route path="/management" element={<Management />} />
+        <Route path="/helpcenter" element={<Help_Center/>}/>
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/stories" element={<Testimonials />} />
@@ -83,8 +85,9 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         <Route path="/jobmanagement" element={<Job />} />
-        <Route path="/jobform" element={<JobForm />} /> {/* Create */}
-        <Route path="/jobform/:id" element={<JobForm />} /> {/* Update */}
+        <Route path="employee_form" element={<Employee_Form/>}/>
+        <Route path="/jobform" element={<JobForm />} />          {/* Create */}
+        <Route path="/jobform/:id" element={<JobForm />} />      {/* Update */}
       </Routes>
       <Footer />
     </div>
