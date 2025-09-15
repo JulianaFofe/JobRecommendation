@@ -1,5 +1,5 @@
-
-import {BriefcaseBusiness,Globe, Award, TrendingUp} from "lucide-react"
+import React from 'react'
+import { User,BriefcaseBusiness,Globe, Award, TrendingUp} from "lucide-react"
 import Navbar from '../../containers/navbar'
 
 const About = () => {
