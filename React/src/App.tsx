@@ -26,7 +26,6 @@ import Employee_Form from "./components/employee_form/index"
 import AdminFeedback from "./components/feedback/adminsfeedback";
 import Employee_Form from "./components/employee_form/index"
 import AdminFeedback from "./components/feedback/adminsfeedback";
-import Employee_Form from "./components/employee_form/index"
 
 function App() {
   const cards: JobCard[] = [
