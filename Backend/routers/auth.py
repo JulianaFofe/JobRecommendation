@@ -1,23 +1,23 @@
+from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
 import os
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Security, status
 from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError
-import jwt
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from jose import JWTError, jwt
 from passlib.context import CryptContext
 import re
 from models.users import User
 from database import get_db
 
-
+load_dotenv()
 secretKey = os.getenv("JWT_SECRET")
-expiresIn = os.getenv("JWT_EXPIRES_IN")
+expiresIn = int(os.getenv("JWT_EXPIRES_IN", 1)) 
 algorithm = os.getenv("ALGORITHM")
 
 pwdContext = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+bearer_scheme = HTTPBearer()
 
 print("JWT_SECRET:", secretKey, type(secretKey))
 print("ALGORITHM:", algorithm, type(algorithm))
@@ -78,8 +78,17 @@ def verifyAccessToken(token: str):
     except JWTError:
         return None
 
-def getCurrentUser(user_id: int, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
+def getCurrentUser(credentials: HTTPAuthorizationCredentials = Security(bearer_scheme), db: Session = Depends(get_db)):
+    token = credentials.credentials
+    if not token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing token")
+
+    token_data = verifyAccessToken(token)
+    if token_data is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
+
+    user = db.query(User).filter(User.id == token_data["id"]).first()
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
     return user

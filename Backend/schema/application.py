@@ -17,6 +17,7 @@ class ApplicationCreate(BaseModel):
 class ApplicationResponse(BaseModel):
     id: int
     job_id: int
+    jobTitle : str
     applicant_id: int
     applicant_name: str 
     status: ApplicationStatus

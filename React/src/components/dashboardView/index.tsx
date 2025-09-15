@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import React, { useEffect, useState } from "react"
@@ -103,18 +104,95 @@ const jobCategoriesData = [
 function DashView() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [stats, setStats] = useState({ total_jobs: 0, total_users: 0, total_applications: 0 })
+  const [selectedData, setSelectedData] = useState<unknown[]>([])
+  const [loading, setLoading] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [modalTitle, setModalTitle] = useState("")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [searchType, setSearchType] = useState<"job" | "user" | "none">("job");
+  const [filteredData, setFilteredData] = useState<unknown[]>([]);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/admin/stats")
-        setStats(response.data)
-      } catch (error) {
-        console.error("Error fetching stats:", error)
+  const fetchStats = async () => {
+    try {
+      const token = localStorage.getItem("access_token")
+      if (!token) {
+        console.error("No access token found. User not logged in.")
+        return
       }
+
+      const response = await axios.get("http://localhost:8000/admin/stats", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      setStats(response.data)
+    } catch (error) {
+      console.error("Error fetching stats:", error)
     }
-    fetchStats()
+  }
+
+  fetchStats()
   }, [])
+  
+  const handleSearch = () => {
+  if (!searchQuery.trim()) {
+    setFilteredData(selectedData); // reset if empty search
+    setModalTitle(modalTitle); // keep original title
+    return;
+  }
+
+  const query = searchQuery.toLowerCase();
+
+  const filtered = selectedData.filter((item: any) => {
+    if (searchType === "user") {
+      return item.username?.toLowerCase().includes(query);
+    } else if (searchType === "job") {
+      return item.title?.toLowerCase().includes(query);
+    }
+    return false;
+  });
+
+  setFilteredData(filtered);
+  setModalTitle(`Search results for "${searchQuery}"`);
+};
+
+  const handleCardClick = async (endpoint: string, title: string) => {
+  const token = localStorage.getItem("access_token");
+  if (!token) return;
+
+  try {
+    setLoading(true);
+
+    const res = await axios.get(`http://localhost:8000${endpoint}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = res.data || [];
+    setSelectedData(data);
+    setFilteredData(data); // initialize filtered data for search
+    setModalTitle(title);
+    setShowModal(true);
+
+    // Determine search type based on the card clicked
+    if (title === "Active Users") setSearchType("user");
+    else if (title === "Total Applications") setSearchType("none"); // no search for applications
+    else setSearchType("job"); // default to job search
+
+    setSearchQuery(""); // reset search input
+
+  } catch (err) {
+    console.error("Error fetching data", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+  const closeModal = () => {
+    setShowModal(false)
+    setSelectedData([])    
+    setModalTitle("") 
+    setSearchQuery("")
+    setSearchType("job");
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
@@ -209,11 +287,15 @@ function DashView() {
           {/* Top Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 lg:mb-8">
             {[
-              { title: "Total Jobs Posted", value: stats.total_jobs, growth: "+3%", icon: Briefcase },
-              { title: "Active Users", value: stats.total_users, growth: "+4%", icon: User },
-              { title: "Total Application", value: stats.total_applications, growth: "+3%", icon: FileText },
-            ].map(({ title, value, growth, icon: Icon }, idx) => (
-              <Card key={idx} className="hover:shadow-xl transition-all duration-300 hover:bg-white/80">
+              { title: "Total Jobs Posted", value: stats.total_jobs, growth: "+3%", icon: Briefcase, endpoint: "/admin/jobs" },
+              { title: "Active Users", value: stats.total_users, growth: "+4%", icon: User, endpoint: "/admin/users" },
+              { title: "Total Applications", value: stats.total_applications, growth: "+3%", icon: FileText, endpoint: "/admin/applications" },
+            ].map(({ title, value, growth, icon: Icon, endpoint }, idx) => (
+              <Card
+                key={idx}
+                onClick={() => handleCardClick(endpoint, title)}
+                className="cursor-pointer hover:shadow-xl transition-all duration-300 hover:bg-white/80"
+              >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-6 lg:p-6">
                   <CardTitle className="text-xl md:text-lg lg:text-2xl font-light text-black">{title}</CardTitle>
                   <div className="w-14 h-14 md:w-12 md:h-12 lg:w-15 lg:h-15 bg-secondary rounded-lg flex items-center justify-center">
@@ -230,6 +312,110 @@ function DashView() {
               </Card>
             ))}
           </div>
+
+          {/* Modal */}
+          {showModal && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+              <div className="bg-white rounded-xl shadow-lg w-11/12 md:w-3/4 lg:w-1/2 max-h-[80vh] overflow-y-auto p-6 relative">
+
+                {/* Header */}
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-bold text-primary">{modalTitle || "Search Jobs"}</h2>
+                  <button
+                    onClick={closeModal}
+                    className="hover:text-red-500 font-bold text-4xl"
+                  >
+                    &times;
+                  </button>
+                </div>
+
+                {/* 🔍 Search Bar */}
+                {searchType !== "none" && (
+                  <div className="flex gap-2 mb-6">
+                    <input
+                      type="text"
+                      placeholder={
+                        searchType === "user"
+                          ? "Search user by username..."
+                          : "Search job by title..."
+                      }
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                    <button
+                      onClick={handleSearch}
+                      className="bg-yellow-400 text-white px-4 py-2 rounded-lg hover:bg-yellow-500 transition"
+                    >
+                      Search
+                    </button>
+                  </div>
+                )}
+
+                {/* Results */}
+                {loading ? (
+                  <div className="text-center py-10 text-gray-500 animate-pulse">
+                    Loading...
+                  </div>
+                ) : filteredData.length > 0 ? (
+                  <div className="space-y-4">
+                    {filteredData.map((item: any, idx: number) => (
+                      <div
+                        key={idx}
+                        className="p-4 border border-gray-200 rounded-lg bg-gray-50 shadow-sm"
+                      >
+                        {/* Display fields */}
+                        {Object.entries(item).map(([key, value], i) => (
+                          <div key={i} className="flex justify-between">
+                            <span className="font-semibold text-gray-700 capitalize">{key}</span>
+                            <span className="text-gray-900">{String(value)}</span>
+                          </div>
+                        ))}
+
+                        {/* 🗑️ Delete button for users */}
+                        {searchType === "user" && item.id && (
+                          <div className="flex justify-end mt-4">
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="px-4 py-2 rounded-lg shadow-md bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 transition-all duration-200"
+                              onClick={async () => {
+                                try {
+                                  const token = localStorage.getItem("access_token")
+                                  if (!token) return
+
+                                  await axios.delete(
+                                    `http://localhost:8000/admin/users/${item.id}`,
+                                    { headers: { Authorization: `Bearer ${token}` } }
+                                  )
+
+                                  // remove from UI
+                                  const updated = filteredData.filter((u: any) => u.id !== item.id)
+                                  setFilteredData(updated)
+                                  setSelectedData(updated)
+
+                                } catch (err) {
+                                  console.error("Failed to delete user", err)
+                                  alert("Error deleting user")
+                                }
+                              }}
+                            >
+                              {/* Use lucide-react Trash2 icon for professional look */}
+                              <span className="text-lg"></span> Delete
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-10 text-gray-400">No data available.</div>
+                )}
+
+
+              </div>
+            </div>
+          )}
 
           {/* Charts Section */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6 mb-6 lg:mb-8">
