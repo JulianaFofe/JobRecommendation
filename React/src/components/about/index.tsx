@@ -1,5 +1,5 @@
-import React from 'react'
-import { User,BriefcaseBusiness,Globe, Award, TrendingUp} from "lucide-react"
+
+import {BriefcaseBusiness,Globe, Award, TrendingUp} from "lucide-react"
 import Navbar from '../../containers/navbar'
 
 const About = () => {
@@ -42,11 +42,11 @@ const About = () => {
 
       </section>
 
-      <section className=' mt-20 px-12 py-26 mt-12 flex shadow rounded-tl rounded-tr  flex-col justify-center gap-2 align-center items-center bg-secondary '>
+      <section className=' mt-20 px-12 py-26  flex shadow rounded-tl rounded-tr  flex-col justify-center gap-2 align-center items-center bg-secondary '>
         <p className='font-bold text-4xl text-center'>Our Core Values</p>
         <p className='text-lg font-normal text-center'> Our platform is built on three core values: Integrity, Empowerment, and Innovation. We're dedicated to transparency by verifying every job and securing your data. We give you the tools to take control of your career or build your team, and we're always improving to make the process easier for everyone.</p>
 
-        <button className='mt-17 bg-primary px-10 py-3 font-semibold text-md border-none transform transition-all  ease-in ease-out rounded border-1 hover:text-primary hover:bg-white active:bg-primary active:text-white    '>Get Started Today</button>
+        <button className='mt-17 bg-primary px-10 py-3 font-semibold text-md border-none transform transition-all  ease-in  rounded border-1 hover:text-primary hover:bg-white active:bg-primary active:text-white    '>Get Started Today</button>
 
       </section>
       </div>
