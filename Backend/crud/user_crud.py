@@ -78,3 +78,11 @@ def search_jobs(db: Session, title=None, location=None, job_type=None, salary_mi
     if salary_min:
         query = query.filter(Job.salary >= salary_min)
     return query.offset(skip).limit(limit).all()
+
+def delete_user(db: Session, user: User):
+    if not user:
+        return {"detail": "User not found"}
+
+    db.delete(user)
+    db.commit()
+    return {"detail": "User deleted successfully"}

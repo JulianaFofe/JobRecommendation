@@ -1,14 +1,16 @@
 from datetime import timedelta
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from routers.auth import createAccessToken, getCurrentUser
 from database import get_db
 import schema.users as schema
 from models.users import User
+from models.job import Job 
 from sqlalchemy.orm import Session
 from schema.application import ApplicationResponse
 from crud import user_crud
 from models import User
+from schema.job import JobResponse
 import schema.users as schema
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -58,3 +60,26 @@ def login(user: schema.LoginRequest, db: Session = Depends(get_db)):
         "role": db_user.role,
         "name": db_user.username
     }
+
+@router.get("/search", response_model=List[JobResponse])
+def search_jobs_endpoint(
+    title: Optional[str] = Query(None, description="Job title to search"),
+    location: Optional[str] = Query(None, description="Job location"),
+    job_type: Optional[str] = Query(None, description="Type of job"),
+    salary_min: Optional[float] = Query(None, description="Minimum salary"),
+    limit: int = Query(50, ge=1, description="Number of results to return"),
+    skip: int = Query(0, ge=0, description="Number of results to skip"),
+    db: Session = Depends(get_db),
+):
+    query = db.query(Job)
+    if title:
+        query = query.filter(Job.title.ilike(f"%{title}%"))
+    if location:
+        query = query.filter(Job.location.ilike(f"%{location}%"))
+    if job_type:
+        query = query.filter(Job.job_type.ilike(f"%{job_type}%"))
+    if salary_min:
+        query = query.filter(Job.salary >= salary_min)
+
+    jobs = query.offset(skip).limit(limit).all()
+    return jobs

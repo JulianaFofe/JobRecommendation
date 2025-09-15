@@ -23,7 +23,6 @@ class UserCreate(UserBase):
 class UserRead(UserBase):
     id: int
     dateCreated: datetime
-    dateUpdated: datetime
 
     class Config:
         orm_mode = True
