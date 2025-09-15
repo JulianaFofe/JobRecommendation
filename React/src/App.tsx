@@ -16,12 +16,13 @@ import type { JobCard } from "./types/jobcard";
 import { Route, Routes } from "react-router-dom";
 import Hero from "./components/getstarted";
 import Goals from "./components/how_it_work";
-import FeedbackPage from "./components/feedback";
+import FeedbackPage from "./components/feedback/feedbackuser";
 import Services from "./components/service";
 import JobForm from "./components/JobForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicProfile from "./components/profileview";
 import About from "./components/about";
+import AdminFeedback from "./components/feedback/adminsfeedback";
 
 function App() {
   const cards: JobCard[] = [
@@ -63,6 +64,7 @@ function App() {
         <Route path="/emplo" element={<Employee_Form />} />
         <Route path="/profile" element={<PublicProfile person={person} />} />
         <Route path="/" element={<Home />} />
+        <Route path="/feedadmins" element={<AdminFeedback />} />
         <Route path="/works" element={<Goals />} />
         <Route path="/getstarted" element={<Hero />} />
         <Route
