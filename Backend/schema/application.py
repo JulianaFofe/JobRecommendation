@@ -28,7 +28,6 @@ class ApplicationResponse(BaseModel):
         "use_enum_values": True
     }
 
-
 class ApplicationSubmitResponse(BaseModel):
     message: str
     application: ApplicationResponse
