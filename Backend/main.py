@@ -28,6 +28,9 @@ userModel.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+
+
+
 # CORS setup
 # origins = [
 #     "http://localhost:5173",  

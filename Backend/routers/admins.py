@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Job, Application, User
@@ -10,12 +11,18 @@ from schema.job import JobResponse
 from schema.users import UserRead
 from crud.user_crud import delete_user
 import math
+from schema.application import ApplicationResponse
+from schema.job import Job as JobSchema
+from schema.users import UserRead
+
+
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
 def check_admin(user: User):
     if user.role != "admin":
         raise HTTPException(status_code=403, detail="Only admins can access this resource")
+
 
 @router.get("/users", response_model=List[UserRead])
 def get_all_users(
@@ -25,20 +32,20 @@ def get_all_users(
     offset: int = Query(0, ge=0)
 ):
     check_admin(current_user)
-    users = db.query(User).offset(offset).limit(limit).all()
-    return users
+    return db.query(User).offset(offset).limit(limit).all()
 
-@router.get("/jobs", response_model=List[JobResponse])
-def get_all_jobs(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(getCurrentUser),
-    limit: int = Query(100, ge=1),
-    offset: int = Query(0, ge=0)
-):
+
+# Get all jobs
+@router.get("/jobs", response_model=List[JobSchema])
+def get_all_jobs(db: Session = Depends(get_db), current_user: User = Depends(getCurrentUser)):
     check_admin(current_user)
-    return db.query(Job).offset(offset).limit(limit).all()
+    return db.query(Job).all()
 
-@router.get("/applications")
+    
+    
+
+
+@router.get("/applications", response_model=List[ApplicationResponse])
 def get_all_applications(
     db: Session = Depends(get_db),
     current_user: User = Depends(getCurrentUser),
@@ -49,24 +56,26 @@ def get_all_applications(
     applications = db.query(Application).join(Application.applicant).offset(offset).limit(limit).all()
 
     response = [
-        {
-            "jobTitle": app.job.title,
-            "applicant_name": app.applicant.username,
-            "status": app.status,
-            "applied_at": app.applied_at
-        }
+        ApplicationResponse(
+            id=app.id,
+            job_id=app.job_id,
+            applicant_id=app.applicant_id,
+            applicant_name=app.applicant.username,
+            status=app.status,
+            applied_at=app.applied_at
+        )
         for app in applications
     ]
+
     return response
+
+
+
 
 @router.get("/stats")
 def get_admin_stats(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(getCurrentUser)
+    db: Session = Depends(get_db)
 ):
-    if current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="Only admins can access stats")
-
     total_jobs = db.query(Job).count()
     total_applications = db.query(Application).count()
     total_users = db.query(User).count()
@@ -78,24 +87,32 @@ def get_admin_stats(
     }
 
 
-@router.delete("/users/{user_id}", status_code=status.HTTP_200_OK)
-def delete_user_route(
+@router.delete("/users/{user_id}")
+def delete_users(
     user_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(getCurrentUser) 
+    current_user: User = Depends(getCurrentUser)
 ):
-    if current_user.role != "admin":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only admins can delete users")
+    check_admin(current_user)
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(user)
+    db.commit()
+    return
 
-    user_to_delete = db.query(User).filter(User.id == user_id).first()
-    if not user_to_delete:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+@router.delete("/jobs/{job_id}")
+def delete_job(
+    job_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(getCurrentUser)  
+):
+   
+    check_admin(current_user)
 
-    if user_to_delete.role not in ["employee", "employer"]:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You can only delete employees or employers"
-        )
+    job = db.query(Job).filter(Job.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
 
     return delete_user(db, user_to_delete)
 
@@ -164,3 +181,34 @@ def get_job_categories(
     return data
 
     
+   
+    db.delete(job)
+    db.commit()
+
+    return {"detail": f"Job with id {job_id} has been deleted"}
+
+# Get pending jobs
+@router.get("/jobs/pending", response_model=List[JobSchema])
+def get_pending_jobs(db: Session = Depends(get_db), current_user: User = Depends(getCurrentUser)):
+    check_admin(current_user)
+    return db.query(Job).filter(Job.is_approved==False).all()
+
+
+@router.put("/jobs/approve/{job_id}", response_model=JobSchema)
+def approve_job(job_id: int, db: Session = Depends(get_db), current_user: User = Depends(getCurrentUser)):
+    check_admin(current_user)
+    job = db.query(Job).filter(Job.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    job.is_approved = True
+    db.commit()
+    db.refresh(job)
+    return job
+
+@router.get("/read")
+def read_jobs_for_employer(employer_id: int, db: Session = Depends(get_db)):
+    jobs = db.query(Job).filter(Job.employer_id == employer_id).all()
+    return jobs
+@router.get("/debug-token")
+def debug_token(current_user: User = Depends(getCurrentUser)):
+    return {"user_id": current_user.id, "role": current_user.role, "name": current_user.username}

@@ -8,6 +8,7 @@ import Login from "./components/login";
 import Testimonials from "./components/tesmimonials";
 import Job from "./components/Jobmanagement";
 import Employee_Form from "./components/employee_form/index";
+import Jobstate from "./components/Adminaprove/index";
 //import About from "./components/about";
 
 import Home from "./containers/home";
@@ -82,11 +83,13 @@ function App() {
         <Route path="/stories" element={<Testimonials />} />
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/service" element={<Services />} />
+        <Route path="/jobstate" element={<Jobstate />} />
         <Route path="/about" element={<About />} />
         <Route path="/employeedash" element={<Dashboard cards={cards} />} />
         <Route path="/jobmanagement" element={<Job />} />
         <Route path="/jobform" element={<JobForm />} /> {/* Create */}
         <Route path="/jobform/:id" element={<JobForm />} /> {/* Update */}
+        <Route path="/employer" element={<Employer />} />
       </Routes>
       <Footer />
     </div>

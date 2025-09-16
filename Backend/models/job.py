@@ -20,4 +20,4 @@ class Job(Base):
     employer=relationship("User", back_populates="jobs")
     applications=relationship("Application", back_populates="job")
     saved_jobs = relationship("SavedJob", back_populates="job")
-    is_approved = Column(Boolean, default=False)
+    is_approved = Column(Boolean, default=False) 

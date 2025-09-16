@@ -10,6 +10,7 @@ export interface Job {
   status?: string; // "Available", "Closed", etc.
   job_type: string; // e.g. "Full-time" | "Part-time"
   posted_at: string; // ISO datetime string
+  is_approved: boolean; 
 }
 
 export interface JobCreate {
