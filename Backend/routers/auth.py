@@ -12,6 +12,8 @@ from models.users import User
 from database import get_db
 
 load_dotenv()
+
+
 secretKey = os.getenv("JWT_SECRET")
 expiresIn = int(os.getenv("JWT_EXPIRES_IN", 1)) 
 algorithm = os.getenv("ALGORITHM")

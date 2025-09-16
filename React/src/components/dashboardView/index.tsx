@@ -150,10 +150,34 @@ const Button = React.forwardRef<
   }
 
   return (
-    <button className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className || ""}`} ref={ref} {...props} />
-  )
-})
-Button.displayName = "Button"
+    <button
+      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${
+        className || ""
+      }`}
+      ref={ref}
+      {...props}
+    />
+  );
+});
+Button.displayName = "Button";
+
+// ----- Chart Data -----
+
+const platformActivityData = [
+  { month: "Jan", jobPosting: 120, applications: 180 },
+  { month: "Feb", jobPosting: 150, applications: 220 },
+  { month: "Mar", jobPosting: 180, applications: 280 },
+  { month: "Apr", jobPosting: 160, applications: 240 },
+  { month: "May", jobPosting: 200, applications: 320 },
+  { month: "Jun", jobPosting: 240, applications: 380 },
+];
+
+const jobCategoriesData = [
+  { name: "Technology", value: 45, color: "#10b981" },
+  { name: "Healthcare", value: 25, color: "#6ee7b7" },
+  { name: "Finance", value: 20, color: "#34d399" },
+  { name: "Education", value: 10, color: "#a7f3d0" },
+];
 
 // ----- Dashboard Component -----
 
@@ -184,6 +208,7 @@ function DashView() {
         setError("No access token found. Please log in.")
         return
       }
+    };
 
       const response = await axios.get<Stats>("http://localhost:8000/admin/stats", {
         headers: { Authorization: `Bearer ${token}` },
@@ -484,12 +509,11 @@ function DashView() {
                 QUICK ACTIONS
               </div>
               <a
-                href="#"
-                className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                aria-label="Add New Job"
+                href="/jobstate"
+                className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base"
               >
-                <Plus className="w-5 h-5 text-primary" aria-hidden="true" />
-                <span className="hidden sm:inline">Add New Job</span>
+                <Plus className="w-5 h-5 text-primary" />
+                <span className="hidden sm:inline">Approve Jobs</span>
               </a>
               <a
                 href="#"
@@ -698,7 +722,9 @@ function DashView() {
                     </table>
                   </div>
                 ) : (
-                  <div className="text-center py-10 text-gray-400">No data available.</div>
+                  <div className="text-center py-10 text-gray-400">
+                    No data available.
+                  </div>
                 )}
               </div>
             </div>

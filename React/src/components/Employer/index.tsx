@@ -40,23 +40,23 @@ function Employer() {
   // Fetch jobs for this employer
   useEffect(() => {
     if (!employerId) return;
+
     const fetchJobs = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const res = await fetch(
-          `http://127.0.0.1:8000/jobs/read?employer_id=${employerId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await fetch(`http://127.0.0.1:8000/jobs/read/all`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const data = await res.json();
-        setJobs(data);
+        setJobs(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error fetching jobs:", err);
+        setJobs([]);
       }
     };
+
     fetchJobs();
   }, [employerId]);
 
@@ -90,11 +90,26 @@ function Employer() {
 
         <nav className="flex flex-col gap-4">
           {[
-            { name: "Post Job", icon: <Send className="w-5 h-5 text-primary" /> },
-            { name: "My Jobs", icon: <Briefcase className="w-5 h-5 text-primary" /> },
-            { name: "Applications", icon: <AppWindow className="w-5 h-5 text-primary" /> },
-            { name: "Profile", icon: <User className="w-5 h-5 text-primary" /> },
-            { name: "Settings", icon: <Menu className="w-5 h-5 text-primary" /> },
+            {
+              name: "Post Job",
+              icon: <Send className="w-5 h-5 text-primary" />,
+            },
+            {
+              name: "My Jobs",
+              icon: <Briefcase className="w-5 h-5 text-primary" />,
+            },
+            {
+              name: "Applications",
+              icon: <AppWindow className="w-5 h-5 text-primary" />,
+            },
+            {
+              name: "Profile",
+              icon: <User className="w-5 h-5 text-primary" />,
+            },
+            {
+              name: "Settings",
+              icon: <Menu className="w-5 h-5 text-primary" />,
+            },
           ].map((link) => (
             <span
               key={link.name}
@@ -136,6 +151,7 @@ function Employer() {
             {jobs.length === 0 ? (
               <p className="text-gray-500">No jobs posted yet.</p>
             ) : (
+              Array.isArray(jobs) &&
               jobs.map((job) => (
                 <div
                   key={job.id}
@@ -147,17 +163,34 @@ function Employer() {
                       {job.location} • {job.job_type} •{" "}
                       <span
                         className={`font-bold ${
-                          job.status === "Available" ? "text-green-600" : "text-red-600"
+                          job.status === "Available"
+                            ? "text-green-600"
+                            : "text-red-600"
                         }`}
                       >
                         {job.status}
+                      </span>{" "}
+                      |{" "}
+                      <span
+                        className={`font-bold ${
+                          job.is_approved ? "text-green-600" : "text-yellow-600"
+                        }`}
+                      >
+                        {job.is_approved ? "Approved" : "Pending Approval"}
                       </span>
                     </p>
-                    <p className="mt-1 text-gray-700 text-sm line-clamp-2">{job.description}</p>
+
+                    <p className="mt-1 text-gray-700 text-sm line-clamp-2">
+                      {job.description}
+                    </p>
                     <p className="text-gray-600 text-sm mt-1 line-clamp-1">
                       Requirements: {job.requirements}
                     </p>
-                    {job.salary && <p className="text-gray-800 text-sm mt-1">Salary: XAF{job.salary}</p>}
+                    {job.salary && (
+                      <p className="text-gray-800 text-sm mt-1">
+                        Salary: XAF{job.salary}
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-2 ml-4">
