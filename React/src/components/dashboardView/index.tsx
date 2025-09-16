@@ -127,36 +127,19 @@ const Button = React.forwardRef<
 });
 Button.displayName = "Button";
 
-// ----- Chart Data -----
-
-const platformActivityData = [
-  { month: "Jan", jobPosting: 120, applications: 180 },
-  { month: "Feb", jobPosting: 150, applications: 220 },
-  { month: "Mar", jobPosting: 180, applications: 280 },
-  { month: "Apr", jobPosting: 160, applications: 240 },
-  { month: "May", jobPosting: 200, applications: 320 },
-  { month: "Jun", jobPosting: 240, applications: 380 },
-];
-8000;
-const jobCategoriesData = [
-  { name: "Technology", value: 45, color: "#10b981" },
-  { name: "Healthcare", value: 25, color: "#6ee7b7" },
-  { name: "Finance", value: 20, color: "#34d399" },
-  { name: "Education", value: 10, color: "#a7f3d0" },
-];
-
-// ----- Dashboard Component -----
-
 function DashView() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [stats, setStats] = useState({ total_jobs: 0, total_users: 0, total_applications: 0 })
-  const [selectedData, setSelectedData] = useState<unknown[]>([])
   const [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [modalTitle, setModalTitle] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [searchType, setSearchType] = useState<"job" | "user" | "none">("job");
-  const [filteredData, setFilteredData] = useState<unknown[]>([]);
+  const [selectedData, setSelectedData] = useState<Record<string, any>[]>([])
+  const [filteredData, setFilteredData] = useState<Record<string, any>[]>([])
+  const [platformActivityData, setPlatformActivityData] = useState<any[]>([]);
+  const [jobCategoriesData, setJobCategoriesData] = useState<any[]>([]);
+  
 
   useEffect(() => {
   const fetchStats = async () => {
@@ -175,10 +158,57 @@ function DashView() {
       console.error("Error fetching stats:", error)
     }
   }
-
   fetchStats()
   }, [])
   
+  useEffect(() => {
+  const fetchPlatformActivity = async () => {
+    try {
+      const token = localStorage.getItem("access_token")
+      if (!token) {
+        console.error("No access token found. User not logged in.")
+        return
+      }
+
+      const response = await axios.get("http://localhost:8000/admin/stats/daily", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      setPlatformActivityData(response.data)
+    } catch (error) {
+      console.error("Error fetching platform activity:", error)
+    }
+  }
+
+  fetchPlatformActivity()
+}, [])
+
+  useEffect(() => {
+  const fetchJobCategories = async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) return;
+
+      const res = await axios.get("http://localhost:8000/admin/stats/job-categories", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const colors = ["#10b981", "#6ee7b7", "#34d399", "#a7f3d0", "#f59e0b", "#6366f1"];
+
+      const formatted = res.data.map((item: any, index: number) => ({
+        ...item,
+        color: colors[index % colors.length]
+      }));
+
+      setJobCategoriesData(formatted);
+    } catch (error) {
+      console.error("Error fetching job categories:", error);
+    }
+  };
+
+  fetchJobCategories();
+}, []);
+
   const handleSearch = () => {
   if (!searchQuery.trim()) {
     setFilteredData(selectedData); // reset if empty search
@@ -449,61 +479,64 @@ function DashView() {
                     Loading...
                   </div>
                 ) : filteredData.length > 0 ? (
-                  <div className="space-y-4">
-                    {filteredData.map((item: any, idx: number) => (
-                      <div
-                        key={idx}
-                        className="p-4 border border-gray-200 rounded-lg bg-gray-50 shadow-sm"
-                      >
-                        {/* Display fields */}
-                        {Object.entries(item).map(([key, value], i) => (
-                          <div key={i} className="flex justify-between">
-                            <span className="font-semibold text-gray-700 capitalize">{key}</span>
-                            <span className="text-gray-900">{String(value)}</span>
-                          </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-300 text-sm">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          {Object.keys(filteredData[0]).map((key, idx) => (
+                            <th key={idx} className="border px-4 py-2 text-left capitalize">
+                              {key}
+                            </th>
+                          ))}
+                          {searchType === "user" && <th className="border px-4 py-2">Actions</th>}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredData.map((item: any, idx: number) => (
+                          <tr key={idx} className="hover:bg-gray-50">
+                            {Object.values(item).map((value, i) => (
+                              <td key={i} className="border px-4 py-2">
+                                {String(value)}
+                              </td>
+                            ))}
+                            {searchType === "user" && item.id && (
+                              <td className="border px-4 py-2 text-center">
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  className="px-3 py-1 text-xs hover:text-red-500"
+                                  onClick={async () => {
+                                    try {
+                                      const token = localStorage.getItem("access_token");
+                                      if (!token) return;
+
+                                      await axios.delete(
+                                        `http://localhost:8000/admin/users/${item.id}`,
+                                        { headers: { Authorization: `Bearer ${token}` } }
+                                      );
+
+                                      // Update UI
+                                      const updated = filteredData.filter((u: any) => u.id !== item.id);
+                                      setFilteredData(updated);
+                                      setSelectedData(updated);
+                                    } catch (err) {
+                                      console.error("Failed to delete user", err);
+                                      alert("Error deleting user");
+                                    }
+                                  }}
+                                >
+                                  Delete
+                                </Button>
+                              </td>
+                            )}
+                          </tr>
                         ))}
-
-                        {/* 🗑️ Delete button for users */}
-                        {searchType === "user" && item.id && (
-                          <div className="flex justify-end mt-4">
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              className="px-4 py-2 rounded-lg shadow-md bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 transition-all duration-200"
-                              onClick={async () => {
-                                try {
-                                  const token = localStorage.getItem("access_token")
-                                  if (!token) return
-
-                                  await axios.delete(
-                                    `http://localhost:8000/admin/users/${item.id}`,
-                                    { headers: { Authorization: `Bearer ${token}` } }
-                                  )
-
-                                  // remove from UI
-                                  const updated = filteredData.filter((u: any) => u.id !== item.id)
-                                  setFilteredData(updated)
-                                  setSelectedData(updated)
-
-                                } catch (err) {
-                                  console.error("Failed to delete user", err)
-                                  alert("Error deleting user")
-                                }
-                              }}
-                            >
-                              {/* Use lucide-react Trash2 icon for professional look */}
-                              <span className="text-lg"></span> Delete
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                      </tbody>
+                    </table>
                   </div>
                 ) : (
                   <div className="text-center py-10 text-gray-400">No data available.</div>
                 )}
-
-
               </div>
             </div>
           )}
@@ -517,7 +550,7 @@ function DashView() {
                   Platform Activity
                 </CardTitle>
                 <p className="text-sm lg:text-md text-black font-thin">
-                  Job posting and application over time
+                  Job posting and applications over time
                 </p>
               </CardHeader>
               <CardContent className="p-4 lg:p-6 pt-0">
@@ -525,10 +558,7 @@ function DashView() {
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={platformActivityData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis
-                        dataKey="month"
-                        tick={{ fontSize: 10, fill: "#666" }}
-                      />
+                      <XAxis dataKey="day" tick={{ fontSize: 10, fill: "#666" }} />
                       <YAxis tick={{ fontSize: 10, fill: "#666" }} />
                       <Tooltip />
                       <Line
@@ -552,12 +582,8 @@ function DashView() {
             {/* Pie Chart */}
             <Card className="hover:shadow-xl transition-all duration-300 hover:bg-white/80">
               <CardHeader className="p-4 lg:p-6">
-                <CardTitle className="text-lg lg:text-2xl font-semibold text-primary">
-                  Job Categories
-                </CardTitle>
-                <p className="text-sm lg:text-md text-black font-thin">
-                  Distribution by Industry
-                </p>
+                <CardTitle className="text-lg lg:text-2xl font-semibold text-primary">Job Categories</CardTitle>
+              <p className="text-sm lg:text-md text-black font-thin">Distribution by Industry</p>
               </CardHeader>
               <CardContent className="p-4 lg:p-6 pt-0">
                 <div className="h-64 lg:h-80">
