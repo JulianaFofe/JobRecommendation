@@ -11,17 +11,38 @@ import {
   LogOut,
 } from "lucide-react";
 
-type PublicProfileProps = {
-  person: {
-    name: string;
-    skills?: string[];
-    experience?: { role: string; company: string; duration: string }[];
-    education?: { degree: string; school: string; year: string }[];
+export default function PublicProfile() {
+  // Static test data
+  const person = {
+    name: "Fedjio Noumbissi",
+    skills: ["React", "Node.js", "TypeScript", "TailwindCSS", "FastAPI"],
+    experience: [
+      {
+        role: "Frontend Developer",
+        company: "Tech Solutions Inc.",
+        duration: "Jan 2022 – Present",
+      },
+      {
+        role: "Intern Software Engineer",
+        company: "InnovateHub",
+        duration: "Jun 2020 – Dec 2021",
+      },
+    ],
+    education: [
+      {
+        degree: "B.Sc. Computer Science",
+        school: "University of Yaounde",
+        year: "2017 – 2021",
+      },
+      {
+        degree: "High School Diploma",
+        school: "GBHS Bafoussam",
+        year: "2013 – 2017",
+      },
+    ],
   };
-};
 
-export default function PublicProfile({ person }: PublicProfileProps) {
-  // sidebar data (mapped in Sidebar)
+  // Sidebar
   const sidebarItems: SidebarItem[] = [
     { id: "home", title: "Home", path: "/employeedash", icon: Home },
     { id: "review", title: "Review Jobs", path: "/review", icon: FileText },
@@ -38,24 +59,24 @@ export default function PublicProfile({ person }: PublicProfileProps) {
         <NavBar />
         <div className="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex justify-center items-center p-6">
           <div className="bg-white shadow-2xl rounded-2xl w-full max-w-3xl p-6 md:p-10">
+            {/* Logo */}
             <div>
               <a href="/">
-                {" "}
                 <img src={logo} alt="Team Logo" className="w-40 h-15" />
               </a>
               <div className="py-4"></div>
             </div>
-            {/* Header Info */}
+
+            {/* Header */}
             <div className="text-center">
               <h1 className="text-3xl font-extrabold text-gray-800">
                 {person.name}
               </h1>
             </div>
 
-            {/* Divider */}
             <hr className="my-6 border-gray-200" />
 
-            {/* Education Section */}
+            {/* Education */}
             {person.education && person.education.length > 0 && (
               <div className="mt-8">
                 <h2 className="text-xl font-bold text-gray-800 mb-3">
@@ -78,7 +99,7 @@ export default function PublicProfile({ person }: PublicProfileProps) {
               </div>
             )}
 
-            {/* Skills Section */}
+            {/* Skills */}
             {person.skills && person.skills.length > 0 && (
               <div className="mt-8">
                 <h2 className="text-xl font-bold text-gray-800 mb-3">Skills</h2>
@@ -95,7 +116,7 @@ export default function PublicProfile({ person }: PublicProfileProps) {
               </div>
             )}
 
-            {/* Experience Section */}
+            {/* Experience */}
             {person.experience && person.experience.length > 0 && (
               <div className="mt-8">
                 <h2 className="text-xl font-bold text-gray-800 mb-3">

@@ -8,12 +8,9 @@ import Login from "./components/login";
 import Testimonials from "./components/tesmimonials";
 import Job from "./components/Jobmanagement";
 import Employee_Form from "./components/employee_form/index";
-import Jobstate from "./components/Adminaprove/index";
-//import About from "./components/about";
+//port Jobstate from "./components/Adminaprove/index";
 
 import Home from "./containers/home";
-import type { JobCard } from "./types/jobcard";
-
 import { Route, Routes } from "react-router-dom";
 import Hero from "./components/getstarted";
 import Goals from "./components/how_it_work";
@@ -24,51 +21,23 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicProfile from "./components/profileview";
 import About from "./components/about";
 import AdminFeedback from "./components/feedback/adminsfeedback";
-import PendingUsers from "./components/pendingusers";
+//port PendingUsers from "./components/pendingusers";
 
 function App() {
-  const cards: JobCard[] = [
-    { id: "c1", title: "Jom-Job", ctaText: "Apply" },
-    { id: "c2", title: "Save Jobs Easily", ctaText: "Apply" },
-    { id: "c3", title: "Track Applicants", ctaText: "Apply" },
-  ];
-  const person = {
-    name: "Fedjio Noumbissi",
-    skills: ["React", "Node.js", "TypeScript", "TailwindCSS", "FastAPI"],
-    experience: [
-      {
-        role: "Frontend Developer",
-        company: "Tech Solutions Inc.",
-        duration: "Jan 2022 – Present",
-      },
-      {
-        role: "Intern Software Engineer",
-        company: "InnovateHub",
-        duration: "Jun 2020 – Dec 2021",
-      },
-    ],
-    education: [
-      {
-        degree: "B.Sc. Computer Science",
-        school: "University of Yaounde",
-        year: "2017 – 2021",
-      },
-      {
-        degree: "High School Diploma",
-        school: "GBHS Bafoussam",
-        year: "2013 – 2017",
-      },
-    ],
-  };
   return (
     <div>
       <Routes>
         <Route path="/employee" element={<Employee_Form />} />
-        <Route path="/profile" element={<PublicProfile person={person} />} />
+
+        {/* Profile page (props removed, since profileview has hardcoded data) */}
+        <Route path="/profile" element={<PublicProfile />} />
+
         <Route path="/" element={<Home />} />
         <Route path="/feedadmins" element={<AdminFeedback />} />
         <Route path="/works" element={<Goals />} />
         <Route path="/getstarted" element={<Hero />} />
+
+        {/* Protected Employer Route */}
         <Route
           path="/employer"
           element={
@@ -77,7 +46,8 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/pending-users" element={<PendingUsers />} />.
+
+        {/* <Route path="/pending-users" element={<PendingUsers />} /> */}
         <Route path="/dashview" element={<DashView />} />
         <Route path="/management" element={<Management />} />
         <Route path="/signup" element={<Signup />} />
@@ -85,14 +55,16 @@ function App() {
         <Route path="/stories" element={<Testimonials />} />
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/service" element={<Services />} />
-        <Route path="/jobstate" element={<Jobstate />} />
+        {/* <Route path="/jobstate" element={<Jobstate />} /> */}
         <Route path="/about" element={<About />} />
-        <Route path="/employeedash" element={<Dashboard cards={cards} />} />
+        <Route path="/employeedash" element={<Dashboard />} />
         <Route path="/jobmanagement" element={<Job />} />
-        <Route path="/jobform" element={<JobForm />} /> {/* Create */}
-        <Route path="/jobform/:id" element={<JobForm />} /> {/* Update */}
-        <Route path="/employer" element={<Employer />} />
+
+        {/* JobForm routes for Create & Update */}
+        <Route path="/jobform" element={<JobForm />} />
+        <Route path="/jobform/:id" element={<JobForm />} />
       </Routes>
+
       <Footer />
     </div>
   );
