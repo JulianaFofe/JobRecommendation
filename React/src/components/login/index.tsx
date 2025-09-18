@@ -10,8 +10,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState(""); 
-  const [error, setError] = useState("");     
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -41,10 +41,16 @@ const Login = () => {
       // Clear input fields
       setEmail("");
       setPassword("");
-
     } catch (err: any) {
       if (err.response && err.response.data.detail) {
-        setError(err.response.data.detail);
+        const detail = err.response.data.detail;
+        if (detail === "Account not approved by admin yet") {
+          setError(
+            "Your account is awaiting admin approval. Please wait for an admin to approve your account."
+          );
+        } else {
+          setError(detail);
+        }
       } else {
         setError("Login failed. Check your credentials.");
       }
@@ -54,16 +60,21 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4 py-4">
       <div className="bg-white shadow-lg rounded-2xl flex flex-col md:flex-row w-full max-w-4xl overflow-hidden">
-
         {/* Left Section */}
         <div className="md:w-1/2 flex flex-col justify-center items-center p-8">
-          <h2 className="text-2xl font-semibold mb-4 pb-12 text-gray-500">Login</h2>
+          <h2 className="text-2xl font-semibold mb-4 pb-12 text-gray-500">
+            Login
+          </h2>
 
           {message && <p className="text-green-500 mb-4">{message}</p>}
           {error && <p className="text-red-500 mb-4">{error}</p>}
 
           <div className="flex items-center w-full max-w-sm bg-gray-50 rounded-md px-3 py-2 mb-4 focus-within:ring-1 focus-within:ring-quatenary">
-            <img src={mail} alt="email icon" className="w-5 h-5 mr-2 opacity-50" />
+            <img
+              src={mail}
+              alt="email icon"
+              className="w-5 h-5 mr-2 opacity-50"
+            />
             <input
               type="email"
               placeholder="Email"
@@ -81,7 +92,10 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="flex-1 outline-none bg-transparent"
             />
-            <button type="button" onClick={() => setShowPassword(!showPassword)}>
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+            >
               <img
                 src={showPassword ? closed_eye : eye}
                 alt="toggle visibility"
@@ -89,7 +103,9 @@ const Login = () => {
               />
             </button>
           </div>
-          <p className="mb-5 font-light text-sm p-1 hover:text-primary cursor-pointer text-gray-500">password forgitten?</p>
+          <p className="mb-5 font-light text-sm p-1 hover:text-primary cursor-pointer text-gray-500">
+            password forgitten?
+          </p>
 
           <button
             onClick={handleLogin}

@@ -24,6 +24,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicProfile from "./components/profileview";
 import About from "./components/about";
 import AdminFeedback from "./components/feedback/adminsfeedback";
+import PendingUsers from "./components/pendingusers";
 
 function App() {
   const cards: JobCard[] = [
@@ -62,7 +63,7 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/emplo" element={<Employee_Form />} />
+        <Route path="/employee" element={<Employee_Form />} />
         <Route path="/profile" element={<PublicProfile person={person} />} />
         <Route path="/" element={<Home />} />
         <Route path="/feedadmins" element={<AdminFeedback />} />
@@ -76,6 +77,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/pending-users" element={<PendingUsers />} />.
         <Route path="/dashview" element={<DashView />} />
         <Route path="/management" element={<Management />} />
         <Route path="/signup" element={<Signup />} />

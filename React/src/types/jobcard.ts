@@ -9,4 +9,8 @@ export interface JobCard {
   title: string;
   blurb?: string;
   ctaText: string; // e.g. "Apply"
+  description:string;
+  salary:string;
+  location:string;
+  status:string
 }
