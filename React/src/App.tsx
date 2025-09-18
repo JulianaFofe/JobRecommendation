@@ -8,8 +8,8 @@ import Login from "./components/login";
 import Testimonials from "./components/tesmimonials";
 import Job from "./components/Jobmanagement";
 import Employee_Form from "./components/employee_form/index";
-//port Jobstate from "./components/Adminaprove/index";
-
+import Jobstate from "./components/Adminaprove/index";
+import PendingUsers from "./components/pendingusers";
 import Home from "./containers/home";
 import { Route, Routes } from "react-router-dom";
 import Hero from "./components/getstarted";
@@ -47,7 +47,7 @@ function App() {
           }
         />
 
-        {/* <Route path="/pending-users" element={<PendingUsers />} /> */}
+        <Route path="/pending-users" element={<PendingUsers />} />
         <Route path="/dashview" element={<DashView />} />
         <Route path="/management" element={<Management />} />
         <Route path="/signup" element={<Signup />} />
@@ -55,7 +55,7 @@ function App() {
         <Route path="/stories" element={<Testimonials />} />
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/service" element={<Services />} />
-        {/* <Route path="/jobstate" element={<Jobstate />} /> */}
+        <Route path="/jobstate" element={<Jobstate />} />
         <Route path="/about" element={<About />} />
         <Route path="/employeedash" element={<Dashboard />} />
         <Route path="/jobmanagement" element={<Job />} />

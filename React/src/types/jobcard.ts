@@ -8,7 +8,7 @@ export interface JobCard {
   id: string;
   title: string;
   blurb?: string;
-  ctaText: string; // e.g. "Apply"
+  ctaText: string; //  "Apply"
   description:string;
   salary:string;
   location:string;

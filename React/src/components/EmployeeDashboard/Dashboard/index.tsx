@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { ChevronDown } from "lucide-react";
 import type { JobCard } from "../../../types/jobcard";
 import type { SidebarItem } from "../../../types/sidebar";
 import SidebarWrapper from "../hamburger";
@@ -18,6 +17,9 @@ type Job = {
   id: number;
   title: string;
   description: string;
+  salary: string;
+  status: string;
+  location: string;
 };
 
 export default function Dashboard() {
@@ -42,15 +44,22 @@ export default function Dashboard() {
   ];
 
   const fetchJobDetails = async (
-    jobId: string,
+    jobId: number,
+    description: string,
     salary: string,
     location: string,
     status: string
   ) => {
     const res = await fetch(`http://localhost:8000/jobs/${jobId}`);
     const Data = await res.json();
-    setJob(Data);
-    setShowForm(true);
+    setJob({
+      id: jobId,
+      title: Data.title || "",
+      description,
+      salary,
+      status,
+      location,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,7 +83,7 @@ export default function Dashboard() {
         const jobs = Array.isArray(res.data) ? res.data : [];
         // Map backend jobs to JobCard format
         setCards(
-          jobs.map((job: any) => ({
+          jobs.map((job) => ({
             id: job.id,
             title: job.title,
             ctaText: "Apply",
@@ -119,6 +128,7 @@ export default function Dashboard() {
                   <button
                     onClick={() =>
                       fetchJobDetails(
+                        Number(c.id),
                         c.description,
                         c.salary,
                         c.location,
@@ -144,7 +154,6 @@ export default function Dashboard() {
                   onSubmit={handleSubmit}
                   className="space-y-2 rounded justify-center shadow-slate-900 shadow-[2px_2px_10px_rgba(0,0,0,0.5)] p-5 w-100  ml-80 mb-15 h-90 mr-10 h-100"
                 >
-                  {" "}
                   <div className="">
                     <input
                       type="text"

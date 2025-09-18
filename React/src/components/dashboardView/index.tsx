@@ -205,8 +205,6 @@ function DashView() {
   const [showModal, setShowModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [pendingUsers, setPendingUsers] = useState<UserData[]>([]);
-  const [approving, setApproving] = useState<string | null>(null);
   const [searchType, setSearchType] = useState<"job" | "user" | "none">("job");
   const [filteredData, setFilteredData] = useState<
     (UserData | JobData | ApplicationData)[]
@@ -221,24 +219,6 @@ function DashView() {
     username: "",
   });
   const [error, setError] = useState<string | null>(null);
-
-  const fetchPendingUsers = useCallback(async () => {
-    try {
-      const token = localStorage.getItem("access_token");
-      if (!token) return;
-
-      const response = await axios.get<UserData[]>(
-        "http://localhost:8000/admin/users/pending",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      setPendingUsers(response.data);
-    } catch (error) {
-      console.error("Error fetching pending users:", error);
-    }
-  }, []);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -821,7 +801,7 @@ function DashView() {
                                 </td>
                               </>
                             ) : (
-                              Object.entries(item).map(([key, value], i) => (
+                              Object.entries(item).map(([, value], i) => (
                                 <td
                                   key={i}
                                   className="border border-gray-300 px-4 py-2 text-gray-900"

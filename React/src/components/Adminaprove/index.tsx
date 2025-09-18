@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../../containers/navbar";
+
 import {
   TrendingUp,
   Plus,
@@ -69,7 +69,7 @@ type Job = {
 
 function Jobstate() {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const token = localStorage.getItem("access_token");
+  // const token = localStorage.getItem("access_token");
 
   // Fetch all jobs (admin view)
   useEffect(() => {
