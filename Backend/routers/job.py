@@ -89,6 +89,10 @@ def get_job(job_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Job not found")
     return job
 
+
+
+
+
 @router.get("/public", response_model=List[schema.Job])
 def get_public_jobs(db: Session = Depends(get_db)):
     jobs = db.query(Job).filter(Job.is_approved == True).all()

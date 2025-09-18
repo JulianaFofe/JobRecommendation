@@ -23,6 +23,7 @@ class UserCreate(UserBase):
 
 class UserRead(UserBase):
     dateCreated: datetime
+    is_approved: bool
 
     class Config:
         orm_mode = True

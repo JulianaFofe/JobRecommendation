@@ -205,6 +205,8 @@ function DashView() {
   const [showModal, setShowModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [pendingUsers, setPendingUsers] = useState<UserData[]>([]);
+  const [approving, setApproving] = useState<string | null>(null);
   const [searchType, setSearchType] = useState<"job" | "user" | "none">("job");
   const [filteredData, setFilteredData] = useState<
     (UserData | JobData | ApplicationData)[]
@@ -219,6 +221,24 @@ function DashView() {
     username: "",
   });
   const [error, setError] = useState<string | null>(null);
+
+  const fetchPendingUsers = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) return;
+
+      const response = await axios.get<UserData[]>(
+        "http://localhost:8000/admin/users/pending",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setPendingUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching pending users:", error);
+    }
+  }, []);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -589,12 +609,12 @@ function DashView() {
                 QUICK ACTIONS
               </div>
               <a
-                href="#"
+                href="/jobstate"
                 className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary"
                 aria-label="Add New Job"
               >
                 <Plus className="w-5 h-5 text-primary" aria-hidden="true" />
-                <span className="hidden sm:inline">Add New Job</span>
+                <span className="hidden sm:inline">Approve Job</span>
               </a>
               <a
                 href="#"
@@ -603,6 +623,15 @@ function DashView() {
               >
                 <Calendar className="w-5 h-5 text-primary" aria-hidden="true" />
                 <span className="hidden sm:inline">Schedule Report</span>
+              </a>
+
+              <a
+                href="/pending-users"
+                className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary"
+                aria-label="Schedule Report"
+              >
+                <Calendar className="w-5 h-5 text-primary" aria-hidden="true" />
+                <span className="hidden sm:inline">Approve Accounts</span>
               </a>
             </nav>
           </div>

@@ -24,6 +24,15 @@ def check_admin(user: User):
         raise HTTPException(status_code=403, detail="Only admins can access this resource")
 
 
+def check_admin_or_superadmin(user: User):
+    if user.role != "admin" and user.email != "superadmin@example.com":
+        raise HTTPException(status_code=403, detail="Only admins can access")
+
+
+def check_superadmin(user: User):
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Only admins can access this resource")
+
 @router.get("/users", response_model=List[UserRead])
 def get_all_users(
     db: Session = Depends(get_db),
@@ -107,14 +116,20 @@ def delete_job(
     db: Session = Depends(get_db),
     current_user: User = Depends(getCurrentUser)  
 ):
-   
     check_admin(current_user)
 
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
 
-    return delete_user(db, user_to_delete)
+    db.delete(job)
+    db.commit()
+
+    return {"detail": f"Job with id {job_id} has been deleted"}
+
+    
+
+    
 
 @router.get("/stats/daily")
 def get_daily_stats(
@@ -182,10 +197,7 @@ def get_job_categories(
 
     
    
-    db.delete(job)
-    db.commit()
-
-    return {"detail": f"Job with id {job_id} has been deleted"}
+   
 
 # Get pending jobs
 @router.get("/jobs/pending", response_model=List[JobSchema])
@@ -209,6 +221,25 @@ def approve_job(job_id: int, db: Session = Depends(get_db), current_user: User =
 def read_jobs_for_employer(employer_id: int, db: Session = Depends(get_db)):
     jobs = db.query(Job).filter(Job.employer_id == employer_id).all()
     return jobs
-@router.get("/debug-token")
-def debug_token(current_user: User = Depends(getCurrentUser)):
-    return {"user_id": current_user.id, "role": current_user.role, "name": current_user.username}
+
+
+
+
+@router.get("/users/pending", response_model=List[UserRead])
+def get_pending_users(db: Session = Depends(get_db), current_user=Depends(getCurrentUser)):
+    check_superadmin(current_user)
+    return db.query(User).filter(User.is_approved == False).all()
+
+
+@router.put("/users/approve/{user_id}", response_model=UserRead)
+def approve_user(user_id: int, db: Session = Depends(get_db), current_user=Depends(getCurrentUser)):
+    check_superadmin(current_user)
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.is_approved = True
+    db.commit()
+    db.refresh(user)
+    return user

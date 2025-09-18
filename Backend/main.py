@@ -12,16 +12,19 @@ from routers import profile
 from routers import saveJob
 from database import engine
 from fastapi.middleware.cors import CORSMiddleware
-
+from sqlalchemy import literal
 from dotenv import load_dotenv
 load_dotenv()  # MUST be first
-
-
+from models import User
+from database import SessionLocal
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 from routers import users, recommendations, job
 import models.users as userModel
+from sqlalchemy.orm import Session
+from security import hash_password, verify_password
+from datetime import datetime
 
 # Create tables
 userModel.Base.metadata.create_all(bind=engine)
@@ -44,6 +47,41 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+from sqlalchemy import literal
+from database import SessionLocal
+from models import User
+from security import hash_password
+from datetime import datetime
+
+
+@app.on_event("startup")
+def create_super_admin():
+    db = SessionLocal()
+    try:
+        super_email = "superadmin@example.com"
+        existing = db.query(User).filter(User.email == super_email).limit(literal(1)).all()
+
+        if not existing:
+            super_admin = User(
+                username="superadmin",
+                email=super_email,
+                hashed_password=hash_password("SuperSecurePassword123"),
+                role="admin",
+                is_approved=True,
+                dateCreated=datetime.utcnow()
+            )
+            db.add(super_admin)
+            db.commit()
+            print("Super admin created!")
+        else:
+            print("Super admin already exists")
+    finally:
+        db.close()
+
+
+
 
 
 @app.get("/")

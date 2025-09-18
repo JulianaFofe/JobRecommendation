@@ -83,3 +83,4 @@ def list_my_applications(
     current_user: User = Depends(getCurrentUser)
 ):
     return user_crud.get_user_applications(db, current_user)
+

@@ -15,7 +15,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("employee");
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
@@ -26,16 +26,21 @@ const Signup = () => {
         role,
       });
 
-      const { message } = response.data;
+      const { message, user } = response.data;
 
-      // Show success message
-      alert(message);
+      if (user.isapproved === false) {
+        alert("Signup successful! Your account is awaiting admin approval.");
+      } else {
+        alert(message);
+      }
 
       // Optional: short delay to let user see the message
-      setTimeout(() => {
-        navigate("/login");
-      }, 500); // 0.5 seconds delay
-    } catch (err:any) {
+      if (user.is_approved) {
+        setTimeout(() => navigate("/login"), 500);
+      } else {
+        console.log("User must wait for admin approval");
+      }
+    } catch (err: any) {
       console.error("Signup failed:", err);
       if (err.response && err.response.data && err.response.data.detail) {
         alert(`Signup failed: ${err.response.data.detail}`);
@@ -48,16 +53,18 @@ const Signup = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
       <div className="bg-white shadow-lg rounded-2xl flex flex-col md:flex-row w-full max-w-4xl overflow-hidden">
-        
         {/* Left Section */}
         <div className="md:w-1/2 bg-quatenary text-white flex flex-col items-center justify-center p-10 text-center">
           <img src={logo} alt="SmartHire Logo" className="w-28 mb-6" />
-          <h2 className="text-2xl font-bold my-3 mb-5">Your Career, Your Way</h2>
+          <h2 className="text-2xl font-bold my-3 mb-5">
+            Your Career, Your Way
+          </h2>
           <p className="mt-3 text-sm">
-            Create Your account, unlock opportunities and start your journey with us today!
+            Create Your account, unlock opportunities and start your journey
+            with us today!
           </p>
           <NavLink to={"/login"}>
-          <button className="mt-20 bg-white text-quatenary px-16 py-2 font-bold  rounded-xl shadow hover:bg-primary hover:text-white active:opacity-50 transition-bg duration-700">
+            <button className="mt-20 bg-white text-quatenary px-16 py-2 font-bold  rounded-xl shadow hover:bg-primary hover:text-white active:opacity-50 transition-bg duration-700">
               Login
             </button>
           </NavLink>
@@ -65,11 +72,17 @@ const Signup = () => {
 
         {/* Right Section */}
         <div className="md:w-1/2 flex flex-col justify-center items-center p-8">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-500">Create Account</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-500">
+            Create Account
+          </h2>
 
           {/* Username */}
           <div className="flex items-center w-full max-w-sm bg-gray-50 rounded-md px-3 py-2 mb-4 focus-within:ring-1 focus-within:ring-quatenary">
-            <img src={usernameIcon} alt="username icon" className="w-5 h-5 mr-2 opacity-50" />
+            <img
+              src={usernameIcon}
+              alt="username icon"
+              className="w-5 h-5 mr-2 opacity-50"
+            />
             <input
               type="text"
               placeholder="Username"
@@ -81,7 +94,11 @@ const Signup = () => {
 
           {/* Email */}
           <div className="flex items-center w-full max-w-sm bg-gray-50 rounded-md px-3 py-2 mb-4 focus-within:ring-1 focus-within:ring-quatenary">
-            <img src={mail} alt="email icon" className="w-5 h-5 mr-2 opacity-50" />
+            <img
+              src={mail}
+              alt="email icon"
+              className="w-5 h-5 mr-2 opacity-50"
+            />
             <input
               type="email"
               placeholder="Email"

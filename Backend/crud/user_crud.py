@@ -19,7 +19,8 @@ def signup(db: Session, user: schema.UserCreate):
         username = user.username,
         email = user.email,
         hashed_password = hashedPassword,
-        role = user.role
+        role = user.role,
+        is_approved=False
     )
     db.add(newUser)
     db.commit()
