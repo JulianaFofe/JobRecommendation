@@ -2,24 +2,15 @@
 from fastapi import FastAPI
 from routers import feedback
 from database import engine, Base
-from routers import users
 import models.users as userModel
-from routers import recommendations
-from routers import job
 from routers import apllication
 from routers import admins
 from routers import profile
 from routers import saveJob
-from database import engine
 from fastapi.middleware.cors import CORSMiddleware
 
 from dotenv import load_dotenv
 load_dotenv()  # MUST be first
-
-
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from database import engine, Base
 from routers import users, recommendations, job
 import models.users as userModel
 
@@ -36,7 +27,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -55,6 +46,8 @@ app.include_router(saveJob.router)
 app.include_router(job.router)
 app.include_router(recommendations.router)
 app.include_router(feedback.router)
+
+
 
 # Routers
 app.include_router(users.router)
