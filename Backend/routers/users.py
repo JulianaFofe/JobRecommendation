@@ -17,6 +17,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.post("/signup")
 def signup(user: schema.UserCreate, db: Session = Depends(get_db)):
+    
     # Check if user already exists
     existing_user = db.query(User).filter(User.email == user.email).first()
     if existing_user:
@@ -25,16 +26,21 @@ def signup(user: schema.UserCreate, db: Session = Depends(get_db)):
             detail="Email already registered"
         )
     
+
+    if user.role == "superadmin":
+        raise HTTPException(status_code=403, detail="Cannot create superadmin account")
+    
     new_user = user_crud.signup(db, user)
 
     # Return success message and user info
     return {
-        "message": "Signup successful!",
+        "message": "Signup successful! Awaiting admin approval.",
         "user": {
             "id": new_user.id,
             "username": new_user.username,
             "email": new_user.email,
-            "role": new_user.role
+            "role": new_user.role,
+            "is_approved":new_user.is_approved
         }
     }
 
@@ -46,6 +52,17 @@ def login(user: schema.LoginRequest, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Invalid credentials"
         )
+    
+    # ✅ Check approval on the DB user, not input
+    if not db_user.is_approved:
+       raise HTTPException(
+          status_code=status.HTTP_403_FORBIDDEN,
+          detail="Account not approved by admin yet"
+        )
+    
+
+    if db_user.email != "superadmin@example.com" and not db_user.is_approved:
+      raise HTTPException(status_code=403, detail="Account not approved by admin yet")
 
     accessToken = createAccessToken({
         "sub": str(db_user.id),
@@ -60,6 +77,7 @@ def login(user: schema.LoginRequest, db: Session = Depends(get_db)):
         "role": db_user.role,
         "name": db_user.username
     }
+
 
 @router.get("/search", response_model=List[JobResponse])
 def search_jobs_endpoint(

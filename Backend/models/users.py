@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, Enum, Integer, String
+from sqlalchemy import Column, DateTime, Enum, Integer, String,Boolean
 from sqlalchemy.orm import relationship
 from enums.enums import UserRole
 from database import Base
@@ -18,3 +18,4 @@ class User(Base):
     applications= relationship("Application",back_populates="applicant")
     profile = relationship("Profile", back_populates="user", uselist=False)
     saved_jobs = relationship("SavedJob", back_populates="employee")
+    is_approved = Column(Boolean, default=False)

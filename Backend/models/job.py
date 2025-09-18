@@ -1,4 +1,4 @@
-from sqlalchemy import DateTime, Float, ForeignKey, String, Column, Integer, Text
+from sqlalchemy import DateTime, Float, ForeignKey, String, Column, Integer, Text, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from database import Base
@@ -20,3 +20,4 @@ class Job(Base):
     employer=relationship("User", back_populates="jobs")
     applications=relationship("Application", back_populates="job")
     saved_jobs = relationship("SavedJob", back_populates="job")
+    is_approved = Column(Boolean, default=False) 

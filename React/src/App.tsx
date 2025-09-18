@@ -57,7 +57,7 @@ function App() {
         <Route path="/service" element={<Services />} />
         {/* <Route path="/jobstate" element={<Jobstate />} /> */}
         <Route path="/about" element={<About />} />
-        <Route path="/employeedash" element={<Dashboard cards={[]} />} />
+        <Route path="/employeedash" element={<Dashboard />} />
         <Route path="/jobmanagement" element={<Job />} />
 
         {/* JobForm routes for Create & Update */}
