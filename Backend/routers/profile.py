@@ -26,10 +26,20 @@ def get_user_profile(
     db: Session = Depends(get_db),
     current_user: User = Depends(getCurrentUser)
 ):
-    profile = get_profile(db, current_user.id)
-    if not profile:
+    result = get_profile(db, current_user.id)
+    if not result:
         raise HTTPException(status_code=404, detail="Profile not found")
-    return profile
+
+    profile, username = result
+    return {
+        "id": profile.id,
+        "user_id": profile.user_id,
+        "skills": profile.skills,
+        "education": profile.education,
+        "experience": profile.experience,
+        "resume_url": profile.resume_url,
+        "username": username
+    }
 
 
 @router.post("/resume", response_model=ProfileRead)
@@ -51,7 +61,19 @@ def upload_resume(
 
     profile = get_profile(db, current_user.id)
     if profile:
-        profile.resume_url = file_path
+        profile_obj, username = profile
+        profile_obj.resume_url = file_path
+        db.commit()
+        db.refresh(profile_obj)
+        return {
+            "id": profile_obj.id,
+            "user_id": profile_obj.user_id,
+            "skills": profile_obj.skills,
+            "education": profile_obj.education,
+            "experience": profile_obj.experience,
+            "resume_url": profile_obj.resume_url,
+            "username": username
+        }
     else:
         profile = create_or_update_profile(
             db=db,
@@ -59,8 +81,12 @@ def upload_resume(
             profile=ProfileCreate(skills="", education="", experience=""),
             resume_url=file_path
         )
-
-    db.commit()
-    db.refresh(profile)
-
-    return profile
+        return {
+            "id": profile.id,
+            "user_id": profile.user_id,
+            "skills": profile.skills,
+            "education": profile.education,
+            "experience": profile.experience,
+            "resume_url": profile.resume_url,
+            "username": current_user.username
+        }

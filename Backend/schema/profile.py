@@ -12,5 +12,6 @@ class ProfileRead(ProfileBase):
     id: int
     user_id: int
     resume_url: str | None = None  
+    username: str   # 👈 added username
 
     model_config = {"from_attributes": True}
