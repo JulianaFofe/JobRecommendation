@@ -1,41 +1,123 @@
 // Employee_Form.tsx
-import React, { useState, type FormEvent } from "react";
-import { Upload } from "lucide-react";
+import React, { useState, useEffect, type FormEvent } from "react";
+import { Upload, Loader2, CheckCircle2 } from "lucide-react";
 import logo from "../../assets/icons/logo1.png";
+import axios from "axios";
+
+type ProfileData = {
+  id: number;
+  user_id: number;
+  username: string;
+  email: string;
+  skills?: string;
+  experience?: string;
+  education?: string;
+  resume_url?: string;
+};
 
 const Employee_Form: React.FC = () => {
   const [isEditView, setIsEditView] = useState(true);
 
-  // Basic profile info
-  const [name, setName] = useState("nji sylven");
-  const [email, setEmail] = useState("njisylven@gmail.com");
-
-  // Experience
+  // Profile states
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [experienceAchievements, setExperienceAchievements] = useState("");
-
-  // Education
   const [educationCertification, setEducationCertification] = useState("");
-
-  // Skills
   const [skills, setSkills] = useState("");
-
-  // CV Upload
   const [cvFile, setCvFile] = useState<File | null>(null);
+  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
 
-  const handleToggleView = (e?: FormEvent) => {
+  // Submit states
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  // Fetch profile
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        if (!token) return;
+
+        const response = await axios.get<ProfileData>(
+          "http://127.0.0.1:8000/profiles/",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        const profile = response.data;
+        setUsername(profile.username);
+        setEmail(profile.email);
+        setExperienceAchievements(profile.experience || "");
+        setEducationCertification(profile.education || "");
+        setSkills(profile.skills || "");
+        setResumeUrl(profile.resume_url ?? null); // <-- FIXED
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  // Toggle + submit
+  const handleToggleView = async (e?: FormEvent) => {
     if (e) e.preventDefault();
 
-    // Validation: Require Experience & Skills
     if (isEditView) {
-      if (!experienceAchievements.trim() || !skills.trim()) {
-        alert("Please fill in both Experience and Skills fields.");
+      if (!experienceAchievements.trim() || !skills.trim() || !username.trim()) {
+        alert("Please fill in Username, Experience and Skills.");
         return;
+      }
+
+      try {
+        const token = localStorage.getItem("access_token");
+        if (!token) return;
+
+        setIsSubmitting(true);
+        setIsSuccess(false);
+
+        // Save profile
+        await axios.post(
+          "http://127.0.0.1:8000/profiles/",
+          {
+            skills,
+            education: educationCertification,
+            experience: experienceAchievements,
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        // Upload CV if selected
+        if (cvFile) {
+          const formData = new FormData();
+          formData.append("file", cvFile);
+
+          const res = await axios.post<ProfileData>(
+            "http://127.0.0.1:8000/profiles/upload-resume",
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          setResumeUrl(res.data.resume_url ?? null); // <-- FIXED
+        }
+
+        setIsSuccess(true);
+        setTimeout(() => setIsSuccess(false), 2500);
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        alert("Failed to update profile.");
+      } finally {
+        setIsSubmitting(false);
       }
     }
 
     setIsEditView((s) => !s);
   };
 
+  // Helper: achievements list
   const renderAchievementsAsList = (text: string) => {
     const items = text
       .split("\n")
@@ -56,42 +138,39 @@ const Employee_Form: React.FC = () => {
       <div className="bg-white shadow-md rounded-2xl overflow-hidden border border-gray-100">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
           {/* Left column: Profile info */}
-          <aside className="md:col-span-1 flex flex-col items-center md:items-start" >
+          <aside className="md:col-span-1 flex flex-col items-center md:items-start">
             <div className="w-full mt-4">
               <div className="flex justify-center items-center pt-10 pb-7 align-center">
-                {/*  Slightly larger logo */}
                 <img src={logo} alt="SmartHire Logo" className="w-32 mb-6" />
               </div>
               <div className="text-primary flex justify-center items-center pb-10">
-                {/*  Better styled Profile heading */}
                 <p className="text-center font-bold text-3xl tracking-wide uppercase border-b-2 border-primary pb-1">
                   Profile
                 </p>
               </div>
               {isEditView ? (
                 <form onSubmit={(e) => e.preventDefault()} className="space-y-3">
-                  {/* Name */}
+                  {/* Username */}
                   <div>
                     <label className="block text-xs font-medium text-gray-600">
-                      User name
+                      Username <span className="text-red-500">*</span>
                     </label>
                     <input
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                       className="mt-1 block w-full rounded-md border border-gray-300 text-sm p-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="Full name"
+                      placeholder="Username"
                     />
                   </div>
-                  {/* Email */}
+                  {/* Email (read-only) */}
                   <div>
                     <label className="block text-xs font-medium text-gray-600">
                       Email
                     </label>
                     <input
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="mt-1 block w-full rounded-md border border-gray-300 text-sm p-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="email@example.com"
+                      disabled
+                      className="mt-1 block w-full rounded-md border border-gray-300 text-sm p-2 bg-gray-100"
                     />
                   </div>
                   {/* CV Upload */}
@@ -120,11 +199,22 @@ const Employee_Form: React.FC = () => {
                 </form>
               ) : (
                 <div className="space-y-1">
-                  <h2 className="text-lg font-semibold text-primary">{name}</h2>
+                  <h2 className="text-lg font-semibold text-primary">
+                    {username}
+                  </h2>
                   <p className="text-sm text-gray-500">{email}</p>
-                  <p className="text-xs text-gray-400">
-                    {cvFile ? `Uploaded: ${cvFile.name}` : "No CV uploaded"}
-                  </p>
+                  {resumeUrl ? (
+                    <a
+                      href={`http://127.0.0.1:8000/${resumeUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-blue-600 underline"
+                    >
+                      View CV
+                    </a>
+                  ) : (
+                    <p className="text-xs text-gray-400">No CV uploaded</p>
+                  )}
                 </div>
               )}
             </div>
@@ -204,9 +294,22 @@ const Employee_Form: React.FC = () => {
             <div className="flex justify-end mt-6 border-t pt-4">
               <button
                 onClick={handleToggleView}
-                className="px-6 py-3 rounded-lg font-medium bg-primary text-white shadow-md hover:shadow-lg hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-primary/40 transition-all duration-200"
+                disabled={isSubmitting}
+                className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-primary text-white shadow-md hover:shadow-lg hover:opacity-95 focus:outline-none focus:ring-4 focus:ring-primary/40 transition-all duration-200 disabled:opacity-50"
               >
-                {isEditView ? "Submit" : "Edit Profile"}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    Saving...
+                  </>
+                ) : isSuccess ? (
+                  <>
+                    <CheckCircle2 size={18} className="text-green-400" />
+                    Saved!
+                  </>
+                ) : (
+                  <>{isEditView ? "Submit" : "Edit Profile"}</>
+                )}
               </button>
             </div>
           </main>

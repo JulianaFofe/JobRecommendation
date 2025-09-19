@@ -9,7 +9,9 @@ import { Home, FileText, Users, UserCircle, Settings, LogOut } from "lucide-reac
 type ProfileData = {
   id: number;
   user_id: number;
-  username: string;   // 👈 added username
+  name?: string;       // 👈 profile name
+  username: string;    // from user table
+  email: string;       // from user table
   skills?: string;
   experience?: string;
   education?: string;
@@ -30,11 +32,7 @@ export default function PublicProfile() {
 
         const response = await axios.get<ProfileData>(
           "http://127.0.0.1:8000/profiles/",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         setProfile(response.data);
@@ -85,10 +83,16 @@ export default function PublicProfile() {
               </a>
             </div>
 
-            {/* Username */}
-            <h1 className="text-3xl font-extrabold text-gray-800 text-center mb-8">
-              {profile?.username || "Unknown User"}
-            </h1>
+            {/* Profile header */}
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-extrabold text-gray-800">
+                {profile?.name || "Unnamed Profile"}
+              </h1>
+              <p className="text-sm text-gray-500 mt-1">
+                @{profile?.username || "unknown"}
+              </p>
+              <p className="text-sm text-gray-400">{profile?.email}</p>
+            </div>
 
             {/* Education */}
             <div className="mb-6">
