@@ -1,17 +1,23 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class ProfileBase(BaseModel):
-    skills: str
-    education: str
-    experience: str
+    skills: Optional[str] = None
+    experience: Optional[str] = None
+    education: Optional[str] = None
+    resume_url: Optional[str] = None
 
 class ProfileCreate(ProfileBase):
     pass
 
-class ProfileRead(ProfileBase):
+class ProfileUpdate(ProfileBase):
+    pass
+
+class ProfileResponse(ProfileBase):
     id: int
     user_id: int
-    resume_url: str | None = None  
-    username: str   # 👈 added username
+    username: str
+    email: str
 
-    model_config = {"from_attributes": True}
+    class Config:
+        orm_mode = True
