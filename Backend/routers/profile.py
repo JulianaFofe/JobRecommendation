@@ -6,8 +6,14 @@ from models.users import User
 from schema.profile import ProfileCreate, ProfileResponse
 from crud.profile import create_or_update_profile, get_profile
 from routers.auth import getCurrentUser
+from schema.profile import ProfileCreate, ProfileRead
+from crud.profile import create_profile, update_profile, get_profile, update_resume
+from models.users import User
 
-router = APIRouter(prefix="/profiles", tags=["Profiles"])
+router = APIRouter(
+    prefix="/profile",
+    tags=["Profile"]
+)
 
 def build_profile_response(db_profile, current_user: User) -> ProfileResponse:
     return ProfileResponse(

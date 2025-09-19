@@ -15,8 +15,6 @@ from schema.application import ApplicationResponse
 from schema.job import Job as JobSchema
 from schema.users import UserRead
 
-
-
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
 def check_admin(user: User):
@@ -50,9 +48,6 @@ def get_all_jobs(db: Session = Depends(get_db), current_user: User = Depends(get
     check_admin(current_user)
     return db.query(Job).all()
 
-    
-    
-
 
 @router.get("/applications", response_model=List[ApplicationResponse])
 def get_all_applications(
@@ -62,13 +57,14 @@ def get_all_applications(
     offset: int = Query(0, ge=0)
 ):
     check_admin(current_user)
-    applications = db.query(Application).join(Application.applicant).offset(offset).limit(limit).all()
+    applications = db.query(Application).join(Application.applicant).join(Application.job).offset(offset).limit(limit).all()
 
     response = [
         ApplicationResponse(
             id=app.id,
             job_id=app.job_id,
             applicant_id=app.applicant_id,
+            jobTitle=app.job.title,
             applicant_name=app.applicant.username,
             status=app.status,
             applied_at=app.applied_at
@@ -77,9 +73,6 @@ def get_all_applications(
     ]
 
     return response
-
-
-
 
 @router.get("/stats")
 def get_admin_stats(
@@ -195,10 +188,6 @@ def get_job_categories(
 
     return data
 
-    
-   
-   
-
 # Get pending jobs
 @router.get("/jobs/pending", response_model=List[JobSchema])
 def get_pending_jobs(db: Session = Depends(get_db), current_user: User = Depends(getCurrentUser)):
@@ -206,7 +195,7 @@ def get_pending_jobs(db: Session = Depends(get_db), current_user: User = Depends
     return db.query(Job).filter(Job.is_approved==False).all()
 
 
-@router.put("/jobs/approve/{job_id}", response_model=JobSchema)
+@router.put("/jobs/approve/{job_id}", response_model=JobResponse)
 def approve_job(job_id: int, db: Session = Depends(get_db), current_user: User = Depends(getCurrentUser)):
     check_admin(current_user)
     job = db.query(Job).filter(Job.id == job_id).first()

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Copyright 2024 The Montserrat.Git Project Authors (https://github.com/JulietaUla/Montserrat.git)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
