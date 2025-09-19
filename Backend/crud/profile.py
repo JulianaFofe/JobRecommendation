@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from models.profile import Profile
+from models.users import User
 from schema.profile import ProfileCreate
 
 def create_or_update_profile(db: Session, user_id: int, profile: ProfileCreate, resume_url: str | None = None):
@@ -23,4 +24,9 @@ def create_or_update_profile(db: Session, user_id: int, profile: ProfileCreate, 
     return db_profile
 
 def get_profile(db: Session, user_id: int):
-    return db.query(Profile).filter(Profile.user_id == user_id).first()
+    return (
+        db.query(Profile, User.username)
+        .join(User, User.id == Profile.user_id)
+        .filter(Profile.user_id == user_id)
+        .first()
+    )
