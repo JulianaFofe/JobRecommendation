@@ -28,7 +28,7 @@ const Signup = () => {
 
       const { message, user } = response.data;
 
-      if (user.isapproved === false) {
+      if (user.is_approved === false) {
         alert("Signup successful! Your account is awaiting admin approval.");
       } else {
         alert(message);

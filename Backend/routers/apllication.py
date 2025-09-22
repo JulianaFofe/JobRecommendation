@@ -51,7 +51,7 @@ def list_applications_for_job(
     db: Session = Depends(get_db),
     current_user: User = Depends(getCurrentUser)  
 ):
-    if current_user.role != "employer":
+    if not hasattr(current_user, "role") or current_user.role != "employer":
         raise HTTPException(status_code=403, detail="Only employers can view applications")
 
     applications = get_applications_by_Jobs(db, job_id, current_user.id)

@@ -47,7 +47,7 @@ function Employer() {
       try {
         const token = localStorage.getItem("access_token");
         const res = await fetch(
-          `http://localhost:8000/applications//job/{job_id}${selectedJobId}`,
+          `http://localhost:8000/applications/job/${selectedJobId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -100,9 +100,12 @@ function Employer() {
       await Promise.all(
         jobs.map(async (job) => {
           try {
-            const res = await fetch(`http://localhost:8000/job/${job.id}`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
+            const res = await fetch(
+              `http://localhost:8000/applications/job/${job.id}`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
             const data = await res.json();
             if (Array.isArray(data)) allApps = allApps.concat(data);
           } catch (err) {
@@ -302,12 +305,21 @@ function Employer() {
                             key={app.id}
                             className="bg-white shadow-md rounded-md p-3 flex flex-col gap-1"
                           >
-                            <span className="font-semibold">{app.name}</span>
+                            <span className="font-semibold">
+                              {app.applicant_name}
+                            </span>
                             <span className="text-gray-600 text-sm">
                               {app.email}
                             </span>
                             <span className="text-gray-600 text-sm">
                               {app.contact}
+                            </span>
+                            <span className="text-gray-600 text-sm">
+                              Applied at :
+                              {new Date(app.applied_at).toLocaleDateString()}
+                            </span>
+                            <span className="text-gray-500 text-xs">
+                              Job: {app.jobTitle}
                             </span>
                             {app.resume && (
                               <a

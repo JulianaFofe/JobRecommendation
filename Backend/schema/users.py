@@ -9,7 +9,7 @@ class UserRole(str, Enum):
     admin = "admin"
 
 class UserBase(BaseModel):
-    id: int
+    
     username: str
     email: EmailStr
     role: Optional[UserRole] = UserRole.employee 
@@ -22,6 +22,7 @@ class UserCreate(UserBase):
     password: str  
 
 class UserRead(UserBase):
+    id: int
     dateCreated: datetime
     is_approved: bool
 

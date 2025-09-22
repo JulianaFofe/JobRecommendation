@@ -231,6 +231,7 @@ def get_pending_users(db: Session = Depends(get_db), current_user=Depends(getCur
     return db.query(User).filter(User.is_approved == False).all()
 
 
+
 @router.put("/users/approve/{user_id}", response_model=UserRead)
 def approve_user(user_id: int, db: Session = Depends(get_db), current_user=Depends(getCurrentUser)):
     check_superadmin(current_user)

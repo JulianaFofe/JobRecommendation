@@ -22,6 +22,9 @@ class ApplicationResponse(BaseModel):
     applicant_name: str 
     status: ApplicationStatus
     applied_at: datetime
+    email: str | None = None       
+    contact: str | None = None     
+    resume: str | None = None 
 
     model_config = {
         "from_attributes": True,  
