@@ -9,7 +9,7 @@ type Props = {
 
 export default function Navbar({ onSearch, onToggleSidebar }: Props) {
   const [q, setQ] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [, setShowModal] = useState(false);
 
   // Show modal only on the first visit ever
   useEffect(() => {
@@ -22,7 +22,6 @@ export default function Navbar({ onSearch, onToggleSidebar }: Props) {
 
   return (
     <header className="sticky top-0 z-40 flex items-center justify-between bg-white/80 shadow-md rounded-lg px-4 py-4 lg:px-10 backdrop-blur">
-      
       {/* Left: Hamburger */}
       <button
         onClick={onToggleSidebar}

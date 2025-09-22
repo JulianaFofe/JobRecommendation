@@ -1,13 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   TrendingUp,
   Plus,
   Calendar,
   Briefcase,
   User,
-  Menu,
-  X,
   MessageSquare,
 } from "lucide-react";
 
@@ -24,7 +22,7 @@ type UserData = {
 
 function PendingUsers() {
   const [pendingUsers, setPendingUsers] = useState<UserData[]>([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const token = localStorage.getItem("access_token");
 
   useEffect(() => {
@@ -62,7 +60,7 @@ function PendingUsers() {
         {/* Sidebar */}
         <div
           className={`
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
+           "translate-x-0" : "-translate-x-full"} 
           lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 
           w-64 bg-white/70 backdrop-blur-sm shadow-lg rounded-lg 
           m-2 lg:m-4 mr-0 transition-transform duration-300 ease-in-out

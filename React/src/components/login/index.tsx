@@ -104,7 +104,7 @@ const Login = () => {
             </button>
           </div>
           <p className="mb-5 font-light text-sm p-1 hover:text-primary cursor-pointer text-gray-500">
-            password forgitten?
+            password forgotten?
           </p>
 
           <button

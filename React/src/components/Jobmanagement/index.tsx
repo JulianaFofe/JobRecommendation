@@ -9,9 +9,6 @@ import { Menu } from "lucide-react";
 import { Filter } from "lucide-react";
 import { Eye } from "lucide-react";
 import { NotebookPen } from "lucide-react";
-import { motion } from "framer-motion";
-
-
 
 const Job = () => {
   return (
