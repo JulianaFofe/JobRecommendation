@@ -47,6 +47,7 @@ def update_job_endpoint(
     job_data: schema.JobUpdate,
     db: Session = Depends(get_db),
     current_user: User = Depends(getCurrentUser)
+    
 
 ):
     job = db.query(models.Job).filter(models.Job.id == job_id).first()
@@ -82,7 +83,7 @@ def delete_job_endpoint(
     deleted_job = crud.delete_job(db, job_id)
     return deleted_job
 
-@router.get("/getjob/{job_id}")
+@router.get("employer_id")
 def get_job(job_id: int, db: Session = Depends(get_db)):
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:

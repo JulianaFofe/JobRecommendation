@@ -30,8 +30,8 @@ const Login = () => {
       localStorage.setItem("access_token", access_token);
       localStorage.setItem("role", role);
 
-      // Show success message
-      setMessage(message);
+      // Show success message (if any)
+      setMessage(message || "Login successful!");
 
       // Redirect immediately based on role
       if (role === "admin") navigate("/dashview");
@@ -42,18 +42,27 @@ const Login = () => {
       setEmail("");
       setPassword("");
     } catch (err: any) {
+      let errMsg = "Login failed. Check your credentials.";
+
       if (err.response && err.response.data.detail) {
         const detail = err.response.data.detail;
-        if (detail === "Account not approved by admin yet") {
-          setError(
-            "Your account is awaiting admin approval. Please wait for an admin to approve your account."
-          );
+        if (Array.isArray(detail)) {
+          // Map array of validation errors to string
+          errMsg = detail.map((d) => d.msg || JSON.stringify(d)).join(", ");
+        } else if (typeof detail === "string") {
+          if (detail === "Account not approved by admin yet") {
+            errMsg =
+              "Your account is awaiting admin approval. Please wait for an admin to approve your account.";
+          } else {
+            errMsg = detail;
+          }
         } else {
-          setError(detail);
+          // fallback for object errors
+          errMsg = JSON.stringify(detail);
         }
-      } else {
-        setError("Login failed. Check your credentials.");
       }
+
+      setError(errMsg);
     }
   };
 
