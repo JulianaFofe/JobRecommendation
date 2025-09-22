@@ -3,6 +3,7 @@ import { Menu, User, AppWindow, Briefcase, Send, Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import m from "../../assets/images/img.png?url";
 import type { Job } from "../../types/jobposting";
+import type { Application } from "../../types/application";
 import { jwtDecode } from "jwt-decode"; // consistent import
 
 interface JwtPayload {
@@ -13,6 +14,8 @@ interface JwtPayload {
 
 function Employer() {
   const navigate = useNavigate();
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [activeLink, setActiveLink] = useState("My Jobs");
   const [employeeName, setEmployeeName] = useState("John Doe");
@@ -37,6 +40,31 @@ function Employer() {
     }
   }, [navigate]);
 
+  useEffect(() => {
+    if (!selectedJobId) return;
+
+    const fetchApplications = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const res = await fetch(
+          `http://localhost:8000/applications//job/{job_id}${selectedJobId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await res.json();
+        setApplications(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error fetching applications:", err);
+        setApplications([]);
+      }
+    };
+
+    fetchApplications();
+  }, [selectedJobId]);
+
   // Fetch jobs for this employer
   useEffect(() => {
     if (!employerId) return;
@@ -59,6 +87,38 @@ function Employer() {
 
     fetchJobs();
   }, [employerId]);
+
+  // Fetch all applications when "Applications" tab is active
+  useEffect(() => {
+    if (activeLink !== "Applications") return;
+    if (jobs.length === 0) return;
+
+    const fetchAllApplications = async () => {
+      const token = localStorage.getItem("access_token");
+      let allApps: Application[] = [];
+
+      await Promise.all(
+        jobs.map(async (job) => {
+          try {
+            const res = await fetch(`http://localhost:8000/job/${job.id}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            const data = await res.json();
+            if (Array.isArray(data)) allApps = allApps.concat(data);
+          } catch (err) {
+            console.error(
+              `Error fetching applications for job ${job.id}:`,
+              err
+            );
+          }
+        })
+      );
+
+      setApplications(allApps);
+    };
+
+    fetchAllApplications();
+  }, [activeLink, jobs]);
 
   const handleDelete = async (id: number) => {
     try {
@@ -144,74 +204,131 @@ function Employer() {
         </div>
 
         {/* Job Listings */}
-        <div className="p-6 flex-1 overflow-auto bg-gray-50">
-          <h2 className="text-xl font-bold mb-4">Job Postings</h2>
+        {activeLink !== "Applications" && (
+          <div className="p-6 flex-1 overflow-auto bg-gray-50">
+            <h2 className="text-xl font-bold mb-4">Job Postings</h2>
 
-          <div className="space-y-4">
+            <div className="space-y-4">
+              {jobs.length === 0 ? (
+                <p className="text-gray-500">No jobs posted yet.</p>
+              ) : (
+                Array.isArray(jobs) &&
+                jobs.map((job) => (
+                  <div
+                    key={job.id}
+                    className="bg-white shadow-md rounded-md p-4 flex justify-between items-start max-h-40 overflow-hidden"
+                  >
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg">{job.title}</h3>
+                      <p className="text-gray-600 text-sm mt-1">
+                        {job.location} • {job.job_type} •{" "}
+                        <span
+                          className={`font-bold ${
+                            job.status === "Available"
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }`}
+                        >
+                          {job.status}
+                        </span>{" "}
+                        |{" "}
+                        <span
+                          className={`font-bold ${
+                            job.is_approved
+                              ? "text-green-600"
+                              : "text-yellow-600"
+                          }`}
+                        >
+                          {job.is_approved ? "Approved" : "Pending Approval"}
+                        </span>
+                      </p>
+
+                      <p className="mt-1 text-gray-700 text-sm line-clamp-2">
+                        {job.description}
+                      </p>
+                      <p className="text-gray-600 text-sm mt-1 line-clamp-1">
+                        Requirements: {job.requirements}
+                      </p>
+                      {job.salary && (
+                        <p className="text-gray-800 text-sm mt-1">
+                          Salary: XAF{job.salary}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-2 ml-4">
+                      <button
+                        onClick={() => goToForm(job.id)}
+                        className="bg-primary text-white px-4 py-1 rounded-md hover:bg-green-600"
+                      >
+                        Update
+                      </button>
+                      <button
+                        onClick={() => handleDelete(job.id)}
+                        className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Applications Section */}
+        {activeLink === "Applications" && (
+          <div className="p-6 flex-1 overflow-auto bg-gray-50">
+            <h2 className="text-xl font-bold mb-4">Applications</h2>
+
             {jobs.length === 0 ? (
               <p className="text-gray-500">No jobs posted yet.</p>
             ) : (
-              Array.isArray(jobs) &&
-              jobs.map((job) => (
-                <div
-                  key={job.id}
-                  className="bg-white shadow-md rounded-md p-4 flex justify-between items-start max-h-40 overflow-hidden"
-                >
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg">{job.title}</h3>
-                    <p className="text-gray-600 text-sm mt-1">
-                      {job.location} • {job.job_type} •{" "}
-                      <span
-                        className={`font-bold ${
-                          job.status === "Available"
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
-                      >
-                        {job.status}
-                      </span>{" "}
-                      |{" "}
-                      <span
-                        className={`font-bold ${
-                          job.is_approved ? "text-green-600" : "text-yellow-600"
-                        }`}
-                      >
-                        {job.is_approved ? "Approved" : "Pending Approval"}
-                      </span>
-                    </p>
+              jobs.map((job) => {
+                const jobApplications = applications.filter(
+                  (app) => app.job_id === job.id
+                );
 
-                    <p className="mt-1 text-gray-700 text-sm line-clamp-2">
-                      {job.description}
-                    </p>
-                    <p className="text-gray-600 text-sm mt-1 line-clamp-1">
-                      Requirements: {job.requirements}
-                    </p>
-                    {job.salary && (
-                      <p className="text-gray-800 text-sm mt-1">
-                        Salary: XAF{job.salary}
-                      </p>
+                return (
+                  <div key={job.id} className="mb-6">
+                    <h3 className="font-semibold text-lg mb-2">{job.title}</h3>
+                    {jobApplications.length === 0 ? (
+                      <p className="text-gray-500">No applications yet.</p>
+                    ) : (
+                      <ul className="space-y-2">
+                        {jobApplications.map((app) => (
+                          <li
+                            key={app.id}
+                            className="bg-white shadow-md rounded-md p-3 flex flex-col gap-1"
+                          >
+                            <span className="font-semibold">{app.name}</span>
+                            <span className="text-gray-600 text-sm">
+                              {app.email}
+                            </span>
+                            <span className="text-gray-600 text-sm">
+                              {app.contact}
+                            </span>
+                            {app.resume && (
+                              <a
+                                href={app.resume}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-500 underline text-sm"
+                              >
+                                View Resume
+                              </a>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
                     )}
                   </div>
-
-                  <div className="flex flex-col gap-2 ml-4">
-                    <button
-                      onClick={() => goToForm(job.id)}
-                      className="bg-primary text-white px-4 py-1 rounded-md hover:bg-green-600"
-                    >
-                      Update
-                    </button>
-                    <button
-                      onClick={() => handleDelete(job.id)}
-                      className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

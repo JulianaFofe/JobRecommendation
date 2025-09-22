@@ -48,5 +48,4 @@ class JobResponse(BaseModel):
 
     class Config:
         orm_mode = True
-        from_attribute=True 
-        orm_mode = True
+        
