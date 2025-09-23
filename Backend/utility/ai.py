@@ -204,3 +204,46 @@ def get_recommendation_strategy(search_count: int) -> str:
         return f"Combined skills + limited search history ({search_count} searches)"
     else:
         return f"Full recommendation using skills + search history ({search_count} searches)"
+
+def get_recommendations_from_applications(applied_jobs: List[Any], all_jobs: List[Any], top_n: int = 5) -> List[Any]:
+    """
+    Recommend jobs similar to previously applied jobs using TF-IDF + cosine similarity
+    """
+    if not applied_jobs:
+        return []
+
+    # Prepare job texts
+    applied_texts = []
+    for job in applied_jobs:
+        desc = job.get("description", "") if isinstance(job, dict) else getattr(job, "description", "")
+        reqs = job.get("requirements", "") if isinstance(job, dict) else getattr(job, "requirements", "")
+        applied_texts.append(f"{desc} {reqs}")
+
+    all_job_texts = []
+    for job in all_jobs:
+        desc = job.get("description", "") if isinstance(job, dict) else getattr(job, "description", "")
+        reqs = job.get("requirements", "") if isinstance(job, dict) else getattr(job, "requirements", "")
+        all_job_texts.append(f"{desc} {reqs}")
+
+    # TF-IDF + cosine similarity
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform(applied_texts + all_job_texts)
+    
+    similarities = cosine_similarity(tfidf_matrix[0:len(applied_texts)], tfidf_matrix[len(applied_texts):])
+    avg_similarity = similarities.mean(axis=0)
+
+    # Rank jobs by similarity
+    ranked_indices = avg_similarity.argsort()[::-1]
+
+    recommendations = []
+    applied_job_ids = {job.get("id") if isinstance(job, dict) else getattr(job, "id") for job in applied_jobs}
+
+    for idx in ranked_indices:
+        job = all_jobs[idx]
+        job_id = job.get("id") if isinstance(job, dict) else getattr(job, "id")
+        if job_id not in applied_job_ids:
+            recommendations.append(job)
+        if len(recommendations) >= top_n:
+            break
+
+    return recommendations

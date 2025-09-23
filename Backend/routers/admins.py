@@ -121,8 +121,7 @@ def delete_job(
     return {"detail": f"Job with id {job_id} has been deleted"}
 
     
-
-    
+ 
 
 @router.get("/stats/daily")
 def get_daily_stats(
@@ -211,15 +210,10 @@ def read_jobs_for_employer(employer_id: int, db: Session = Depends(get_db)):
     jobs = db.query(Job).filter(Job.employer_id == employer_id).all()
     return jobs
 
-
-
-
 @router.get("/users/pending", response_model=List[UserRead])
 def get_pending_users(db: Session = Depends(get_db), current_user=Depends(getCurrentUser)):
     check_superadmin(current_user)
     return db.query(User).filter(User.is_approved == False).all()
-
-
 
 @router.put("/users/approve/{user_id}", response_model=UserRead)
 def approve_user(user_id: int, db: Session = Depends(get_db), current_user=Depends(getCurrentUser)):

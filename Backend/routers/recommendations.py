@@ -1,11 +1,11 @@
 from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException
 from crud.job_crud import get_all_jobs, get_job_by_id, get_all_employees
-from utility.ai import get_personalized_recommendations, get_recommendation_strategy, recommend_candidates_for_jobs, recommend_jobs_for_employees, user_to_dict
+from utility.ai import get_personalized_recommendations, get_recommendation_strategy, get_recommendations_from_applications, recommend_candidates_for_jobs, recommend_jobs_for_employees, user_to_dict
 from database import get_db
 from sqlalchemy.orm import Session
 from routers.auth import getCurrentUser
-from models import User, SearchHistory
+from models import User, Application
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -59,22 +59,116 @@ def recommend_candidates_for_job(job: Any, employees: List[dict], top_n: int = 5
 # -----------------------------
 # Routes
 # -----------------------------
-@router.get("/employees/{employee_id}")
+@router.get("/employees_recommendations")
 def recommend_jobs(
     top_n: int = 5,
     db: Session = Depends(get_db),
     current_user: User = Depends(getCurrentUser)
 ):
+    if current_user.role != "employee":
+        raise HTTPException(status_code=403, detail="Only employees can access this resource")
+
+    # All jobs in DB
     jobs = get_all_jobs(db)
+    if not jobs:
+        return {
+            "requested_by": current_user.username,
+            "employee": current_user.username,
+            "search_count": 0,
+            "recommendation_strategy": "No jobs available",
+            "recommendations": []
+        }
+
+    # Employee profile and skills
     employee_dict = user_to_dict(current_user, db)
-    recommendations = get_personalized_recommendations(employee_dict, jobs, top_n)
+    profile_skills = employee_dict.get("skills", [])
+
+    # Past applications
+    previous_applications = (
+        db.query(Application)
+        .filter(Application.applicant_id == current_user.id)
+        .all()
+    )
+    applied_jobs = [app.job for app in previous_applications if app.job is not None]
+
+    # Recommendations
+    profile_recs = get_personalized_recommendations(employee_dict, jobs, top_n * 2)  # skills + search history
+    application_recs = get_recommendations_from_applications(applied_jobs, jobs, top_n * 2)  # past apps
+
+    # Score jobs
+    scored: dict[int, dict] = {}
+
+    def add_score(job, weight):
+        if not job:
+            return
+        job_id = job.id if hasattr(job, "id") else job.get("id", None)
+        if job_id is None:
+            return
+        if job_id not in scored:
+            scored[job_id] = {"job": job, "score": 0}
+        scored[job_id]["score"] += weight
+
+    # 🔹 Highest priority → Exact skill matches from profile
+    for job in jobs:
+        job_title = job.title if hasattr(job, "title") else job.get("title", "")
+        job_desc = job.description if hasattr(job, "description") else job.get("description", "")
+        job_reqs = getattr(job, "requirements", None) if hasattr(job, "__dict__") else job.get("requirements", "")
+
+        # Calculate skill match score
+        skill_score = 0.0
+        for skill in profile_skills:
+            skill_lower = skill.lower()
+            if skill_lower in job_title.lower():
+                skill_score += 5.0  # title match = strong
+            elif skill_lower in job_reqs.lower():
+                skill_score += 3.0  # requirements match = medium
+            elif skill_lower in job_desc.lower():
+                skill_score += 1.5  # description match = small
+        if skill_score > 0:
+            add_score(job, skill_score)
+
+    # 🔹 Medium priority → Past applications
+    for job in application_recs:
+        add_score(job, 3.0)
+
+    # 🔹 Low priority → profile/search history recommendations
+    for job in profile_recs:
+        add_score(job, 2.0)
+
+    # 🔹 Fallback → other jobs not scored yet
+    for job in jobs:
+        job_id = job.id if hasattr(job, "id") else job.get("id", None)
+        if job_id is None or job_id in scored:
+            continue
+        add_score(job, 0.5)
+
+    # Sort by score descending
+    ranked_jobs = sorted(scored.values(), key=lambda x: x["score"], reverse=True)
+
+    # Remove duplicates & normalize for JSON
+    seen = set()
+    final_jobs = []
+    for entry in ranked_jobs:
+        job = entry["job"]
+        job_id = job.id if hasattr(job, "id") else job.get("id", None)
+        if job_id in seen or job_id is None:
+            continue
+        seen.add(job_id)
+
+        job_dict = {
+            "id": job.id if hasattr(job, "id") else job.get("id"),
+            "title": job.title if hasattr(job, "title") else job.get("title"),
+            "description": job.description if hasattr(job, "description") else job.get("description"),
+            "requirements": getattr(job, "requirements", None) if hasattr(job, "__dict__") else job.get("requirements"),
+        }
+        final_jobs.append(job_dict)
 
     return {
         "requested_by": current_user.username,
         "employee": current_user.username,
-        "search_count": employee_dict["search_count"],
-        "recommendation_strategy": get_recommendation_strategy(employee_dict["search_count"]),
-        "recommendations": recommendations
+        "search_count": employee_dict.get("search_count", 0),
+        "recommendation_strategy": get_recommendation_strategy(employee_dict.get("search_count", 0)),
+        "recommendations": final_jobs[:top_n]
     }
 
 @router.get("/job/{job_id}/candidates")

@@ -57,6 +57,7 @@ def get_user_applications(db: Session, user: User):
         ApplicationResponse(
             id=app.id,
             job_id=app.job_id,
+            jobTitle=app.job.title if app.job else "Unknown",
             applicant_id=app.applicant_id,
             applicant_name=user.username,  
             status=app.status,

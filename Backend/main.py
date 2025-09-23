@@ -78,9 +78,6 @@ def create_super_admin():
         db.close()
 
 
-
-
-
 @app.get("/")
 def root():
     return{"message":"Backend is running"}
