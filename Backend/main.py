@@ -21,6 +21,7 @@ import models.users as userModel
 from sqlalchemy.orm import Session
 from security import hash_password, verify_password
 from datetime import datetime
+from routers import review
 
 # Create tables
 userModel.Base.metadata.create_all(bind=engine)
@@ -90,13 +91,8 @@ app.include_router(saveJob.router)
 app.include_router(job.router)
 app.include_router(recommendations.router)
 app.include_router(feedback.router)
+app.include_router(review.router)
 
-
-
-# Routers
-app.include_router(users.router)
-app.include_router(job.router)
-app.include_router(recommendations.router)
 
 @app.get("/")
 def root():

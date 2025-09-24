@@ -1,31 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import SidebarWrapper from "../hamburger";
-import Navbar from "../Navbar";
-import type { SidebarItem } from "../../../types/sidebar";
 import type { Job } from "../../../types/jobposting";
-import {
-  Home,
-  FileText,
-  Users,
-  UserCircle,
-  Settings,
-  LogOut,
-} from "lucide-react";
 
 export default function Dashboard() {
   const [jobs, setJobs] = useState<Job[]>([])
   const [searchResults, setSearchResults] = useState<Job[] | null>(null)
   const [recommendedJobs, setRecommendedJobs] = useState<Job[] | null>(null) // added recommended jobs state
-
-  const sidebarItems: SidebarItem[] = [
-    { id: "home", title: "Home", path: "/employeedash", icon: Home },
-    { id: "review", title: "Review Jobs", path: "/review", icon: FileText },
-    { id: "applicants", title: "Applicants", path: "/applicants", icon: Users },
-    { id: "profile", title: "Profile", path: "/profile", icon: UserCircle },
-    { id: "settings", title: "Settings", path: "/settings", icon: Settings },
-    { id: "logout", title: "Logout", path: "/", icon: LogOut },
-  ]
 
   // Fetch all public jobs initially
   useEffect(() => {
@@ -45,12 +25,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
-      <SidebarWrapper items={sidebarItems} />
       <div className="flex-1 flex flex-col">
-        <Navbar
-          onSearchResults={setSearchResults}
-          onRecommendedJobs={setRecommendedJobs} // pass recommended jobs handler
-        />
         <div className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:px-12 flex flex-col h-[calc(100vh-64px)]">
           <div className="flex items-center justify-between mb-4 sm:mb-6">
             <h2 className="text-xl font-bold">
