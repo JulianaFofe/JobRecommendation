@@ -9,7 +9,6 @@ class UserRole(str, Enum):
     admin = "admin"
 
 class UserBase(BaseModel):
-    
     username: str
     email: EmailStr
     role: Optional[UserRole] = UserRole.employee 

@@ -1,10 +1,10 @@
 from datetime import datetime, timezone
 from sqlalchemy import DateTime
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from models import job as models
 from schema import job as schema
 from utility.dummy_applications import seekers
-from models import Job
+from models import Job, User
 
 
 def create_job(db:Session, job:schema.JobCreate, employer_id:int):
@@ -74,17 +74,14 @@ def get_job_by_id(db: Session, job_id: int):
         }
     return None
 
-#
-
 # crud/employees_crud.py
 
 
-def get_all_employees():
-    """
-    Fetch all employees (job seekers) for now using dummy data.
-    Later replace with actual DB query.
-    """
-    return seekers
+def get_all_employees(db: Session):
+    return db.query(User).options(
+        joinedload(User.profile),       
+        joinedload(User.applications)    
+    ).all()
 
 def get_employee_by_id(employee_id: int):
     return next((e for e in seekers if e["id"] == employee_id), None)

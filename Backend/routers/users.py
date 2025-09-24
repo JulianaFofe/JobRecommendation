@@ -9,7 +9,7 @@ from models.job import Job
 from sqlalchemy.orm import Session
 from schema.application import ApplicationResponse
 from crud import user_crud
-from models import User
+from models import User, SearchHistory
 from schema.job import JobResponse
 import schema.users as schema
 
@@ -78,7 +78,6 @@ def login(user: schema.LoginRequest, db: Session = Depends(get_db)):
         "name": db_user.username
     }
 
-
 @router.get("/search", response_model=List[JobResponse])
 def search_jobs_endpoint(
     title: Optional[str] = Query(None, description="Job title to search"),
@@ -88,8 +87,10 @@ def search_jobs_endpoint(
     limit: int = Query(50, ge=1, description="Number of results to return"),
     skip: int = Query(0, ge=0, description="Number of results to skip"),
     db: Session = Depends(get_db),
+    current_user: User = Depends(getCurrentUser)  
 ):
-    query = db.query(Job)
+    query = db.query(Job).filter(Job.is_approved == True)
+
     if title:
         query = query.filter(Job.title.ilike(f"%{title}%"))
     if location:
@@ -99,5 +100,21 @@ def search_jobs_endpoint(
     if salary_min:
         query = query.filter(Job.salary >= salary_min)
 
+    if any([title, location, job_type, salary_min]):
+        search_text = " ".join(
+            filter(None, [
+                f"title:{title}" if title else None,
+                f"location:{location}" if location else None,
+                f"type:{job_type}" if job_type else None,
+                f"salary>={salary_min}" if salary_min else None
+            ])
+        )
+        new_search = SearchHistory(user_id=current_user.id, query=search_text)
+        db.add(new_search)
+        db.commit()
+        db.refresh(new_search)
+
     jobs = query.offset(skip).limit(limit).all()
     return jobs
+
+

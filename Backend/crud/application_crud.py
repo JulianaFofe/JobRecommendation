@@ -50,14 +50,14 @@ def get_applications_by_Jobs(db: Session, job_id: int, employer_id: int):
             ApplicationResponse(
                 id=app.id,
                 job_id=app.job_id,
+                jobTitle=app.job.title if app.job else "Unknown",
                 applicant_id=app.applicant_id,
                 applicant_name=app.applicant.username if app.applicant else None,
                 status=app.status,
-                jobTitle=app.job.title,
                 applied_at=app.applied_at,
                 email=getattr(app.applicant, "email", None),      
                 contact=getattr(app.applicant, "contact", None),  
-                 resume=app.resume,          
+                resume=app.resume,          
             )
         )
     return response

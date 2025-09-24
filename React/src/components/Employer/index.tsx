@@ -26,7 +26,7 @@ function Employer() {
     const token = localStorage.getItem("access_token");
     if (!token) {
       navigate("/login");
-      return;
+      return
     }
 
     try {

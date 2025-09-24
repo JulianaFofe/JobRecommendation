@@ -7,7 +7,6 @@ class Profile(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), unique=True)
-    name = Column(String(255), nullable=True)   # new column for profile name
     skills = Column(Text, nullable=True)
     experience = Column(Text, nullable=True)
     education = Column(Text, nullable=True)

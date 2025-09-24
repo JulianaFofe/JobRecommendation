@@ -39,7 +39,7 @@ allow_origins=[
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5174"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -76,9 +76,6 @@ def create_super_admin():
             print("Super admin already exists")
     finally:
         db.close()
-
-
-
 
 
 @app.get("/")

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-"use client";
+'use client';
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   LineChart,
   Line,
@@ -13,7 +13,7 @@ import {
   PieChart,
   Pie,
   Cell,
-} from "recharts";
+} from 'recharts';
 import {
   TrendingUp,
   FileText,
@@ -28,8 +28,8 @@ import {
   X,
   Trash2,
   MessageSquare,
-} from "lucide-react";
-import axios from "axios";
+} from 'lucide-react';
+import axios from 'axios';
 
 // ----- TypeScript Interfaces -----
 interface Stats {
@@ -100,12 +100,12 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={`rounded-lg bg-white/70 backdrop-blur-sm text-card-foreground shadow-lg ${
-      className || ""
+      className || ''
     }`}
     {...props}
   />
 ));
-Card.displayName = "Card";
+Card.displayName = 'Card';
 
 const CardHeader = React.forwardRef<
   HTMLDivElement,
@@ -113,11 +113,11 @@ const CardHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={`flex flex-col space-y-1.5 p-6 ${className || ""}`}
+    className={`flex flex-col space-y-1.5 p-6 ${className || ''}`}
     {...props}
   />
 ));
-CardHeader.displayName = "CardHeader";
+CardHeader.displayName = 'CardHeader';
 
 const CardTitle = React.forwardRef<
   HTMLParagraphElement,
@@ -126,20 +126,20 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={`text-2xl font-semibold leading-none tracking-tight ${
-      className || ""
+      className || ''
     }`}
     {...props}
   />
 ));
-CardTitle.displayName = "CardTitle";
+CardTitle.displayName = 'CardTitle';
 
 const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={`p-6 pt-0 ${className || ""}`} {...props} />
+  <div ref={ref} className={`p-6 pt-0 ${className || ''}`} {...props} />
 ));
-CardContent.displayName = "CardContent";
+CardContent.displayName = 'CardContent';
 
 // ----- Button Component -----
 
@@ -147,47 +147,47 @@ const Button = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     variant?:
-      | "default"
-      | "destructive"
-      | "outline"
-      | "secondary"
-      | "ghost"
-      | "link";
-    size?: "default" | "sm" | "lg" | "icon";
+      | 'default'
+      | 'destructive'
+      | 'outline'
+      | 'secondary'
+      | 'ghost'
+      | 'link';
+    size?: 'default' | 'sm' | 'lg' | 'icon';
   }
->(({ className, variant = "default", size = "default", ...props }, ref) => {
+>(({ className, variant = 'default', size = 'default', ...props }, ref) => {
   const baseClasses =
-    "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
+    'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
 
   const variants = {
-    default: "bg-primary text-primary-foreground hover:bg-primary/90",
+    default: 'bg-primary text-primary-foreground hover:bg-primary/90',
     destructive:
-      "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+      'bg-destructive text-destructive-foreground hover:bg-destructive/90',
     outline:
-      "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-    ghost: "hover:bg-accent hover:text-accent-foreground",
-    link: "text-primary underline-offset-4 hover:underline",
+      'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+    ghost: 'hover:bg-accent hover:text-accent-foreground',
+    link: 'text-primary underline-offset-4 hover:underline',
   };
 
   const sizes = {
-    default: "h-10 px-4 py-2",
-    sm: "h-9 rounded-md px-3",
-    lg: "h-11 rounded-md px-8",
-    icon: "h-10 w-10",
+    default: 'h-10 px-4 py-2',
+    sm: 'h-9 rounded-md px-3',
+    lg: 'h-11 rounded-md px-8',
+    icon: 'h-10 w-10',
   };
 
   return (
     <button
       className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${
-        className || ""
+        className || ''
       }`}
       ref={ref}
       {...props}
     />
   );
 });
-Button.displayName = "Button";
+Button.displayName = 'Button';
 
 // ----- Dashboard Component -----
 
@@ -203,9 +203,10 @@ function DashView() {
   >([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [modalTitle, setModalTitle] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchType, setSearchType] = useState<"job" | "user" | "none">("job");
+  const [modalTitle, setModalTitle] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [pendingUsers, setPendingUsers] = useState<UserData[]>([]);
+  const [searchType, setSearchType] = useState<'job' | 'user' | 'none'>('job');
   const [filteredData, setFilteredData] = useState<
     (UserData | JobData | ApplicationData)[]
   >([]);
@@ -216,101 +217,118 @@ function DashView() {
   const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState>({
     show: false,
     userId: null,
-    username: "",
+    username: '',
   });
   const [error, setError] = useState<string | null>(null);
+
+  const fetchPendingUsers = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      if (!token) return;
+
+      const response = await axios.get(
+        'http://localhost:8000/admin/users/pending',
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      setPendingUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching pending users:', error);
+    }
+  }, []);
 
   const fetchStats = useCallback(async () => {
     try {
       setError(null);
-      const token = localStorage.getItem("access_token");
+      const token = localStorage.getItem('access_token');
       if (!token) {
-        setError("No access token found. Please log in.");
         return;
       }
 
       const response = await axios.get<Stats>(
-        "http://localhost:8000/admin/stats",
+        'http://localhost:8000/admin/stats',
         {
           headers: { Authorization: `Bearer ${token}` },
           timeout: 10000, // 10 second timeout
-        }
+        },
       );
       setStats(response.data);
     } catch (error) {
-      console.error("Error fetching stats:", error);
-      setError("Failed to fetch statistics. Please try again.");
+      console.error('Error fetching stats:', error);
+      setError('Failed to fetch statistics. Please try again.');
     }
   }, []);
 
   const fetchPlatformActivity = useCallback(async () => {
     try {
-      const token = localStorage.getItem("access_token");
+      const token = localStorage.getItem('access_token');
       if (!token) return;
 
       const response = await axios.get<ChartDataPoint[]>(
-        "http://localhost:8000/stats/daily",
+        'http://localhost:8000/stats/daily',
         {
           headers: { Authorization: `Bearer ${token}` },
           timeout: 10000,
-        }
+        },
       );
 
       setPlatformActivityData(response.data);
     } catch (error) {
-      console.error("Error fetching platform activity:", error);
+      console.error('Error fetching platform activity:', error);
       // Use fallback data if API fails
       setPlatformActivityData([
-        { day: "Monday", jobPosting: 12, applications: 18 },
-        { day: "Tuesday", jobPosting: 15, applications: 22 },
-        { day: "Wednesday", jobPosting: 18, applications: 28 },
-        { day: "Thursday", jobPosting: 16, applications: 24 },
-        { day: "Friday", jobPosting: 20, applications: 32 },
-        { day: "Saturday", jobPosting: 8, applications: 12 },
-        { day: "Sunday", jobPosting: 5, applications: 8 },
+        { day: 'Monday', jobPosting: 12, applications: 18 },
+        { day: 'Tuesday', jobPosting: 15, applications: 22 },
+        { day: 'Wednesday', jobPosting: 18, applications: 28 },
+        { day: 'Thursday', jobPosting: 16, applications: 24 },
+        { day: 'Friday', jobPosting: 20, applications: 32 },
+        { day: 'Saturday', jobPosting: 8, applications: 12 },
+        { day: 'Sunday', jobPosting: 5, applications: 8 },
       ]);
     }
   }, []);
 
   const fetchJobCategories = useCallback(async () => {
     try {
-      const token = localStorage.getItem("access_token");
+      const token = localStorage.getItem('access_token');
       if (!token) return;
 
       const response = await axios.get<ApiJobCategoryResponse[]>(
-        "http://localhost:8000/admin/stats/job-categories",
+        'http://localhost:8000/admin/stats/job-categories',
         {
           headers: { Authorization: `Bearer ${token}` },
           timeout: 10000,
-        }
+        },
       );
 
       const colors = [
-        "#10b981",
-        "#6ee7b7",
-        "#34d399",
-        "#a7f3d0",
-        "#f59e0b",
-        "#6366f1",
+        '#10b981',
+        '#6ee7b7',
+        '#34d399',
+        '#a7f3d0',
+        '#f59e0b',
+        '#6366f1',
       ];
 
       const formatted: JobCategory[] = response.data.map(
         (item: ApiJobCategoryResponse, index: number) => ({
-          name: item.name || "Unknown",
+          name: item.name || 'Unknown',
           value: item.value || 0,
           color: colors[index % colors.length],
-        })
+        }),
       );
 
       setJobCategoriesData(formatted);
     } catch (error) {
-      console.error("Error fetching job categories:", error);
+      console.error('Error fetching job categories:', error);
       // Use fallback data if API fails
       setJobCategoriesData([
-        { name: "Technology", value: 45, color: "#10b981" },
-        { name: "Healthcare", value: 25, color: "#6ee7b7" },
-        { name: "Finance", value: 20, color: "#34d399" },
-        { name: "Education", value: 10, color: "#a7f3d0" },
+        { name: 'Technology', value: 45, color: '#10b981' },
+        { name: 'Healthcare', value: 25, color: '#6ee7b7' },
+        { name: 'Finance', value: 20, color: '#34d399' },
+        { name: 'Education', value: 10, color: '#a7f3d0' },
       ]);
     }
   }, []);
@@ -335,13 +353,13 @@ function DashView() {
     const query = searchQuery.toLowerCase();
 
     const filtered = selectedData.filter((item) => {
-      if (searchType === "user") {
+      if (searchType === 'user') {
         const userData = item as UserData;
         return (
           userData.username?.toLowerCase().includes(query) ||
           userData.email?.toLowerCase().includes(query)
         );
-      } else if (searchType === "job") {
+      } else if (searchType === 'job') {
         const jobData = item as JobData;
         return jobData.title?.toLowerCase().includes(query);
       }
@@ -354,9 +372,9 @@ function DashView() {
 
   const handleCardClick = useCallback(
     async (endpoint: string, title: string) => {
-      const token = localStorage.getItem("access_token");
+      const token = localStorage.getItem('access_token');
       if (!token) {
-        setError("Authentication required. Please log in.");
+        setError('Authentication required. Please log in.');
         return;
       }
 
@@ -375,36 +393,36 @@ function DashView() {
         setModalTitle(title);
         setShowModal(true);
 
-        if (title === "Active Users") setSearchType("user");
-        else if (title === "Total Application") setSearchType("none");
-        else setSearchType("job");
+        if (title === 'Active Users') setSearchType('user');
+        else if (title === 'Total Application') setSearchType('none');
+        else setSearchType('job');
 
-        setSearchQuery("");
+        setSearchQuery('');
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
         if (axios.isAxiosError(error)) {
           if (error.response?.status === 401) {
-            setError("Session expired. Please log in again.");
+            setError('Session expired. Please log in again.');
           } else if (error.response?.status === 403) {
-            setError("Access denied. Insufficient permissions.");
+            setError('Access denied. Insufficient permissions.');
           } else {
-            setError("Failed to fetch data. Please try again.");
+            setError('Failed to fetch data. Please try again.');
           }
         } else {
-          setError("Network error. Please check your connection.");
+          setError('Network error. Please check your connection.');
         }
       } finally {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
   const handleDeleteUser = useCallback(
     async (userId: string) => {
-      const token = localStorage.getItem("access_token");
+      const token = localStorage.getItem('access_token');
       if (!token) {
-        setError("Authentication required.");
+        setError('Authentication required.');
         return;
       }
 
@@ -416,11 +434,11 @@ function DashView() {
 
         // Update UI optimistically
         const updatedData = filteredData.filter(
-          (user) => (user as UserData).id !== userId
+          (user) => (user as UserData).id !== userId,
         );
         setFilteredData(updatedData);
         setSelectedData(
-          selectedData.filter((user) => (user as UserData).id !== userId)
+          selectedData.filter((user) => (user as UserData).id !== userId),
         );
 
         // Update stats
@@ -429,46 +447,46 @@ function DashView() {
           total_users: Math.max(0, prev.total_users - 1),
         }));
 
-        setDeleteConfirm({ show: false, userId: null, username: "" });
+        setDeleteConfirm({ show: false, userId: null, username: '' });
       } catch (error) {
-        console.error("Error deleting user:", error);
+        console.error('Error deleting user:', error);
         if (axios.isAxiosError(error)) {
           if (error.response?.status === 404) {
-            setError("User not found.");
+            setError('User not found.');
           } else if (error.response?.status === 403) {
-            setError("Access denied. Cannot delete this user.");
+            setError('Access denied. Cannot delete this user.');
           } else {
-            setError("Failed to delete user. Please try again.");
+            setError('Failed to delete user. Please try again.');
           }
         } else {
-          setError("Network error. Please check your connection.");
+          setError('Network error. Please check your connection.');
         }
       }
     },
-    [filteredData, selectedData]
+    [filteredData, selectedData],
   );
 
   const closeModal = useCallback(() => {
     setShowModal(false);
     setSelectedData([]);
-    setModalTitle("");
-    setSearchQuery("");
-    setSearchType("job");
-    setDeleteConfirm({ show: false, userId: null, username: "" });
+    setModalTitle('');
+    setSearchQuery('');
+    setSearchType('job');
+    setDeleteConfirm({ show: false, userId: null, username: '' });
     setError(null);
   }, []);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         if (deleteConfirm.show) {
-          setDeleteConfirm({ show: false, userId: null, username: "" });
+          setDeleteConfirm({ show: false, userId: null, username: '' });
         } else if (showModal) {
           closeModal();
         }
       }
     },
-    [deleteConfirm.show, showModal, closeModal]
+    [deleteConfirm.show, showModal, closeModal],
   );
 
   return (
@@ -514,7 +532,7 @@ function DashView() {
         {/* Sidebar */}
         <div
           className={`
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
           lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 
           w-64 bg-white/70 backdrop-blur-sm shadow-lg rounded-lg 
           m-2 lg:m-4 mr-0 transition-transform duration-300 ease-in-out
@@ -632,25 +650,25 @@ function DashView() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 lg:mb-8">
             {[
               {
-                title: "Total Jobs Posted",
+                title: 'Total Jobs Posted',
                 value: stats.total_jobs,
-                growth: "+3%",
+                growth: '+3%',
                 icon: Briefcase,
-                endpoint: "/admin/jobs",
+                endpoint: '/admin/jobs',
               },
               {
-                title: "Active Users",
+                title: 'Active Users',
                 value: stats.total_users,
-                growth: "+4%",
+                growth: '+4%',
                 icon: User,
-                endpoint: "/admin/users",
+                endpoint: '/admin/users',
               },
               {
-                title: "Total Application",
+                title: 'Total Application',
                 value: stats.total_applications,
-                growth: "+3%",
+                growth: '+3%',
                 icon: FileText,
-                endpoint: "/admin/applications",
+                endpoint: '/admin/applications',
               },
             ].map(({ title, value, growth, icon: Icon, endpoint }, idx) => (
               <Card
@@ -672,7 +690,7 @@ function DashView() {
                   </div>
                   <div className="flex items-center text-base md:text-sm lg:text-md text-primary">
                     <TrendingUp className="w-4 h-4 lg:w-4 lg:h-4 mr-1" />
-                    {growth}{" "}
+                    {growth}{' '}
                     <p className="text-black font-thin ml-2 lg:ml-4 hidden sm:inline">
                       from last month
                     </p>
@@ -697,7 +715,7 @@ function DashView() {
                     id="modal-title"
                     className="text-xl font-bold text-primary"
                   >
-                    {modalTitle || "Search Jobs"}
+                    {modalTitle || 'Search Jobs'}
                   </h2>
                   <button
                     onClick={closeModal}
@@ -709,21 +727,21 @@ function DashView() {
                 </div>
 
                 {/* Search Bar */}
-                {searchType !== "none" && (
+                {searchType !== 'none' && (
                   <div className="flex gap-2 mb-6">
                     <input
                       type="text"
                       placeholder={
-                        searchType === "user"
-                          ? "Search user by username..."
-                          : "Search job by title..."
+                        searchType === 'user'
+                          ? 'Search user by username...'
+                          : 'Search job by title...'
                       }
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                       className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                       aria-label={
-                        searchType === "user" ? "Search users" : "Search jobs"
+                        searchType === 'user' ? 'Search users' : 'Search jobs'
                       }
                     />
                     <Button
@@ -749,7 +767,7 @@ function DashView() {
                     <table className="w-full border-collapse border border-gray-300">
                       <thead>
                         <tr className="bg-gray-100">
-                          {modalTitle === "Total Application" ? (
+                          {modalTitle === 'Total Application' ? (
                             <>
                               <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700">
                                 Job Title
@@ -771,11 +789,11 @@ function DashView() {
                                 key={key}
                                 className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700 capitalize"
                               >
-                                {key.replace(/_/g, " ")}
+                                {key.replace(/_/g, ' ')}
                               </th>
                             ))
                           )}
-                          {searchType === "user" && (
+                          {searchType === 'user' && (
                             <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700">
                               Actions
                             </th>
@@ -785,7 +803,7 @@ function DashView() {
                       <tbody>
                         {filteredData.map((item, idx) => (
                           <tr key={idx} className="hover:bg-gray-50">
-                            {modalTitle === "Total Application" ? (
+                            {modalTitle === 'Total Application' ? (
                               <>
                                 <td className="border border-gray-300 px-4 py-2 text-gray-900">
                                   {(item as ApplicationData).jobTitle}
@@ -801,20 +819,20 @@ function DashView() {
                                 </td>
                               </>
                             ) : (
-                              Object.entries(item).map(([, value], i) => (
+                              Object.entries(item).map(([value], i) => (
                                 <td
                                   key={i}
                                   className="border border-gray-300 px-4 py-2 text-gray-900"
                                 >
                                   {value !== null && value !== undefined
                                     ? String(value)
-                                    : "N/A"}
+                                    : 'N/A'}
                                 </td>
                               ))
                             )}
 
                             {/* Delete Button for Users */}
-                            {searchType === "user" && (
+                            {searchType === 'user' && (
                               <td className="border border-gray-300 px-4 py-2">
                                 <Button
                                   variant="destructive"
@@ -826,7 +844,7 @@ function DashView() {
                                       username:
                                         (item as UserData).username ||
                                         (item as UserData).email ||
-                                        "Unknown User",
+                                        'Unknown User',
                                     })
                                   }
                                   className="flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -883,7 +901,7 @@ function DashView() {
                       setDeleteConfirm({
                         show: false,
                         userId: null,
-                        username: "",
+                        username: '',
                       })
                     }
                     className="focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -928,27 +946,27 @@ function DashView() {
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         <XAxis
                           dataKey="day"
-                          tick={{ fontSize: 12, fill: "#666" }}
-                          axisLine={{ stroke: "#ccc" }}
-                          tickLine={{ stroke: "#ccc" }}
+                          tick={{ fontSize: 12, fill: '#666' }}
+                          axisLine={{ stroke: '#ccc' }}
+                          tickLine={{ stroke: '#ccc' }}
                         />
                         <YAxis
-                          tick={{ fontSize: 12, fill: "#666" }}
-                          axisLine={{ stroke: "#ccc" }}
-                          tickLine={{ stroke: "#ccc" }}
+                          tick={{ fontSize: 12, fill: '#666' }}
+                          axisLine={{ stroke: '#ccc' }}
+                          tickLine={{ stroke: '#ccc' }}
                         />
                         <Tooltip
                           contentStyle={{
-                            backgroundColor: "white",
-                            border: "1px solid #ccc",
-                            borderRadius: "8px",
-                            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                            backgroundColor: 'white',
+                            border: '1px solid #ccc',
+                            borderRadius: '8px',
+                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                           }}
                           formatter={(value, name) => [
                             value,
-                            name === "jobPosting"
-                              ? "Job Postings"
-                              : "Applications",
+                            name === 'jobPosting'
+                              ? 'Job Postings'
+                              : 'Applications',
                           ]}
                           labelFormatter={(label) => `Day: ${label}`}
                         />
@@ -957,10 +975,10 @@ function DashView() {
                           dataKey="jobPosting"
                           stroke="#10b981"
                           strokeWidth={3}
-                          dot={{ fill: "#10b981", strokeWidth: 2, r: 4 }}
+                          dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
                           activeDot={{
                             r: 6,
-                            stroke: "#10b981",
+                            stroke: '#10b981',
                             strokeWidth: 2,
                           }}
                         />
@@ -969,10 +987,10 @@ function DashView() {
                           dataKey="applications"
                           stroke="#ffc107b8"
                           strokeWidth={3}
-                          dot={{ fill: "#ffc107b8", strokeWidth: 2, r: 4 }}
+                          dot={{ fill: '#ffc107b8', strokeWidth: 2, r: 4 }}
                           activeDot={{
                             r: 6,
-                            stroke: "#ffc107b8",
+                            stroke: '#ffc107b8',
                             strokeWidth: 2,
                           }}
                         />
@@ -1022,12 +1040,12 @@ function DashView() {
                         </Pie>
                         <Tooltip
                           contentStyle={{
-                            backgroundColor: "white",
-                            border: "1px solid #ccc",
-                            borderRadius: "8px",
-                            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                            backgroundColor: 'white',
+                            border: '1px solid #ccc',
+                            borderRadius: '8px',
+                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                           }}
-                          formatter={(value) => [`${value}%`, "Percentage"]}
+                          formatter={(value) => [`${value}%`, 'Percentage']}
                         />
                       </PieChart>
                     </ResponsiveContainer>
@@ -1066,21 +1084,21 @@ function DashView() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
-                title: "Success Rate",
-                value: "80%",
-                growth: "+3%",
+                title: 'Success Rate',
+                value: '80%',
+                growth: '+3%',
                 icon: ShieldCheck,
               },
               {
-                title: "Avg time to Hire",
-                value: "60%",
-                growth: "+4%",
+                title: 'Avg time to Hire',
+                value: '60%',
+                growth: '+4%',
                 icon: Clock,
               },
               {
-                title: "Top Performer",
-                value: "90%",
-                growth: "+4%",
+                title: 'Top Performer',
+                value: '90%',
+                growth: '+4%',
                 icon: Award,
               },
             ].map(({ title, value, growth, icon: Icon }, idx) => (
@@ -1102,7 +1120,7 @@ function DashView() {
                   </div>
                   <div className="flex items-center text-base md:text-sm lg:text-md text-primary">
                     <TrendingUp className="w-4 h-4 lg:w-4 lg:h-4 mr-1" />
-                    {growth}{" "}
+                    {growth}{' '}
                     <p className="text-black font-thin ml-2 lg:ml-4 hidden sm:inline">
                       from last month
                     </p>

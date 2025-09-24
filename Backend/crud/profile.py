@@ -26,8 +26,16 @@ def create_or_update_profile(db: Session, user_id: int, profile_data, resume_url
             education=profile_data.education,
             resume_url=resume_url,
         )
-        db.add(db_profile)
 
+    # Create new profile
+    db_profile = Profile(
+        user_id=user_id,
+        skills=",".join([s.strip() for s in profile_data.skills]) if profile_data.skills else "",
+        education=profile_data.education,
+        experience=profile_data.experience,
+        resume_url=resume_url
+    )
+    db.add(db_profile)
     db.commit()
     db.refresh(db_profile)
     return db_profile
