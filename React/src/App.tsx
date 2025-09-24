@@ -21,6 +21,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicProfile from "./components/profileview";
 import About from "./components/about";
 import AdminFeedback from "./components/feedback/adminsfeedback";
+import UserLayout from "./components/layout/UserLayout"
+import ReviewsTable from "./components/reviews";
+import EmployersReview from "./components/empoyers_review/index"
 //port PendingUsers from "./components/pendingusers";
 
 function App() {
@@ -37,6 +40,13 @@ function App() {
         <Route path="/works" element={<Goals />} />
         <Route path="/getstarted" element={<Hero />} />
 
+      <Route element={<UserLayout />}>
+        <Route path="/employeedash" element={<Dashboard />} />
+        <Route path="/reviewtsable" element={<ReviewsTable />} />
+        <Route path="/employeeform" element={<Employee_Form />} />
+        <Route path="/employee" element={<Dashboard />} /> 
+      </Route>
+
         {/* Protected Employer Route */}
         <Route
           path="/employer"
@@ -48,6 +58,8 @@ function App() {
         />
 
         <Route path="/pending-users" element={<PendingUsers />} />
+        <Route path="/employersreview" element={<EmployersReview />} />
+
         <Route path="/dashview" element={<DashView />} />
         <Route path="/management" element={<Management />} />
         <Route path="/signup" element={<Signup />} />
