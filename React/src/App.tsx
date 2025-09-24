@@ -2,7 +2,7 @@ import Dashboard from "./components/EmployeeDashboard/Dashboard";
 import DashView from "./components/dashboardView";
 import Employer from "./components/Employer";
 import Management from "./components/usermanagement";
-import Footer from "./containers/footer";
+//import Footer from "./containers/footer";
 import Signup from "./components/signup";
 import Login from "./components/login";
 import Testimonials from "./components/tesmimonials";
@@ -77,7 +77,7 @@ function App() {
         <Route path="/jobform/:id" element={<JobForm />} />
       </Routes>
 
-      <Footer />
+     
     </div>
   );
 }

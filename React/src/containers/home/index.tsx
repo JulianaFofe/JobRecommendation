@@ -2,6 +2,7 @@ import { FaFacebookF, FaInstagramSquare, FaLinkedinIn, FaYoutube } from "react-i
 import { RiTwitterXLine } from "react-icons/ri";
 import NavBar from "../navbar";
 import { motion } from "framer-motion";
+import Footer from "../footer";
 
 const Home = () => {
   return (
@@ -134,6 +135,7 @@ const Home = () => {
           transition={{ duration: 1, repeat: Infinity }}
         />
       </div>
+       <Footer />
     </div>
   );
 };
