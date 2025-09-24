@@ -1,43 +1,40 @@
 import { useState, useEffect, type ChangeEvent, type FormEvent } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import type { Job, JobCreate } from "../../types/jobposting";
 
-function JobForm() {
-  const { id } = useParams(); // undefined if creating
-  const navigate = useNavigate();
+interface JobFormProps {
+  job?: Job;               // existing job for update
+  onClose?: () => void;     // called when form is closed
+  onSuccess?: () => void;   // called after successful create/update
+}
 
+function JobForm({ job, onClose, onSuccess }: JobFormProps) {
   const [jobData, setJobData] = useState<JobCreate>({
-    title: "",
-    description: "",
-    requirements: "",
-    salary: undefined,
-    location: "",
-    status: "Available",
-    job_type: "",
+    title: job?.title || "",
+    description: job?.description || "",
+    requirements: job?.requirements || "",
+    salary: job?.salary,
+    location: job?.location || "",
+    status: job?.status || "Available",
+    job_type: job?.job_type || "",
   });
 
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
-  // Fetch job if updating
+  // Update state if `job` changes dynamically
   useEffect(() => {
-    if (id) {
-      fetch(`http://127.0.0.1:8000/jobs/getjob/${id}`)
-        .then((res) => res.json())
-        .then((data: Job) => {
-          setJobData({
-            title: data.title,
-            description: data.description,
-            requirements: data.requirements,
-            salary: data.salary,
-            location: data.location,
-            status: data.status,
-            job_type: data.job_type,
-          });
-        })
-        .catch(console.error);
+    if (job) {
+      setJobData({
+        title: job.title,
+        description: job.description,
+        requirements: job.requirements,
+        salary: job.salary,
+        location: job.location,
+        status: job.status,
+        job_type: job.job_type,
+      });
     }
-  }, [id]);
+  }, [job]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -50,61 +47,55 @@ function JobForm() {
   };
 
   const handleSubmit = async (e: FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        setToast("You must be logged in.");
+        return;
+      }
 
-  try {
-    const token = localStorage.getItem("access_token"); // get the JWT
-    if (!token) {
-      setToast("You must be logged in.");
-      return;
+      const method = job ? "PUT" : "POST";
+      const url = job
+        ? `http://127.0.0.1:8000/jobs/update/${job.id}`
+        : `http://127.0.0.1:8000/jobs/create`;
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(jobData),
+      });
+
+      if (res.ok) {
+        setToast(job ? "Job updated successfully!" : "Job posted successfully!");
+        onSuccess?.();  // call success callback if provided
+      } else {
+        const errorData = await res.json();
+        setToast(errorData.detail || "Failed to submit job.");
+      }
+    } catch (err) {
+      console.error(err);
+      setToast("An error occurred.");
+    } finally {
+      setLoading(false);
     }
-
-    const method = id ? "PUT" : "POST";
-    const url = id
-      ? `http://127.0.0.1:8000/jobs/update/${id}`
-      : `http://127.0.0.1:8000/jobs/create`;
-
-    const res = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // <- add this
-      },
-      body: JSON.stringify(jobData),
-    });
-
-    if (res.ok) {
-      setToast(id ? "Job updated successfully!" : "Job posted successfully!");
-      setTimeout(() => {
-        navigate("/employer");
-      }, 1500);
-    } else {
-      const errorData = await res.json();
-      setToast(errorData.detail || "Failed to submit job.");
-    }
-  } catch (err) {
-    console.error(err);
-    setToast("An error occurred.");
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen flex justify-center items-start" style={{ backgroundColor: "#F0FFF4" }}>
       <div className="max-w-3xl w-full p-6 mt-10 bg-white shadow rounded-md relative">
-        {/* Toast */}
         {toast && (
           <div className="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-md animate-fade-in-out">
             {toast}
           </div>
         )}
+        <button className="absolute top-4 right-4 text-gray-600 hover:text-red-500" onClick={onClose}><span>X</span></button>
 
-        <h1 className="text-2xl font-bold mb-6 text-primary">
-          {id ? "Update Job" : "Post Job"}
-        </h1>
+        <h1 className="text-2xl font-bold mb-6 text-primary">{job ? "Update Job" : "Post Job"}</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title */}
           <div>
@@ -207,7 +198,7 @@ function JobForm() {
               disabled={loading}
               className="text-white px-6 py-2 rounded-md hover:bg-green-600 bg-primary"
             >
-              {loading ? "Submitting..." : id ? "Update Job" : "Post Job"}
+              {loading ? "Submitting..." : job ? "Update Job" : "Post Job"}
             </button>
           </div>
         </form>

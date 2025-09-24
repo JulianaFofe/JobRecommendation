@@ -30,6 +30,7 @@ def update_job(db:Session, job_id:int, job_data:schema.JobUpdate):
         update_data["status"] = job.status
     for key,value in update_data.items():
         setattr(job,key,value)
+    job.is_approved = False
     job.posted_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(job)

@@ -59,7 +59,7 @@ def update_job_endpoint(
     if job.employer_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized to update this job")
     
-    updated_job = crud.update_job(db, job_id, job_data,is_approved=False,employer_id=current_user.id)
+    updated_job = crud.update_job(db, job_id, job_data)
     return updated_job
 
 
@@ -83,7 +83,20 @@ def delete_job_endpoint(
     deleted_job = crud.delete_job(db, job_id)
     return deleted_job
 
-@router.get("employer_id")
+@router.get("/{job_id}", response_model=schema.Job) #the end point to get existing jobs
+def get_job(job_id: int, db: Session = Depends(get_db), current_user: User = Depends(getCurrentUser)):
+    job = db.query(Job).filter(Job.id == job_id).first()
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Optional: check if the current user is allowed to see it
+    if job.employer_id != current_user.id and current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Not authorized to view this job")
+    
+    return job
+
+
+@router.get("/employer_id")
 def get_job(job_id: int, db: Session = Depends(get_db)):
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
