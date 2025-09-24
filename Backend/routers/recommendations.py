@@ -6,8 +6,6 @@ from database import get_db
 from sqlalchemy.orm import Session
 from routers.auth import getCurrentUser
 from models import User, Application
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 
 router = APIRouter(prefix="/recommendations", tags=["recommendations"])
 
@@ -176,17 +174,30 @@ def recommend_candidates(
     job_id: int,
     top_n: int = 5,
     db: Session = Depends(get_db),
-    current_user: User = Depends(getCurrentUser)
+    current_user: User = Depends(getCurrentUser),
 ):
+    # ✅ Check if job exists
     job = get_job_by_id(db, job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
 
-    # ✅ Get all employees
-    employees = get_all_employees(db)
+    # ✅ Get applications for this job
+    applications = db.query(Application).filter(Application.job_id == job_id).all()
+    if not applications:
+        return {
+            "requested_by": current_user.username,
+            "job": job.title if hasattr(job, "title") else job.get("title"),
+            "candidates": [],  # No recommendations if no applications
+            "message": "No applications found for this job."
+        }
 
-    employees_dict = []
-    for emp in employees:
+    # ✅ Build candidate pool only from applicants
+    applicants_dict = []
+    for app in applications:
+        emp = app.applicant  
+        if not emp:
+            continue
+
         skills = []
         if emp.profile and emp.profile.skills:
             if isinstance(emp.profile.skills, str):
@@ -194,19 +205,22 @@ def recommend_candidates(
             elif isinstance(emp.profile.skills, list):
                 skills = emp.profile.skills
 
-        employees_dict.append({
+        applicants_dict.append({
             "id": emp.id,
             "name": emp.username,
             "skills": skills,
-            "applied_jobs": [app.job_id for app in emp.applications]
+            "applied_jobs": [a.job_id for a in emp.applications],
         })
 
-    # ✅ Match candidates
-    matches = recommend_candidates_for_job(job, employees_dict, top_n)
-    
+    # ✅ Match only these applicants against the job
+    matches = recommend_candidates_for_job(job, applicants_dict, top_n)
+
     return {
         "requested_by": current_user.username,
         "job": job.title if hasattr(job, "title") else job.get("title"),
-        "candidates": matches
+        "candidates": matches,
     }
+
+
+
 
