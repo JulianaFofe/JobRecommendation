@@ -13,7 +13,7 @@ type Props = {
 
 export default function Navbar({ onToggleSidebar, onSearchResults, onRecommendedJobs }: Props) {
   const [q, setQ] = useState("")
-  const [filter, setFilter] = useState("all") // default to "all" filter
+  const [filter, setFilter] = useState("all") 
   const [jobs, setJobs] = useState<Job[]>([])
   const [showDropdown, setShowDropdown] = useState(false)
   const [showFilterDropdown, setShowFilterDropdown] = useState(false)
@@ -21,7 +21,7 @@ export default function Navbar({ onToggleSidebar, onSearchResults, onRecommended
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const filterOptions = [
-    { label: "All", value: "all" }, // added "All" option
+    { label: "All", value: "all" }, 
     { label: "Title", value: "title" },
     { label: "Location", value: "location" },
     { label: "Job Type", value: "job_type" },
@@ -32,7 +32,7 @@ export default function Navbar({ onToggleSidebar, onSearchResults, onRecommended
     if (!query.trim()) {
       setJobs([])
       setShowDropdown(false)
-      onSearchResults(null) // reset search results when query is empty
+      onSearchResults(null)
       return
     }
 
@@ -72,12 +72,12 @@ export default function Navbar({ onToggleSidebar, onSearchResults, onRecommended
 
       setJobs(data)
       setShowDropdown(true)
-      onSearchResults(data) // update dashboard with search results
+      onSearchResults(data) 
     } catch (err) {
       console.error(err)
       setJobs([])
       setShowDropdown(false)
-      onSearchResults([]) // set empty results on error
+      onSearchResults([]) 
     }
   }
 

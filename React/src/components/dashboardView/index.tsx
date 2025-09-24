@@ -206,7 +206,6 @@ function DashView() {
   const [modalTitle, setModalTitle] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [pendingUsers, setPendingUsers] = useState<UserData[]>([]);
-  const [approving, setApproving] = useState<string | null>(null);
   const [searchType, setSearchType] = useState<'job' | 'user' | 'none'>('job');
   const [filteredData, setFilteredData] = useState<
     (UserData | JobData | ApplicationData)[]
@@ -226,6 +225,8 @@ function DashView() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
+
+      const response = await axios.get(
         'http://localhost:8000/admin/users/pending',
         {
           headers: { Authorization: `Bearer ${token}` },
