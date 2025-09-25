@@ -25,6 +25,7 @@ import AdminFeedback from "./components/feedback/adminsfeedback";
 import UserLayout from "./components/layout/UserLayout"
 import ReviewsTable from "./components/reviews";
 import EmployersReview from "./components/empoyers_review/index"
+import SaveJobs from "./components/EmployeeDashboard/savedJobs/index"
 //port PendingUsers from "./components/pendingusers";
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
         <Route path="/employeeform" element={<Employee_Form />} />
         <Route path="/savedjobs" element={<SaveJobs/>}/>
         <Route path="/employee" element={<Dashboard />} /> 
+        <Route path="savejobs" element={<SaveJobs/>}/>
       </Route>
 
         {/* Protected Employer Route */}

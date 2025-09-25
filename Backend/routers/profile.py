@@ -9,7 +9,6 @@ from routers.auth import getCurrentUser
 from models.users import User
 from models.profile import Profile
 
-
 router = APIRouter(
     prefix="/profile",
     tags=["Profile"]
@@ -25,6 +24,10 @@ def build_profile_response(db_profile: Profile, current_user: User) -> ProfileRe
         experience=db_profile.experience,
         education=db_profile.education,
         resume_url=db_profile.resume_url,
+
+        # ✅ Added new fields to response
+        name=db_profile.name,
+        contact_email=db_profile.contact_email,
     )
 
 # -------------------
@@ -41,6 +44,7 @@ def read_profile(
         raise HTTPException(status_code=404, detail="Profile not found")
     return build_profile_response(db_profile, current_user)
 
+
 @router.post("/", response_model=ProfileResponse)
 def create_update_profile_endpoint(
     profile: ProfileCreate,
@@ -49,6 +53,7 @@ def create_update_profile_endpoint(
 ):
     db_profile = create_or_update_profile(db, current_user.id, profile_data=profile)
     return build_profile_response(db_profile, current_user)
+
 
 @router.post("/upload-resume", response_model=ProfileResponse)
 def upload_resume(

@@ -141,7 +141,7 @@ export default function Navbar({ onToggleSidebar, onSearchResults, onRecommended
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 flex items-center justify-between bg-white/80 shadow-md rounded-lg px-4 py-4 lg:px-10 backdrop-blur">
+    <header className="sticky top-0 z-50 flex items-center justify-between bg-white/80 px-4 py-4 lg:px-10 backdrop-blur">
 
       <h1 className="text-lg font-semibold">
             Welcome, <span className="text-primary">{employeeName}</span>
