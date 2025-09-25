@@ -12,6 +12,7 @@ import Jobstate from "./components/Adminaprove/index";
 import PendingUsers from "./components/pendingusers";
 import Home from "./containers/home";
 import { Route, Routes } from "react-router-dom";
+import SaveJobs from "./components/savedJobs/index"
 import Hero from "./components/getstarted";
 import Goals from "./components/how_it_work";
 import FeedbackPage from "./components/feedback/feedbackuser";
@@ -44,6 +45,7 @@ function App() {
         <Route path="/employeedash" element={<Dashboard />} />
         <Route path="/reviewtsable" element={<ReviewsTable />} />
         <Route path="/employeeform" element={<Employee_Form />} />
+        <Route path="/savedjobs" element={<SaveJobs/>}/>
         <Route path="/employee" element={<Dashboard />} /> 
       </Route>
 
@@ -75,6 +77,8 @@ function App() {
         {/* JobForm routes for Create & Update */}
         <Route path="/jobform" element={<JobForm />} />
         <Route path="/jobform/:id" element={<JobForm />} />
+        <Route path="/savedjobs" element={<SaveJobs/>}/>
+
       </Routes>
 
      

@@ -1,20 +1,21 @@
-import os, shutil
+import os
+import shutil
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from database import get_db
-from models.users import User
 from schema.profile import ProfileCreate, ProfileResponse
 from crud.profile import create_or_update_profile, get_profile
 from routers.auth import getCurrentUser
-from schema.profile import ProfileCreate
 from models.users import User
+from models.profile import Profile
+
 
 router = APIRouter(
     prefix="/profile",
     tags=["Profile"]
 )
 
-def build_profile_response(db_profile, current_user: User) -> ProfileResponse:
+def build_profile_response(db_profile: Profile, current_user: User) -> ProfileResponse:
     return ProfileResponse(
         id=db_profile.id,
         user_id=db_profile.user_id,
@@ -25,6 +26,10 @@ def build_profile_response(db_profile, current_user: User) -> ProfileResponse:
         education=db_profile.education,
         resume_url=db_profile.resume_url,
     )
+
+# -------------------
+# Endpoints
+# -------------------
 
 @router.get("/", response_model=ProfileResponse)
 def read_profile(
@@ -42,7 +47,7 @@ def create_update_profile_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(getCurrentUser),
 ):
-    db_profile = create_or_update_profile(db, current_user.id, profile)
+    db_profile = create_or_update_profile(db, current_user.id, profile_data=profile)
     return build_profile_response(db_profile, current_user)
 
 @router.post("/upload-resume", response_model=ProfileResponse)
@@ -58,5 +63,5 @@ def upload_resume(
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    db_profile = create_or_update_profile(db, current_user.id, profile_data=ProfileCreate(), resume_url=file_path)
+    db_profile = create_or_update_profile(db, current_user.id, resume_url=file_path)
     return build_profile_response(db_profile, current_user)

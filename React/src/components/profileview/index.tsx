@@ -9,9 +9,8 @@ import { Home, FileText, Users, UserCircle, Settings, LogOut } from "lucide-reac
 type ProfileData = {
   id: number;
   user_id: number;
-  name?: string;       // 👈 profile name
-  username: string;    // from user table
-  email: string;       // from user table
+  username: string; // from user table
+  email: string; // from user table
   skills?: string;
   experience?: string;
   education?: string;
@@ -30,8 +29,9 @@ export default function PublicProfile() {
           return;
         }
 
+        // ✅ fixed endpoint: /profile/ (singular)
         const response = await axios.get<ProfileData>(
-          "http://127.0.0.1:8000/profiles/",
+          "http://127.0.0.1:8000/profile/",
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -53,12 +53,9 @@ export default function PublicProfile() {
     { id: "logout", title: "Logout", path: "/", icon: LogOut },
   ];
 
-  const renderAchievementsAsList = (text?: string) => {
+  const renderList = (text?: string) => {
     if (!text) return <p className="text-sm text-gray-500">—</p>;
-    const items = text
-      .split("\n")
-      .map((s) => s.trim())
-      .filter(Boolean);
+    const items = text.split("\n").map((s) => s.trim()).filter(Boolean);
     if (items.length === 0) return <p className="text-sm text-gray-500">—</p>;
     return (
       <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
@@ -71,61 +68,57 @@ export default function PublicProfile() {
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
+      {/* Sidebar */}
       <SidebarWrapper items={sidebarItems} />
+
+      {/* Main content */}
       <div className="flex-1 flex flex-col">
-        <NavBar />
         <div className="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex justify-center items-start p-6">
           <div className="bg-white shadow-2xl rounded-2xl w-full max-w-3xl p-8 md:p-10">
+            
             {/* Logo */}
-            <div className="text-center mb-6">
+            <div className="text-center mb-8">
               <a href="/">
                 <img src={logo} alt="Team Logo" className="w-40 h-15 mx-auto" />
               </a>
             </div>
 
-            {/* Profile header */}
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-extrabold text-gray-800">
-                {profile?.name || "Unnamed Profile"}
-              </h1>
-              <p className="text-sm text-gray-500 mt-1">
+            {/* Header */}
+            <div className="text-center mb-10">
+              <h1 className="text-2xl font-extrabold text-gray-800">
                 @{profile?.username || "unknown"}
-              </p>
-              <p className="text-sm text-gray-400">{profile?.email}</p>
+              </h1>
+              <p className="text-sm text-gray-500">{profile?.email || "No email"}</p>
             </div>
 
             {/* Education */}
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-3">Education</h2>
-              <div className="p-4 border rounded-lg shadow-sm bg-gray-50">
-                {profile?.education ? (
-                  <p className="whitespace-pre-line">{profile.education}</p>
-                ) : (
-                  "No education provided"
-                )}
+            <section className="mb-6">
+              <h2 className="text-lg font-bold text-gray-800 mb-2">Education</h2>
+              <div className="p-4 border rounded-lg bg-gray-50 shadow-sm">
+                {profile?.education || "No education provided"}
               </div>
-            </div>
+            </section>
 
             {/* Skills */}
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-3">Skills</h2>
-              <div className="p-4 border rounded-lg shadow-sm bg-gray-50">
-                {renderAchievementsAsList(profile?.skills)}
+            <section className="mb-6">
+              <h2 className="text-lg font-bold text-gray-800 mb-2">Skills</h2>
+              <div className="p-4 border rounded-lg bg-gray-50 shadow-sm">
+                {renderList(profile?.skills)}
               </div>
-            </div>
+            </section>
 
             {/* Experience */}
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-3">Experience</h2>
-              <div className="p-4 border rounded-lg shadow-sm bg-gray-50">
-                {renderAchievementsAsList(profile?.experience)}
+            <section className="mb-6">
+              <h2 className="text-lg font-bold text-gray-800 mb-2">Experience</h2>
+              <div className="p-4 border rounded-lg bg-gray-50 shadow-sm">
+                {renderList(profile?.experience)}
               </div>
-            </div>
+            </section>
 
             {/* Resume */}
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-3">Resume</h2>
-              <div className="p-4 border rounded-lg shadow-sm bg-gray-50 text-gray-500">
+            <section>
+              <h2 className="text-lg font-bold text-gray-800 mb-2">Resume</h2>
+              <div className="p-4 border rounded-lg bg-gray-50 shadow-sm">
                 {profile?.resume_url ? (
                   <a
                     href={`http://127.0.0.1:8000/${profile.resume_url}`}
@@ -139,7 +132,8 @@ export default function PublicProfile() {
                   "No resume uploaded"
                 )}
               </div>
-            </div>
+            </section>
+
           </div>
         </div>
       </div>

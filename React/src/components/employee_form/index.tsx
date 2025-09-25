@@ -39,7 +39,7 @@ const Employee_Form: React.FC = () => {
         if (!token) return;
 
         const response = await axios.get<ProfileData>(
-          "http://127.0.0.1:8000/profiles/",
+          "http://127.0.0.1:8000/profile/", // singular
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -49,7 +49,7 @@ const Employee_Form: React.FC = () => {
         setExperienceAchievements(profile.experience || "");
         setEducationCertification(profile.education || "");
         setSkills(profile.skills || "");
-        setResumeUrl(profile.resume_url ?? null); // <-- FIXED
+        setResumeUrl(profile.resume_url ?? null);
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -77,7 +77,7 @@ const Employee_Form: React.FC = () => {
 
         // Save profile
         await axios.post(
-          "http://127.0.0.1:8000/profiles/",
+          "http://127.0.0.1:8000/profile/", // singular
           {
             skills,
             education: educationCertification,
@@ -92,7 +92,7 @@ const Employee_Form: React.FC = () => {
           formData.append("file", cvFile);
 
           const res = await axios.post<ProfileData>(
-            "http://127.0.0.1:8000/profiles/upload-resume",
+            "http://127.0.0.1:8000/profile/upload-resume", // singular
             formData,
             {
               headers: {
@@ -101,7 +101,7 @@ const Employee_Form: React.FC = () => {
               },
             }
           );
-          setResumeUrl(res.data.resume_url ?? null); // <-- FIXED
+          setResumeUrl(res.data.resume_url ?? null);
         }
 
         setIsSuccess(true);
@@ -117,7 +117,6 @@ const Employee_Form: React.FC = () => {
     setIsEditView((s) => !s);
   };
 
-  // Helper: achievements list
   const renderAchievementsAsList = (text: string) => {
     const items = text
       .split("\n")
@@ -137,7 +136,6 @@ const Employee_Form: React.FC = () => {
     <div className="max-w-4xl mx-auto p-6">
       <div className="bg-white shadow-md rounded-2xl overflow-hidden border border-gray-100">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
-          {/* Left column: Profile info */}
           <aside className="md:col-span-1 flex flex-col items-center md:items-start">
             <div className="w-full mt-4">
               <div className="flex justify-center items-center pt-10 pb-7 align-center">
@@ -150,7 +148,6 @@ const Employee_Form: React.FC = () => {
               </div>
               {isEditView ? (
                 <form onSubmit={(e) => e.preventDefault()} className="space-y-3">
-                  {/* Username */}
                   <div>
                     <label className="block text-xs font-medium text-gray-600">
                       Username <span className="text-red-500">*</span>
@@ -162,7 +159,6 @@ const Employee_Form: React.FC = () => {
                       placeholder="Username"
                     />
                   </div>
-                  {/* Email (read-only) */}
                   <div>
                     <label className="block text-xs font-medium text-gray-600">
                       Email
@@ -173,7 +169,6 @@ const Employee_Form: React.FC = () => {
                       className="mt-1 block w-full rounded-md border border-gray-300 text-sm p-2 bg-gray-100"
                     />
                   </div>
-                  {/* CV Upload */}
                   <div>
                     <label className="block text-xs font-medium text-gray-600 mb-1">
                       Upload CV
@@ -191,17 +186,13 @@ const Employee_Form: React.FC = () => {
                       />
                     </label>
                     {cvFile && (
-                      <p className="mt-1 text-xs text-gray-500">
-                        Selected: {cvFile.name}
-                      </p>
+                      <p className="mt-1 text-xs text-gray-500">Selected: {cvFile.name}</p>
                     )}
                   </div>
                 </form>
               ) : (
                 <div className="space-y-1">
-                  <h2 className="text-lg font-semibold text-primary">
-                    {username}
-                  </h2>
+                  <h2 className="text-lg font-semibold text-primary">{username}</h2>
                   <p className="text-sm text-gray-500">{email}</p>
                   {resumeUrl ? (
                     <a
@@ -220,9 +211,7 @@ const Employee_Form: React.FC = () => {
             </div>
           </aside>
 
-          {/* Right column: Sections */}
           <main className="md:col-span-2 space-y-6">
-            {/* Experience */}
             <section>
               <h3 className="text-md font-semibold text-primary mb-2">
                 Experience <span className="text-red-500">*</span>
@@ -238,18 +227,13 @@ const Employee_Form: React.FC = () => {
                     className="w-full rounded-md p-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 ) : (
-                  <div className="mt-2">
-                    {renderAchievementsAsList(experienceAchievements)}
-                  </div>
+                  <div className="mt-2">{renderAchievementsAsList(experienceAchievements)}</div>
                 )}
               </div>
             </section>
 
-            {/* Education */}
             <section>
-              <h3 className="text-md font-semibold text-primary mb-2">
-                Education
-              </h3>
+              <h3 className="text-md font-semibold text-primary mb-2">Education</h3>
               <div className="p-4 rounded-lg border border-gray-300 bg-primary/5">
                 {isEditView ? (
                   <textarea
@@ -260,14 +244,11 @@ const Employee_Form: React.FC = () => {
                     className="w-full rounded-md p-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 ) : (
-                  <p className="text-sm text-gray-600 mt-1">
-                    {educationCertification || "—"}
-                  </p>
+                  <p className="text-sm text-gray-600 mt-1">{educationCertification || "—"}</p>
                 )}
               </div>
             </section>
 
-            {/* Skills */}
             <section>
               <h3 className="text-md font-semibold text-primary mb-2">
                 Skills <span className="text-red-500">*</span>
@@ -283,14 +264,11 @@ const Employee_Form: React.FC = () => {
                     className="w-full rounded-md p-2 border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 ) : (
-                  <p className="whitespace-pre-line text-sm text-gray-700">
-                    {skills || "—"}
-                  </p>
+                  <p className="whitespace-pre-line text-sm text-gray-700">{skills || "—"}</p>
                 )}
               </div>
             </section>
 
-            {/* Bottom action */}
             <div className="flex justify-end mt-6 border-t pt-4">
               <button
                 onClick={handleToggleView}

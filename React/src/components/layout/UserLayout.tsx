@@ -1,6 +1,5 @@
 import { Outlet } from "react-router-dom";
 import SidebarWrapper from "../EmployeeDashboard/hamburger";
-// import Navbar from "../EmployeeDashboard/Navbar";
 import type { SidebarItem } from "../../types/sidebar";
 import { Home, FileText, UserCircle, LogOut } from "lucide-react";
 
@@ -8,12 +7,13 @@ const sidebarItems: SidebarItem[] = [
   { id: "home", title: "Home", path: "/employeedash", icon: Home },
   { id: "review", title: "Review Table", path: "/reviewtsable", icon: FileText },
   { id: "profile", title: "Profile", path: "/employeeform", icon: UserCircle },
+  { id: "savedjobs", title: "SavedJobs", path: "/savedJobs", icon: UserCircle },
   { id: "logout", title: "Logout", path: "/", icon: LogOut },
 ];
 
 export default function UserLayout() {
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
+    <div className="flex flex-col lg:flex-row min-h-screen">
       {/* Sidebar */}
       <SidebarWrapper items={sidebarItems} />
 
