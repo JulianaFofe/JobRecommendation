@@ -4,11 +4,19 @@ import { useState, useRef, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { Search, UserCircle, ChevronDown, Star } from "lucide-react"
 import type { Job } from "../../../types/jobposting"
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode"
 
 type Props = {
   onToggleSidebar?: () => void
   onSearchResults: (results: Job[] | null) => void
   onRecommendedJobs: (jobs: Job[]) => void
+}
+
+interface JwtPayload {
+  sub: string;
+  role: string;
+  name?: string;
 }
 
 export default function Navbar({ onToggleSidebar, onSearchResults, onRecommendedJobs }: Props) {
@@ -18,7 +26,9 @@ export default function Navbar({ onToggleSidebar, onSearchResults, onRecommended
   const [showDropdown, setShowDropdown] = useState(false)
   const [showFilterDropdown, setShowFilterDropdown] = useState(false)
   const [isLoadingRecommended, setIsLoadingRecommended] = useState(false)
+  const [employeeName, setEmployeeName] = useState("John Doe");
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate();
 
   const filterOptions = [
     { label: "All", value: "all" }, 
@@ -27,6 +37,20 @@ export default function Navbar({ onToggleSidebar, onSearchResults, onRecommended
     { label: "Job Type", value: "job_type" },
     { label: "Minimum Salary", value: "salary_min" },
   ]
+
+  useEffect(() => {
+      const token = localStorage.getItem("access_token");
+      if (!token) return navigate("/login");
+  
+      try {
+        const decoded: JwtPayload = jwtDecode(token);
+        setEmployeeName(decoded.name ?? "John Doe");
+      } catch {
+        localStorage.removeItem("access_token");
+        navigate("/login");
+      }
+    }, [navigate]);
+
 
   const handleSearch = async (query: string) => {
     if (!query.trim()) {
@@ -118,6 +142,11 @@ export default function Navbar({ onToggleSidebar, onSearchResults, onRecommended
 
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between bg-white/80 shadow-md rounded-lg px-4 py-4 lg:px-10 backdrop-blur">
+
+      <h1 className="text-lg font-semibold">
+            Welcome, <span className="text-primary">{employeeName}</span>
+      </h1>
+
       {/* Sidebar toggle */}
       <button onClick={onToggleSidebar} className="p-2 rounded-md text-primary hover:bg-gray-100 lg:hidden" />
 

@@ -45,7 +45,6 @@ function Employer() {
     fetchJobs();
   }, [activeLink]);
 
-  // Fetch jobs
   const fetchJobs = async (title?: string) => {
     try {
       const token = localStorage.getItem("access_token");
