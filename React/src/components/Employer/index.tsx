@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
-import { Menu, User, AppWindow, Briefcase, Send, Bell, X } from "lucide-react";
+import { Menu, User, AppWindow, Briefcase, Send, Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import m from "../../assets/images/img.png?url";
 import type { Job } from "../../types/jobposting";
 import type { Application } from "../../types/application";
 import { jwtDecode } from "jwt-decode";
-import JobForm from "../JobForm";
+import JobForm from "../JobForm"; // ✅ import modal form
 
 interface JwtPayload {
   sub: string;
@@ -22,20 +22,8 @@ function Employer() {
   const [employeeName, setEmployeeName] = useState("John Doe");
   const [recommendedCandidates, setRecommendedCandidates] = useState<Record<number, any[]>>({});
   const [searchText, setSearchText] = useState("");
-
-  // JobForm state
-  const [showJobForm, setShowJobForm] = useState(false);
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-
-  const openForm = (job?: Job) => {
-    setSelectedJob(job || null);
-    setShowJobForm(true);
-  };
-
-  const closeForm = () => {
-    setShowJobForm(false);
-    setSelectedJob(null);
-  };
+  const [showJobForm, setShowJobForm] = useState(false); // ✅ modal state
+  const [editingJob, setEditingJob] = useState<Job | null>(null);
 
   // Decode JWT token
   useEffect(() => {
@@ -51,22 +39,17 @@ function Employer() {
     }
   }, [navigate]);
 
-  // Reset search bar when switching tabs
+  // Reset search + fetch jobs on tab switch
   useEffect(() => {
     setSearchText("");
     fetchJobs();
   }, [activeLink]);
 
-  // Fetch jobs (with optional title search)
+  // Fetch jobs
   const fetchJobs = async (title?: string) => {
     try {
       const token = localStorage.getItem("access_token");
-      let url = "";
-      if (activeLink === "Applications") {
-        url = `http://127.0.0.1:8000/jobs/read/all`;
-      } else {
-        url = `http://127.0.0.1:8000/jobs/read/all`;
-      }
+      let url = "http://127.0.0.1:8000/jobs/read/all";
 
       if (title) {
         url += `?title=${encodeURIComponent(title)}`;
@@ -107,8 +90,15 @@ function Employer() {
     fetchAllApplications();
   }, [activeLink, jobs]);
 
-  const goToForm = (jobId?: number) => {
-    navigate(jobId ? `/jobform/${jobId}` : "/jobform");
+  const handleOpenForm = (job?: Job) => {
+    setEditingJob(job ?? null);
+    setShowJobForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowJobForm(false);
+    setEditingJob(null);
+    fetchJobs();
   };
 
   const handleDelete = async (id: number) => {
@@ -151,8 +141,8 @@ function Employer() {
       {/* Sidebar */}
       <div className="w-64 bg-white shadow-lg p-6 flex flex-col fixed h-full">
         <div className="flex flex-col items-start mb-8">
-          <img src={m} alt="logo" className="w-40 object-contain mb-4" />
-          <h1 className="text-primary font-bold text-xl">Employer</h1>
+          <img src={m} alt="logo" className="w-full object-contain mb-4" />
+          <h1 className="text-green-500 font-bold text-xl">Employer</h1>
         </div>
 
         <nav className="flex flex-col gap-4">
@@ -167,7 +157,7 @@ function Employer() {
               key={link.name}
               onClick={() => {
                 setActiveLink(link.name);
-                if (link.name === "Post Job") openForm();
+                if (link.name === "Post Job") handleOpenForm();
               }}
               className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition ${
                 activeLink === link.name
@@ -183,76 +173,33 @@ function Employer() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 ml-64 flex flex-col relative">
+      <div className="flex-1 ml-64 flex flex-col">
         {/* Navbar */}
         <div className="bg-white shadow px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-          <h1 className="text-lg font-semibold animate-bounce">
+          <h1 className="text-lg font-semibold">
             Welcome, <span className="text-primary">{employeeName}</span>
           </h1>
-          <div className="flex items-center gap-8">
-            <Bell className="w-6 h-6 text-primary cursor-pointer hover:scale-110 transition-transform" />
-            <User className="w-6 h-6 text-primary cursor-pointer hover:scale-110 transition-transform" />
+
+          <div className="flex items-center gap-4">
+            <input
+              type="text"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onKeyDown={handleSearchKeyPress}
+              placeholder="Search jobs by title..."
+              className="border rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+            <Bell className="w-6 h-6 text-primary cursor-pointer" />
+            <User className="w-6 h-6 text-primary cursor-pointer" />
           </div>
         </div>
-
-        {/* Job Listings */}
-        {activeLink !== "Applications" && (
-          <div className="p-6 flex-1 overflow-auto bg-gray-50">
-            <h2 className="text-xl font-bold mb-4">Job Postings</h2>
-
-            <div className="space-y-4 max-h-[90vh] overflow-y-auto scrollbar-hide">
-              {jobs.length === 0 ? (
-                <p className="text-gray-500 text-center">No jobs posted yet.</p>
-              ) : (
-                jobs.map((job) => (
-                  <div
-                    key={job.id}
-                    className="bg-white shadow-md rounded-md p-4 flex justify-between items-start max-h-40 overflow-hidden transform transition-transform duration-300 hover:scale-105"
-                  >
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg">{job.title}</h3>
-                      <p className="text-gray-600 text-sm mt-1">
-                        {job.location} • {job.job_type} •{" "}
-                        <span className={`font-bold ${job.status === "Available" ? "text-primary" : "text-red-800"}`}>
-                          {job.status}
-                        </span>{" "}
-                        |{" "}
-                        <span className={`font-bold ${job.is_approved ? "text-green-600" : "text-yellow-600"}`}>
-                          {job.is_approved ? "Approved" : "Pending Approval"}
-                        </span>
-                      </p>
-                      <p className="mt-1 text-gray-700 text-sm line-clamp-2">{job.description}</p>
-                      <p className="text-gray-600 text-sm mt-1 line-clamp-1">Requirements: {job.requirements}</p>
-                      {job.salary && <p className="text-gray-800 text-sm mt-1">Salary: XAF{job.salary}</p>}
-                    </div>
-
-                    <div className="flex flex-col gap-2 ml-4">
-                      <button
-                        onClick={() => openForm(job)}
-                        className="bg-primary text-white px-4 py-1 rounded-md hover:bg-primary ransform transition-transform duration-300 hover:scale-80"
-                      >
-                        Update
-                      </button>
-                      <button
-                        onClick={() => handleDelete(job.id)}
-                        className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-800 ransform transition-transform duration-300 hover:scale-80"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        )}
 
         {/* Applications Section */}
         {activeLink === "Applications" && (
           <div className="p-6 flex-1 overflow-auto bg-gray-50">
             <h2 className="text-xl font-bold mb-4">Applications</h2>
             {jobs.length === 0 ? (
-              <p className="text-gray-500 text-center">No jobs posted yet.</p>
+              <p className="text-gray-500">No jobs posted yet.</p>
             ) : (
               jobs
                 .filter((job) =>
@@ -357,32 +304,71 @@ function Employer() {
                   job.title.toLowerCase().includes(searchText.toLowerCase())
                 )
                 .map((job) => (
-                  <div key={job.id} className="bg-white shadow-md rounded-lg p-4 flex justify-between items-start max-h-40 overflow-hidden">
+                  <div
+                    key={job.id}
+                    className="bg-white shadow-md rounded-lg p-4 flex justify-between items-start"
+                  >
                     <div className="flex-1">
                       <h3 className="font-semibold text-lg">{job.title}</h3>
                       <p className="text-gray-600 text-sm mt-1">
                         {job.location} • {job.job_type} •{" "}
-                        <span className={`font-bold ${job.status === "Available" ? "text-green-600" : "text-red-600"}`}>
+                        <span
+                          className={`font-bold ${
+                            job.status === "Available" ? "text-green-600" : "text-red-600"
+                          }`}
+                        >
                           {job.status}
                         </span>{" "}
                         |{" "}
-                        <span className={`font-bold ${job.is_approved ? "text-green-600" : "text-yellow-600"}`}>
+                        <span
+                          className={`font-bold ${
+                            job.is_approved ? "text-green-600" : "text-yellow-600"
+                          }`}
+                        >
                           {job.is_approved ? "Approved" : "Pending Approval"}
                         </span>
                       </p>
                       <p className="mt-1 text-gray-700 text-sm line-clamp-2">{job.description}</p>
                     </div>
                     <div className="flex flex-col gap-4 ml-4">
-                      <button onClick={() => goToForm(job.id)} className="bg-primary text-white px-4 py-1 rounded-md hover:bg-green-600">Update</button>
-                      <button onClick={() => handleDelete(job.id)} className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600">Delete</button>
+                      <button
+                        onClick={() => handleOpenForm(job)}
+                        className="bg-primary text-white px-4 py-1 rounded-md hover:bg-green-600"
+                      >
+                        Update
+                      </button>
+                      <button
+                        onClick={() => handleDelete(job.id)}
+                        className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 ))}
             </div>
           </div>
         )}
-
       </div>
+
+      {/* ✅ Job Form Modal */}
+      {showJobForm && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+        {/* Blurred background */}
+        <div
+        className="absolute inset-0 bg-white/30 backdrop-blur-sm"
+        onClick={handleCloseForm}
+        />
+       <div className="relative bg-white w-[700px] max-h-[90vh] overflow-y-auto rounded-xl shadow-lg">
+       <JobForm
+        job={editingJob ?? undefined}
+        onClose={handleCloseForm}
+        onSuccess={handleCloseForm}
+      />
+      </div>
+      </div>
+      )}
+
     </div>
   );
 }
