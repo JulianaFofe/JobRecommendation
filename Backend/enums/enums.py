@@ -9,3 +9,5 @@ class ApplicationStatus(str, Enum):
     PENDING = "pending"
     SUCCESSFUL = "successful"
     FAILED = "failed"
+    APPROVED="approved"
+    REJECTED="rejected"

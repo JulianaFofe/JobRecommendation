@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
+import models
 from schema.application import ApplicationCreate, ApplicationResponse, ApplicationStatusUpdate, ApplicationSubmitResponse
 from sqlalchemy.orm import Session
 from database import get_db
@@ -7,7 +8,9 @@ from models.users import User
 from models.job import Job
 from crud import user_crud
 from routers.auth import getCurrentUser
+from models.notification import Notification
 from crud.application_crud import create_application, get_applications_by_Jobs, update_application_status
+from utility.email import send_email
 
 router=APIRouter(prefix="/applications", tags=["Applications"]) 
 
@@ -37,6 +40,20 @@ def applyForJob(
         status=application.status,
         applied_at=application.applied_at
     )
+
+    notification = Notification(
+    user_id=job.employer_id,  # employer of that job
+    type="application",
+    message=f"{current_user.username} applied for {job.title}"
+    )
+    db.add(notification)
+    db.commit()
+    send_email(
+    to=job.employer.email,
+    subject="New Job Application",
+    body=f"{current_user.username} applied to your job: {job.title}"
+)
+
 
     return ApplicationSubmitResponse(
         message="Application submitted",

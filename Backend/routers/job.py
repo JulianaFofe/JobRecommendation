@@ -1,6 +1,8 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 from typing import List
+from models import job
+from utility.email import send_email
 from models import Job
 import models
 from models.users import User, UserRole
@@ -9,6 +11,7 @@ from database import get_db
 from schema import job as schema
 from crud import job_crud as crud
 from routers.auth import getCurrentUser
+from models.notification import Notification
 
 #from ..dependencies import get_current_user
 
@@ -121,3 +124,37 @@ def list_all_employer_jobs(
     jobs = db.query(models.Job).filter(models.Job.employer_id == current_user.id).all()
     return jobs
 
+#route to accept the jobs applied for 
+@router.put("/approve/{application_id}")
+def approve_application(application_id: int, db: Session = Depends(get_db), current_user: User = Depends(getCurrentUser)):
+    # 1. Get the application
+    application = db.query(models.Application).filter(models.Application.id == application_id).first()
+    if not application:
+        return {"error": "Application not found"}
+
+    # 2. Make sure the current user is the employer for this job
+    job = db.query(Job).filter(Job.id == application.job_id).first()
+    if job.employer_id != current_user.id:
+        return {"error": "Not authorized"}
+
+    # 3. Approve the application
+    application.status= True
+    db.commit()
+
+    # 4. Create notification for applicant
+    notification = Notification(
+        user_id=application.applicant_id,
+        type="approval",
+        message=f"Your application for {job.title} was approved!"
+    )
+    db.add(notification)
+    db.commit()
+
+    # 5. Send email to applicant
+    send_email(
+        to=application.applicant.email,
+        subject="Application Approved",
+        body=f"Congratulations! Your application for {job.title} has been approved."
+    )
+
+    return {"message": "Application approved successfully"}
