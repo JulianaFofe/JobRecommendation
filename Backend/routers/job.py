@@ -83,6 +83,12 @@ def delete_job_endpoint(
     deleted_job = crud.delete_job(db, job_id)
     return deleted_job
 
+@router.get("/public", response_model=List[schema.Job])
+def get_public_jobs(db: Session = Depends(get_db)):
+    jobs = db.query(Job).filter(Job.is_approved == True).all()
+    return jobs
+
+
 @router.get("/{job_id}", response_model=schema.Job) #the end point to get existing jobs
 def get_job(job_id: int, db: Session = Depends(get_db), current_user: User = Depends(getCurrentUser)):
     job = db.query(Job).filter(Job.id == job_id).first()
@@ -102,12 +108,6 @@ def get_job(job_id: int, db: Session = Depends(get_db)):
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     return job
-
-
-@router.get("/public", response_model=List[schema.Job])
-def get_public_jobs(db: Session = Depends(get_db)):
-    jobs = db.query(Job).filter(Job.is_approved == True).all()
-    return jobs
 
 @router.get("/read/all", response_model=List[schema.Job])
 def list_all_employer_jobs(

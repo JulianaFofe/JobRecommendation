@@ -12,4 +12,8 @@ class Profile(Base):
     education = Column(Text, nullable=True)
     resume_url = Column(String(255), nullable=True)
 
+    # ✅ Added new fields
+    name = Column(String(255), nullable=True)           # NEW field for full name
+    contact_email = Column(String(255), nullable=True)  # NEW field for alt email
+
     user = relationship("User", back_populates="profile")

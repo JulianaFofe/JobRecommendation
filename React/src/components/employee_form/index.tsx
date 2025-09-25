@@ -13,6 +13,8 @@ type ProfileData = {
   experience?: string;
   education?: string;
   resume_url?: string;
+  name?: string;
+  contact_email?: string;
 };
 
 const Employee_Form: React.FC = () => {
@@ -21,6 +23,9 @@ const Employee_Form: React.FC = () => {
   // Profile states
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+
   const [experienceAchievements, setExperienceAchievements] = useState("");
   const [educationCertification, setEducationCertification] = useState("");
   const [skills, setSkills] = useState("");
@@ -39,13 +44,15 @@ const Employee_Form: React.FC = () => {
         if (!token) return;
 
         const response = await axios.get<ProfileData>(
-          "http://127.0.0.1:8000/profile/", // singular
+          "http://127.0.0.1:8000/profile/",
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
         const profile = response.data;
         setUsername(profile.username);
         setEmail(profile.email);
+        setName(profile.name || "");
+        setContactEmail(profile.contact_email || "");
         setExperienceAchievements(profile.experience || "");
         setEducationCertification(profile.education || "");
         setSkills(profile.skills || "");
@@ -63,8 +70,8 @@ const Employee_Form: React.FC = () => {
     if (e) e.preventDefault();
 
     if (isEditView) {
-      if (!experienceAchievements.trim() || !skills.trim() || !username.trim()) {
-        alert("Please fill in Username, Experience and Skills.");
+      if (!experienceAchievements.trim() || !skills.trim()) {
+        alert("Please fill in Experience and Skills.");
         return;
       }
 
@@ -77,11 +84,13 @@ const Employee_Form: React.FC = () => {
 
         // Save profile
         await axios.post(
-          "http://127.0.0.1:8000/profile/", // singular
+          "http://127.0.0.1:8000/profile/",
           {
             skills,
             education: educationCertification,
             experience: experienceAchievements,
+            name,
+            contact_email: contactEmail,
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -92,7 +101,7 @@ const Employee_Form: React.FC = () => {
           formData.append("file", cvFile);
 
           const res = await axios.post<ProfileData>(
-            "http://127.0.0.1:8000/profile/upload-resume", // singular
+            "http://127.0.0.1:8000/profile/upload-resume",
             formData,
             {
               headers: {
@@ -148,17 +157,46 @@ const Employee_Form: React.FC = () => {
               </div>
               {isEditView ? (
                 <form onSubmit={(e) => e.preventDefault()} className="space-y-3">
+                  {/* Full Name */}
                   <div>
                     <label className="block text-xs font-medium text-gray-600">
-                      Username <span className="text-red-500">*</span>
+                      Full Name
+                    </label>
+                    <input
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="mt-1 block w-full rounded-md border border-gray-300 text-sm p-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Your full name"
+                    />
+                  </div>
+
+                  {/* Contact Email */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600">
+                      Contact Email
+                    </label>
+                    <input
+                      type="email"
+                      value={contactEmail}
+                      onChange={(e) => setContactEmail(e.target.value)}
+                      className="mt-1 block w-full rounded-md border border-gray-300 text-sm p-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Alternative email"
+                    />
+                  </div>
+
+                  {/* Username */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600">
+                      Username
                     </label>
                     <input
                       value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="mt-1 block w-full rounded-md border border-gray-300 text-sm p-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="Username"
+                      disabled
+                      className="mt-1 block w-full rounded-md border border-gray-300 text-sm p-2 bg-gray-100"
                     />
                   </div>
+
+                  {/* Email */}
                   <div>
                     <label className="block text-xs font-medium text-gray-600">
                       Email
@@ -169,6 +207,8 @@ const Employee_Form: React.FC = () => {
                       className="mt-1 block w-full rounded-md border border-gray-300 text-sm p-2 bg-gray-100"
                     />
                   </div>
+
+                  {/* Upload CV */}
                   <div>
                     <label className="block text-xs font-medium text-gray-600 mb-1">
                       Upload CV
@@ -191,9 +231,21 @@ const Employee_Form: React.FC = () => {
                   </div>
                 </form>
               ) : (
-                <div className="space-y-1">
-                  <h2 className="text-lg font-semibold text-primary">{username}</h2>
-                  <p className="text-sm text-gray-500">{email}</p>
+                <div className="space-y-2 text-sm text-gray-700">
+                  <p>
+                    <span className="font-semibold">Name:</span> {name || "—"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Contact Email:</span>{" "}
+                    {contactEmail || "—"}
+                  </p>
+                  <p className="pt-4">
+                    <span className="font-semibold">Username:</span> {username || "—"}
+                  </p>
+                  <p>
+                    <span className="font-semibold">Email:</span> {email || "—"}
+                  </p>
+
                   {resumeUrl ? (
                     <a
                       href={`http://127.0.0.1:8000/${resumeUrl}`}
@@ -211,6 +263,7 @@ const Employee_Form: React.FC = () => {
             </div>
           </aside>
 
+          {/* Rest unchanged */}
           <main className="md:col-span-2 space-y-6">
             <section>
               <h3 className="text-md font-semibold text-primary mb-2">

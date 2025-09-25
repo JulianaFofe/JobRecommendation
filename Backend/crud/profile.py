@@ -14,21 +14,30 @@ def create_or_update_profile(
     db_profile = db.query(Profile).filter(Profile.user_id == user_id).first()
 
     if db_profile:
-        # Update existing
+        # Update existing profile
         if profile_data:
             db_profile.skills = profile_data.skills
             db_profile.experience = profile_data.experience
             db_profile.education = profile_data.education
+
+            # ✅ Added update logic for new fields
+            db_profile.name = profile_data.name
+            db_profile.contact_email = profile_data.contact_email
+
         if resume_url:
             db_profile.resume_url = resume_url
     else:
-        # Create new
+        # Create new profile
         db_profile = Profile(
             user_id=user_id,
             skills=profile_data.skills if profile_data else None,
             experience=profile_data.experience if profile_data else None,
             education=profile_data.education if profile_data else None,
-            resume_url=resume_url
+            resume_url=resume_url,
+
+            # ✅ Added creation logic for new fields
+            name=profile_data.name if profile_data else None,
+            contact_email=profile_data.contact_email if profile_data else None,
         )
         db.add(db_profile)
 
