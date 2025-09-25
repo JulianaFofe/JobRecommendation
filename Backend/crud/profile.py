@@ -1,41 +1,37 @@
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from models.profile import Profile
+from schema.profile import ProfileCreate
 
 def get_profile(db: Session, user_id: int):
-    return (
-        db.query(Profile)
-        .options(joinedload(Profile.user))  # make sure User is available
-        .filter(Profile.user_id == user_id)
-        .first()
-    )
+    return db.query(Profile).filter(Profile.user_id == user_id).first()
 
-def create_or_update_profile(db: Session, user_id: int, profile_data, resume_url: str | None = None):
+def create_or_update_profile(
+    db: Session,
+    user_id: int,
+    profile_data: ProfileCreate = None,
+    resume_url: str = None
+) -> Profile:
     db_profile = db.query(Profile).filter(Profile.user_id == user_id).first()
 
     if db_profile:
-        db_profile.skills = profile_data.skills
-        db_profile.experience = profile_data.experience
-        db_profile.education = profile_data.education
+        # Update existing
+        if profile_data:
+            db_profile.skills = profile_data.skills
+            db_profile.experience = profile_data.experience
+            db_profile.education = profile_data.education
         if resume_url:
             db_profile.resume_url = resume_url
     else:
+        # Create new
         db_profile = Profile(
             user_id=user_id,
-            skills=profile_data.skills,
-            experience=profile_data.experience,
-            education=profile_data.education,
-            resume_url=resume_url,
+            skills=profile_data.skills if profile_data else None,
+            experience=profile_data.experience if profile_data else None,
+            education=profile_data.education if profile_data else None,
+            resume_url=resume_url
         )
+        db.add(db_profile)
 
-    # Create new profile
-    db_profile = Profile(
-        user_id=user_id,
-        skills=",".join([s.strip() for s in profile_data.skills]) if profile_data.skills else "",
-        education=profile_data.education,
-        experience=profile_data.experience,
-        resume_url=resume_url
-    )
-    db.add(db_profile)
     db.commit()
     db.refresh(db_profile)
     return db_profile

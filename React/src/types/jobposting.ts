@@ -32,3 +32,4 @@ export interface JobUpdate {
   job_type?: string;
   status?: string;
 }
+
