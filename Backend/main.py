@@ -7,6 +7,7 @@ from routers import apllication
 from routers import admins
 from routers import profile
 from routers import saveJob
+from routers import notification
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import literal
 from dotenv import load_dotenv
@@ -94,9 +95,7 @@ app.include_router(job.router)
 app.include_router(recommendations.router)
 app.include_router(feedback.router)
 app.include_router(review.router)
-app.include_router(profile.router, prefix="/profiles")
-app.include_router(profile.router)
-
+app.include_router(notification.router)
 
 
 @app.get("/")

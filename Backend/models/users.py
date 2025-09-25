@@ -15,8 +15,9 @@ class User(Base):
     dateUpdated = Column("updated_at", DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     jobs=relationship("Job", back_populates="employer")
-    applications= relationship("Application",back_populates="applicant", cascade="all, delete-orphan")
+    applications= relationship("Application", back_populates="applicant", cascade="all, delete-orphan")
     profile = relationship("Profile", back_populates="user", uselist=False)
+    notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
     saved_jobs = relationship("SavedJob", back_populates="employee")
     is_approved = Column(Boolean, default=False)
     search_history = relationship("SearchHistory", back_populates="user", cascade="all, delete-orphan")

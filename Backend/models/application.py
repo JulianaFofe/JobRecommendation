@@ -1,4 +1,4 @@
-from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Column
+from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, String, Column
 from sqlalchemy.orm import relationship
 from database import Base
 from enums.enums import ApplicationStatus
@@ -12,6 +12,7 @@ class Application(Base):
     status=Column(Enum(ApplicationStatus), nullable=False, default=ApplicationStatus.PENDING)
     applied_at=Column(DateTime(timezone=True), default=lambda:datetime.now(timezone.utc))
     resume = Column(String(255), nullable=True)
+   
 
     job = relationship("Job", back_populates="applications")
     applicant = relationship("User", back_populates="applications", passive_deletes=True)

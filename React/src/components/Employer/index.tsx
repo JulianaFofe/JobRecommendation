@@ -141,7 +141,7 @@ function Employer() {
       <div className="w-64 bg-white shadow-lg p-6 flex flex-col fixed h-full">
         <div className="flex flex-col items-start mb-8">
           <img src={m} alt="logo" className="w-full object-contain mb-4" />
-          <h1 className="text-green-500 font-bold text-xl">Employer</h1>
+          <h1 className="text-primary font-bold text-xl">Employer</h1>
         </div>
 
         <nav className="flex flex-col gap-4">
