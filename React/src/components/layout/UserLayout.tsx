@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import SidebarWrapper from "../EmployeeDashboard/hamburger";
-import Navbar from "../EmployeeDashboard/Navbar";
+// import Navbar from "../EmployeeDashboard/Navbar";
 import type { SidebarItem } from "../../types/sidebar";
 import { Home, FileText, UserCircle, LogOut } from "lucide-react";
 
@@ -19,10 +19,6 @@ export default function UserLayout() {
 
       {/* Navbar + Dynamic Page */}
       <section className="flex-1 flex flex-col">
-        <Navbar
-          onSearch={(q) => console.log("Search query:", q)}
-          onToggleSidebar={() => console.log("Sidebar toggle clicked")}
-        />
         <main className="flex-1 p-6">
           <Outlet />
         </main>
