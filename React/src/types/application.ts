@@ -9,5 +9,6 @@ export interface Application {
   applied_at: string; 
   status: string; 
   applicant_id: number;
-  applicant_name: string;          
+  applicant_name: string;    
+        
 }
