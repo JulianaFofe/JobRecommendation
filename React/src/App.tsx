@@ -25,7 +25,7 @@ import AdminFeedback from "./components/feedback/adminsfeedback";
 import UserLayout from "./components/layout/UserLayout"
 import ReviewsTable from "./components/reviews";
 import EmployersReview from "./components/empoyers_review/index"
-import SaveJobs from "./components/EmployeeDashboard/savedJobs/index"
+//import SaveJobs from "./components/EmployeeDashboard/savedJobs/index"
 //port PendingUsers from "./components/pendingusers";
 
 function App() {
