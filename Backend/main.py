@@ -23,7 +23,7 @@ from sqlalchemy.orm import Session
 from security import hash_password, verify_password
 from datetime import datetime
 from routers import review
-from routers import profile
+
 
 
 # Create tables

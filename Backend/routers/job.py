@@ -124,28 +124,44 @@ def list_all_employer_jobs(
     jobs = db.query(models.Job).filter(models.Job.employer_id == current_user.id).all()
     return jobs
 
-#route to accept the jobs applied for 
-@router.put("/approve/{application_id}")
-def approve_application(application_id: int, db: Session = Depends(get_db), current_user: User = Depends(getCurrentUser)):
+#route to accept/reject the jobs applied for 
+@router.put("/{application_id}/{action}")
+def handle_application(application_id: int, action: str, db: Session = Depends(get_db), current_user: User = Depends(getCurrentUser)):
+    """
+    Approve or reject a job application.
+    action: "approve" or "reject"
+    """
     # 1. Get the application
     application = db.query(models.Application).filter(models.Application.id == application_id).first()
     if not application:
-        return {"error": "Application not found"}
+        raise HTTPException(status_code=404, detail="Application not found")
 
     # 2. Make sure the current user is the employer for this job
     job = db.query(Job).filter(Job.id == application.job_id).first()
     if job.employer_id != current_user.id:
-        return {"error": "Not authorized"}
+        raise HTTPException(status_code=403, detail="Not authorized")
 
-    # 3. Approve the application
-    application.status= True
+    # 3. Update application status
+    if action == "approve":
+        application.status = True
+        email_subject = "Application Approved"
+        email_body = f"Congratulations! Your application for {job.title} has been approved."
+        notification_message = f"Your application for {job.title} was approved!"
+    elif action == "reject":
+        application.status = False
+        email_subject = "Application Rejected"
+        email_body = f"Unfortunately, your application for {job.title} was not successful."
+        notification_message = f"Your application for {job.title} was rejected."
+    else:
+        raise HTTPException(status_code=400, detail="Invalid action. Must be 'approve' or 'reject'.")
+
     db.commit()
 
     # 4. Create notification for applicant
     notification = Notification(
         user_id=application.applicant_id,
-        type="approval",
-        message=f"Your application for {job.title} was approved!"
+        type=action,
+        message=notification_message
     )
     db.add(notification)
     db.commit()
@@ -153,8 +169,8 @@ def approve_application(application_id: int, db: Session = Depends(get_db), curr
     # 5. Send email to applicant
     send_email(
         to=application.applicant.email,
-        subject="Application Approved",
-        body=f"Congratulations! Your application for {job.title} has been approved."
+        subject=email_subject,
+        body=email_body
     )
 
-    return {"message": "Application approved successfully"}
+    return {"message": f"Application {action}d successfully"}
