@@ -87,7 +87,7 @@ def delete_job_endpoint(
     return deleted_job
 
 @router.get("/public", response_model=List[schema.Job])
-def get_public_jobs(db: Session = Depends(get_db)):
+def get_public_jobs(db: Session = Depends(get_db)):    
     jobs = db.query(Job).filter(Job.is_approved == True).all()
     return jobs
 
@@ -106,8 +106,12 @@ def get_job(job_id: int, db: Session = Depends(get_db), current_user: User = Dep
 
 
 @router.get("/employer_id")
-def get_job(job_id: int, db: Session = Depends(get_db)):
+def get_job(job_id: int, db: Session = Depends(get_db), current_user: User = Depends(getCurrentUser)):
     job = db.query(Job).filter(Job.id == job_id).first()
+
+    if current_user.role != UserRole.EMPLOYER:
+        raise HTTPException(status_code=403, detail="Only employees can view their jobs status")
+    
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     return job

@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -19,7 +20,7 @@ class ApplicationCreate(BaseModel):
 
 class ApplicationResponse(BaseModel):
     id: int
-    job_id: int
+    job_id: Optional[int]
     jobTitle : str
     applicant_id: int
     applicant_name: str 

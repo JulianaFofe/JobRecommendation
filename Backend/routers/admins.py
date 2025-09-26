@@ -43,7 +43,7 @@ def get_all_users(
 
 
 # Get all jobs
-@router.get("/jobs", response_model=List[JobSchema])
+@router.get("/jobs", response_model=List[JobResponse])
 def get_all_jobs(db: Session = Depends(get_db), current_user: User = Depends(getCurrentUser)):
     check_admin(current_user)
     return db.query(Job).all()
@@ -120,8 +120,7 @@ def delete_job(
 
     return {"detail": f"Job with id {job_id} has been deleted"}
 
-    
- 
+
 
 @router.get("/stats/daily")
 def get_daily_stats(
@@ -227,3 +226,68 @@ def approve_user(user_id: int, db: Session = Depends(get_db), current_user=Depen
     db.commit()
     db.refresh(user)
     return user
+
+@router.get("/reports")
+def get_admin_report(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(getCurrentUser)
+):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Only admins can access this resource")
+
+    # Most applied jobs
+    most_applied_jobs_query = (
+        db.query(
+            Application.job_id,
+            Job.title,
+            func.count(Application.id).label("total_applications")
+        )
+        .join(Job, Job.id == Application.job_id)
+        .group_by(Application.job_id, Job.title)
+        .order_by(func.count(Application.id).desc())
+        .limit(5)
+        .all()
+    )
+    most_applied_jobs = [
+        {"job_id": j.job_id, "title": j.title, "total_applications": j.total_applications}
+        for j in most_applied_jobs_query
+    ]
+
+    # Most active employers
+    most_active_employers_query = (
+        db.query(
+            Job.employer_id,
+            User.username,
+            func.count(Job.id).label("total_jobs_posted"),
+            func.coalesce(func.count(Application.id), 0).label("total_applications")
+        )
+        .join(User, User.id == Job.employer_id)
+        .outerjoin(Application, Application.job_id == Job.id)
+        .order_by(func.count(Job.id).desc())
+        .limit(5)
+        .all()
+    )
+    most_active_employers = [
+        {
+            "employer_id": e.employer_id,
+            "employer_name": e.username,
+            "total_jobs_posted": e.total_jobs_posted,
+            "total_applications": e.total_applications
+        }
+        for e in most_active_employers_query
+    ]
+
+    # Hiring statistics
+    stats = {
+        "total_jobs": db.query(Job).count(),
+        "total_applications": db.query(Application).count(),
+        "total_users": db.query(User).count()
+    }
+
+    return {
+        "most_applied_jobs": most_applied_jobs,
+        "most_active_employers": most_active_employers,
+        "hiring_stats": stats
+    }
+
+
