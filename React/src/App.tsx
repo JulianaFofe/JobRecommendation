@@ -2,7 +2,6 @@ import Dashboard from "./components/EmployeeDashboard/Dashboard";
 import DashView from "./components/dashboardView";
 import Employer from "./components/Employer";
 import Management from "./components/usermanagement";
-//import Footer from "./containers/footer";
 import Signup from "./components/signup";
 import Login from "./components/login";
 import Testimonials from "./components/tesmimonials";
@@ -25,8 +24,7 @@ import AdminFeedback from "./components/feedback/adminsfeedback";
 import UserLayout from "./components/layout/UserLayout"
 import ReviewsTable from "./components/reviews";
 import EmployersReview from "./components/empoyers_review/index"
-//import SaveJobs from "./components/EmployeeDashboard/savedJobs/index"
-//port PendingUsers from "./components/pendingusers";
+import AdminReport from "./components/adminReport";
 
 function App() {
   return (
@@ -34,7 +32,6 @@ function App() {
       <Routes>
         <Route path="/employee" element={<Employee_Form />} />
 
-        {/* Profile page (props removed, since profileview has hardcoded data) */}
         <Route path="/profile" element={<PublicProfile />} />
 
         <Route path="/" element={<Home />} />
@@ -51,7 +48,6 @@ function App() {
         <Route path="savejobs" element={<SaveJobs/>}/>
       </Route>
 
-        {/* Protected Employer Route */}
         <Route
           path="/employer"
           element={
@@ -72,6 +68,7 @@ function App() {
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/service" element={<Services />} />
         <Route path="/jobstate" element={<Jobstate />} />
+        <Route path="/adminReport" element={<AdminReport />} />
         <Route path="/about" element={<About />} />
         <Route path="/employeedash" element={<Dashboard />} />
         <Route path="/jobmanagement" element={<Job />} />
@@ -83,7 +80,6 @@ function App() {
 
       </Routes>
 
-     
     </div>
   );
 }
