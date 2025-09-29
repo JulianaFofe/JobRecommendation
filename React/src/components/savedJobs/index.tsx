@@ -1,17 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
-// ------------------------
-// Types
-// ------------------------
-type Job = {
-  id: number;
-  title: string;
-  description: string;
-  location: string;
-  salary: string;
-  status: string;
-};
+import type { Job } from "../../../types/jobposting";
 
 type SavedJob = {
   id: number;         // saved job record ID
@@ -19,26 +8,37 @@ type SavedJob = {
   job: Job;           // the actual job object
 };
 
-// ------------------------
-// Component
-// ------------------------
+type FormDataType = {
+  name: string;
+  email: string;
+  contact: string;
+  job_id: number | null;
+  resume: File | null;
+};
+
 export default function SaveJobs() {
   const [savedJobs, setSavedJobs] = useState<SavedJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [formData, setFormData] = useState<FormDataType>({
+    name: "",
+    email: "",
+    contact: "",
+    job_id: null,
+    resume: null,
+  });
 
-  // match Employee_Form.tsx auth method
   const token = localStorage.getItem("access_token");
 
-  // Fetch saved jobs from backend
+  // Fetch saved jobs
   const fetchSavedJobs = async () => {
     setLoading(true);
     try {
       const res = await axios.get<SavedJob[]>(
         "http://127.0.0.1:8000/saved-jobs/",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setSavedJobs(res.data);
     } catch (err) {
@@ -64,9 +64,39 @@ export default function SaveJobs() {
     }
   };
 
-  // Placeholder for applying to a job
-  const applyToJob = (jobId: number) => {
-    alert(`Apply to job ${jobId}`);
+  // Handle Apply click
+  const handleApplyClick = (job: Job) => {
+    setSelectedJob(job);
+    setFormData((prev) => ({ ...prev, job_id: job.id }));
+    setShowForm(true);
+  };
+
+  // Submit application
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.job_id) return;
+
+    const payload = new FormData();
+    payload.append("name", formData.name);
+    payload.append("email", formData.email);
+    payload.append("contact", formData.contact);
+    payload.append("job_id", String(formData.job_id));
+    if (formData.resume) payload.append("resume", formData.resume);
+
+    try {
+      const res = await fetch("http://localhost:8000/applications/", {
+        method: "POST",
+        body: payload,
+      });
+      const result = await res.json();
+      setShowForm(false);
+      setMessage(result.message || "Application submitted!");
+      setTimeout(() => setMessage(null), 5000);
+    } catch (err) {
+      console.error("Error submitting application:", err);
+      setMessage("Failed to submit application");
+      setTimeout(() => setMessage(null), 5000);
+    }
   };
 
   useEffect(() => {
@@ -93,11 +123,11 @@ export default function SaveJobs() {
             <table className="w-full border-none">
               <thead>
                 <tr className="bg-green-500 text-white">
-                  <th className=" px-4 py-2 text-left text-white border-none">Title</th>
-                  <th className=" px-4 py-2 text-left text-white border-none">Location</th>
-                  <th className=" px-4 py-2 text-left text-white border-none">Salary</th>
-                  <th className=" px-4 py-2 text-left text-white border-none">Saved At</th>
-                  <th className=" px-4 py-2 text-left text-white border-none">Actions</th>
+                  <th className="px-4 py-2 text-left">Title</th>
+                  <th className="px-4 py-2 text-left">Location</th>
+                  <th className="px-4 py-2 text-left">Salary</th>
+                  <th className="px-4 py-2 text-left">Saved At</th>
+                  <th className="px-4 py-2 text-left">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -111,7 +141,7 @@ export default function SaveJobs() {
                     </td>
                     <td className="border-none px-4 py-2 space-x-2 font-semibold">
                       <button
-                        onClick={() => applyToJob(sj.job.id)}
+                        onClick={() => handleApplyClick(sj.job)}
                         className="bg-green-500 hover:bg-green-400 text-white px-3 py-1 rounded"
                       >
                         Apply
@@ -127,6 +157,78 @@ export default function SaveJobs() {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* Apply Form Modal */}
+        {showForm && selectedJob && (
+          <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/30 backdrop-blur-sm">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6 p-8 bg-white rounded-2xl shadow-lg max-w-3xl w-full"
+            >
+              <h2 className="text-2xl font-bold text-primary mb-2">{selectedJob.title}</h2>
+
+              <div className="grid grid-cols-1 gap-4">
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  className="border p-3 rounded-lg w-full"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  required
+                />
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  className="border p-3 rounded-lg w-full"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  required
+                />
+                <input
+                  type="tel"
+                  placeholder="Contact Number"
+                  className="border p-3 rounded-lg w-full"
+                  value={formData.contact}
+                  onChange={(e) =>
+                    setFormData({ ...formData, contact: e.target.value })
+                  }
+                  required
+                />
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      resume: e.target.files?.[0] || null,
+                    })
+                  }
+                  required
+                />
+              </div>
+
+              <div className="flex gap-4 mt-6">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white px-6 py-3 rounded-lg"
+                >
+                  Submit Application
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="bg-gray-400 text-white px-6 py-3 rounded-lg"
+                >
+                  Close
+                </button>
+              </div>
+            </form>
           </div>
         )}
       </div>

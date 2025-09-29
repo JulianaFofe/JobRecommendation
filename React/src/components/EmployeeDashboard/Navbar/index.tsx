@@ -154,15 +154,16 @@ export default function Navbar({ onToggleSidebar, onSearchResults, onRecommended
       <div className="relative w-full max-w-md mx-4 flex items-center gap-2" ref={dropdownRef}>
         {/* Filter dropdown */}
         <div className="relative">
-          <button
-            onClick={() => setShowFilterDropdown((prev) => !prev)}
-            className="flex items-center border border-primary rounded-md px-3 py-2 bg-white shadow-sm text-sm text-gray-700"
-          >
-            {filterOptions.find((f) => f.value === filter)?.label}
-            <ChevronDown className="w-4 h-4 ml-1" />
-          </button>
+            <button
+              onClick={() => setShowFilterDropdown((prev) => !prev)}
+              className="flex items-center border border-primary rounded-md px-3 py-2 bg-white shadow-sm text-sm text-gray-700 min-w-[130px]"
+            >
+              {filterOptions.find((f) => f.value === filter)?.label}
+              <ChevronDown className="w-4 h-4 ml-1" />
+            </button>
+
           {showFilterDropdown && (
-            <ul className="absolute left-0 mt-1 w-full bg-white border border-gray-200 shadow-lg rounded-md z-50">
+              <ul className="absolute left-0 mt-1 min-w-[130px] bg-white border border-gray-200 shadow-lg rounded-md z-50">
               {filterOptions.map((option) => (
                 <li
                   key={option.value}

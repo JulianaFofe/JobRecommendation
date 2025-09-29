@@ -9,7 +9,7 @@ const sidebarItems: SidebarItem[] = [
   { id: "review", title: "Review Table", path: "/reviewtsable", icon: FileText },
   { id: "profile", title: "Profile", path: "/employeeform", icon: UserCircle },
   { id: "savejobs", title: "Save Jobs", path: "/savejobs", icon: BookmarkCheck },
-  { id: "logout", title: "Logout", path: "/", icon: LogOut },
+  { id: "logout", title: "Logout", path: "/logout", icon: LogOut },
 ];
 
 export default function UserLayout() {

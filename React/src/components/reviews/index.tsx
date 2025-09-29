@@ -42,7 +42,7 @@ const ReviewsTable: React.FC = () => {
     <div className="w-full h-full flex justify-center items-center bg-gray/30 backdrop-blur-sm">
       <div className="relative h-4/5 w-4/5 flex justify-center">
         {/* Semi-transparent card */}
-        <div className="bg-white bg-opacity-80 rounded-lg shadow-lg w-full max-w-6xl p-2">
+        <div className="bg-white bg-opacity-80 rounded-lg shadow-lg w-full max-w-6xl p-2 transition-transform duration-300 ease-in-out ">
           <h2 className="text-2xl font-bold mb-6 text-primary text-center">
             Reviews
           </h2>
