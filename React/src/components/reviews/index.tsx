@@ -31,40 +31,55 @@ const ReviewsTable: React.FC = () => {
     fetchReviews();
   }, []);
 
-  if (loading) return <p className="text-center mt-4">Loading reviews…</p>;
-  if (error) return <p className="text-center mt-4 text-red-500">{error}</p>;
+  if (loading)
+    return <p className="text-center mt-10 text-gray-600">Loading reviews…</p>;
+  if (error)
+    return (
+      <p className="text-center mt-10 text-red-500 font-medium">{error}</p>
+    );
 
   return (
-    <div className="overflow-x-auto max-w-4xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4 text-center">Reviews</h2>
-      <table className="min-w-full border border-gray-200 rounded-lg">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="px-4 py-2 border-b">Applicant</th>
-            <th className="px-4 py-2 border-b">Job Position</th>
-            <th className="px-4 py-2 border-b">Rating</th>
-            <th className="px-4 py-2 border-b">Message</th>
-          </tr>
-        </thead>
-        <tbody>
+    <div className="w-full h-full flex justify-center items-center bg-gray/30 backdrop-blur-sm">
+      <div className="relative h-4/5 w-4/5 flex justify-center">
+        {/* Semi-transparent card */}
+        <div className="bg-white bg-opacity-80 rounded-lg shadow-lg w-full max-w-6xl p-2">
+          <h2 className="text-2xl font-bold mb-6 text-primary text-center">
+            Reviews
+          </h2>
+
           {reviews.length === 0 ? (
-            <tr>
-              <td colSpan={4} className="text-center py-4 text-gray-500">
-                No reviews yet
-              </td>
-            </tr>
+            <p className="text-center text-gray-500 py-6">No reviews yet</p>
           ) : (
-            reviews.map((review) => (
-              <tr key={review.id} className="hover:bg-gray-50">
-                <td className="px-4 py-2 border-b">{review.applicant_name}</td>
-                <td className="px-4 py-2 border-b">{review.job_position || "-"}</td>
-                <td className="px-4 py-2 border-b">{review.rating} ⭐</td>
-                <td className="px-4 py-2 border-b">{review.message}</td>
-              </tr>
-            ))
+            <div className="overflow-scroll max-h-[400px]">
+              <table className="min-w-full border border-gray-200 bg-transparent rounded-lg">
+                <thead className="bg-gray-100 bg-opacity-70">
+                  <tr>
+                    <th className="px-4 py-2 border-b text-left">Applicant</th>
+                    <th className="px-4 py-2 border-b text-left">Job Position</th>
+                    <th className="px-4 py-2 border-b text-left">Rating</th>
+                    <th className="px-4 py-2 border-b text-left">Message</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reviews.map((review) => (
+                    <tr
+                      key={review.id}
+                      className="hover:bg-gray-50 hover:bg-opacity-40"
+                    >
+                      <td className="px-4 py-2 border-b">{review.applicant_name}</td>
+                      <td className="px-4 py-2 border-b">
+                        {review.job_position || "-"}
+                      </td>
+                      <td className="px-4 py-2 border-b">{review.rating} ⭐</td>
+                      <td className="px-4 py-2 border-b">{review.message}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </div>
   );
 };

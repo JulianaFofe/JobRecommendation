@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import SidebarWrapper from "../EmployeeDashboard/hamburger";
+import Dashboard from "../EmployeeDashboard/Dashboard/index"; // adjust path if needed
 import type { SidebarItem } from "../../types/sidebar";
 import { Home, FileText, UserCircle, LogOut, BookmarkCheck } from "lucide-react";
 
@@ -7,7 +8,7 @@ const sidebarItems: SidebarItem[] = [
   { id: "home", title: "Home", path: "/employeedash", icon: Home },
   { id: "review", title: "Review Table", path: "/reviewtsable", icon: FileText },
   { id: "profile", title: "Profile", path: "/employeeform", icon: UserCircle },
-  { id: "savejobs", title: "savejobs", path:"/savejobs", icon: BookmarkCheck},
+  { id: "savejobs", title: "Save Jobs", path: "/savejobs", icon: BookmarkCheck },
   { id: "logout", title: "Logout", path: "/", icon: LogOut },
 ];
 
@@ -17,10 +18,19 @@ export default function UserLayout() {
       {/* Sidebar */}
       <SidebarWrapper items={sidebarItems} />
 
-      {/* Navbar + Dynamic Page */}
-      <section className="flex-1 flex flex-col">
-        <main className="flex-1 ">
-          <Outlet />
+      {/* Main content area */}
+      <section className="flex-1 flex flex-col relative">
+        <main className="flex-1 relative">
+
+          {/* Dashboard always rendered underneath */}
+          <div className="relative z-0">
+            <Dashboard />
+          </div>
+
+          {/* Dynamic page content from routes */}
+          <div className="absolute inset-0 z-10 ">
+            <Outlet />
+          </div>
         </main>
       </section>
     </div>
