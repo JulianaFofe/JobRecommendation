@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import goal from "../../assets/images/goals.png";
 import { Target, Briefcase, Users } from "lucide-react";
 import Navbar from "../../containers/navbar";
+import Footer from "../../containers/footer";
 
 export default function Goals() {
   const items = [
@@ -95,6 +96,7 @@ export default function Goals() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }
