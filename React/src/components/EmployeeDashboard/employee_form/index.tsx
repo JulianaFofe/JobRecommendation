@@ -1,7 +1,7 @@
 // Employee_Form.tsx
 import React, { useState, useEffect, type FormEvent } from "react";
 import { Upload, Loader2, CheckCircle2 } from "lucide-react";
-import logo from "../../../../React/src/assets/icons/logo1.png";
+import logo from "../../../assets/icons/logo1.png";
 import axios from "axios";
 
 type ProfileData = {

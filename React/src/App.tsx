@@ -6,7 +6,7 @@ import Signup from "./components/signup";
 import Login from "./components/login";
 import Testimonials from "./components/tesmimonials";
 import Job from "./components/Jobmanagement";
-import Employee_Form from "./components/employee_form/index";
+import Employee_Form from "./components/EmployeeDashboard/employee_form/index";
 import Jobstate from "./components/Adminaprove/index";
 import PendingUsers from "./components/pendingusers";
 import Home from "./containers/home";

@@ -90,35 +90,35 @@ export default function SaveJobs() {
           <p>No saved jobs found.</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-200">
+            <table className="w-full border-none">
               <thead>
-                <tr className="bg-gray-100">
-                  <th className="border px-4 py-2 text-left text-primary">Title</th>
-                  <th className="border px-4 py-2 text-left text-primary">Location</th>
-                  <th className="border px-4 py-2 text-left text-primary">Salary</th>
-                  <th className="border px-4 py-2 text-left text-primary">Saved At</th>
-                  <th className="border px-4 py-2 text-left text-primary">Actions</th>
+                <tr className="bg-green-500 text-white">
+                  <th className=" px-4 py-2 text-left text-white border-none">Title</th>
+                  <th className=" px-4 py-2 text-left text-white border-none">Location</th>
+                  <th className=" px-4 py-2 text-left text-white border-none">Salary</th>
+                  <th className=" px-4 py-2 text-left text-white border-none">Saved At</th>
+                  <th className=" px-4 py-2 text-left text-white border-none">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {savedJobs.map((sj) => (
                   <tr key={sj.id} className="hover:bg-gray-50">
-                    <td className="border px-4 py-2">{sj.job.title}</td>
-                    <td className="border px-4 py-2">{sj.job.location}</td>
-                    <td className="border px-4 py-2">{sj.job.salary} XAF</td>
-                    <td className="border px-4 py-2">
+                    <td className="border-none px-4 py-2">{sj.job.title}</td>
+                    <td className="border-none px-4 py-2">{sj.job.location}</td>
+                    <td className="border-none px-4 py-2">{sj.job.salary} XAF</td>
+                    <td className="border-none px-4 py-2">
                       {new Date(sj.saved_at).toLocaleString()}
                     </td>
-                    <td className="border px-4 py-2 space-x-2">
+                    <td className="border-none px-4 py-2 space-x-2 font-semibold">
                       <button
                         onClick={() => applyToJob(sj.job.id)}
-                        className="bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded"
+                        className="bg-green-500 hover:bg-green-400 text-white px-3 py-1 rounded"
                       >
                         Apply
                       </button>
                       <button
                         onClick={() => removeJob(sj.job.id)}
-                        className="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded"
+                        className="bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded"
                       >
                         Remove
                       </button>

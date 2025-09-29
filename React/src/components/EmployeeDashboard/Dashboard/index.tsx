@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../Navbar';
 import type { Job } from '../../../types/jobposting';
+import axios from 'axios';
 
 export default function Dashboard() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [searchResults, setSearchResults] = useState<Job[] | null>(null);
   const [recommendedJobs, setRecommendedJobs] = useState<Job[] | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const token = localStorage.getItem("access_token");
 
   // Fetch all public jobs initially
   useEffect(() => {
@@ -40,6 +44,28 @@ export default function Dashboard() {
     return 'All Job Postings';
   };
 
+  // Save job
+  const saveJob = async (jobId: number) => {
+    try {
+      await axios.post(
+        `http://127.0.0.1:8000/saved-jobs/${jobId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setMessage("Job saved successfully");
+      setTimeout(() => setMessage(null), 3000);
+    } catch (err: any) {
+      console.error("Error saving job:", err);
+      if (err.response?.data?.detail) {
+        setMessage(err.response.data.detail); // e.g., "Job already saved"
+      } else {
+        setMessage("Failed to save job");
+      }
+      setTimeout(() => setMessage(null), 3000);
+    }
+  };
+
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
       <div className="flex-1 flex flex-col">
@@ -65,6 +91,13 @@ export default function Dashboard() {
             )}
           </div>
 
+          {/* Message */}
+          {message && (
+            <div className="p-2 mb-4 bg-green-100 text-green-800 rounded">
+              {message}
+            </div>
+          )}
+
           <div className="flex-1 overflow-y-auto pr-2 space-y-4">
             {displayedJobs.length > 0 ? (
               displayedJobs.map((job) => (
@@ -79,9 +112,19 @@ export default function Dashboard() {
                     <p className="text-sm mb-2">{job.job_type}</p>
                     <p className="font-bold text-green-600">XAF {job.salary}</p>
                   </div>
-                  <button className="bg-primary hover:bg-green-500 cursor-pointer text-white font-semibold px-6 py-2 rounded-full w-full sm:w-auto">
-                    Apply
-                  </button>
+
+                  {/* Buttons */}
+                  <div className="flex gap-3 w-full sm:w-auto">
+                    <button className="bg-primary hover:bg-green-500 cursor-pointer text-white font-semibold px-6 py-2 rounded-full w-full sm:w-auto active:opacity-90">
+                      Apply
+                    </button>
+                    <button
+                      onClick={() => saveJob(job.id)}
+                      className="bg-secondary hover:opacity-70 cursor-pointer text-white font-semibold px-6 py-2 rounded-full w-full sm:w-auto active:opacity-90"
+                    >
+                      Save
+                    </button>
+                  </div>
                 </article>
               ))
             ) : (
@@ -95,18 +138,14 @@ export default function Dashboard() {
       <div className={`lg:hidden fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity ${sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <div className="absolute inset-0 flex justify-end">
           <div className="w-64 bg-white shadow-lg p-4 h-full">
-            {/* Sidebar content */}
             <button
               className="text-gray-500 hover:text-gray-700"
               onClick={() => setSidebarOpen(false)}
             >
-              {/* Close icon */}
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-
-            {/* Add your sidebar content here */}
           </div>
         </div>
       </div>
@@ -116,7 +155,6 @@ export default function Dashboard() {
         className="block lg:hidden p-2"
         onClick={() => setSidebarOpen(true)}
       >
-        {/* Hamburger icon */}
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
         </svg>
