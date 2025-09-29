@@ -25,6 +25,7 @@ import UserLayout from "./components/layout/UserLayout"
 import ReviewsTable from "./components/reviews";
 import EmployersReview from "./components/empoyers_review/index"
 import AdminReport from "./components/adminReport";
+import Logout from "./components/logout/index"
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
         <Route path="/savedjobs" element={<SaveJobs/>}/>
         <Route path="/employee" element={<Dashboard />} /> 
         <Route path="savejobs" element={<SaveJobs/>}/>
+        <Route path="/logout" element={<Logout/>}/>
       </Route>
 
         <Route

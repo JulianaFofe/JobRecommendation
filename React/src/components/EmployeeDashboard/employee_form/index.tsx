@@ -144,7 +144,7 @@ const Employee_Form: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray/30 backdrop-blur-md p-6">
       {/* Profile Card */}
-      <div className="bg-white shadow-md rounded-2xl overflow-hidden border border-gray-100 max-w-4xl w-full">
+      <div className="bg-white shadow-md rounded-2xl overflow-hidden border border-gray-100 max-w-4xl w-full transition-transform duration-300 ease-in-out ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
           <aside className="md:col-span-1 flex flex-col items-center md:items-start">
             <div className="w-full mt-4">
