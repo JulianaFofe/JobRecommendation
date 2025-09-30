@@ -4,14 +4,11 @@ import {
   Trash2,
   Plus,
   Search,
-  TrendingUp,
-  Briefcase,
   User,
-  Calendar,
   Menu,
   X,
-  MessageSquare,
 } from "lucide-react";
+import Sidebar from "../dashboardView/sidebar";
 
 type User = {
   id: number;
@@ -47,7 +44,7 @@ const initialUsers: User[] = [
 
 export default function Management() {
   const [users] = useState<User[]>(initialUsers);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <div className="">
@@ -65,85 +62,7 @@ export default function Management() {
         </button>
 
         {/* Sidebar */}
-        <div
-          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white/70 backdrop-blur-sm shadow-lg rounded-lg m-2 lg:m-4 mr-0 transform transition-transform duration-300 ease-in-out 
-            ${
-              sidebarOpen
-                ? "translate-x-0"
-                : "-translate-x-full lg:translate-x-0"
-            }`}
-        >
-          {/* Sidebar content */}
-          <div className="p-4 lg:p-6">
-            <div className="p-4 lg:p-6">
-              <div className="flex flex-col items-center gap-1 mb-6 lg:mb-8">
-                <a href="/">
-                  <img
-                    src="WhatsApp_Image_2025-09-03_at_12.18.10-removebg-preview.png"
-                    alt="SmartHire Logo"
-                    className="w-32 lg:w-45 h-auto object-cover"
-                  />
-                </a>
-                <p className="text-xs lg:text-sm text-gray-500 mt-1">
-                  Admin Portal
-                </p>
-              </div>
-
-              <nav className="space-y-2">
-                <div className="text-xs lg:text-md font-medium text-black uppercase tracking-wider mb-3">
-                  MAIN MENU
-                </div>
-
-                <a
-                  href="/dashview"
-                  className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base"
-                >
-                  <TrendingUp className="w-5 h-5 text-primary" />
-                  <span className="hidden sm:inline">Dashboard Overview</span>
-                </a>
-                <a
-                  href="#"
-                  className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
-                >
-                  <Briefcase className="w-5 h-5 text-primary" />
-                  <span className="hidden sm:inline">Job Management</span>
-                </a>
-                <a
-                  href="#"
-                  className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
-                >
-                  <User className="w-5 h-5 text-primary" />
-                  <span className="hidden sm:inline">User Management</span>
-                </a>
-                <a
-                  href="/feedadmins"
-                  className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
-                >
-                  <MessageSquare className="w-5 h-5 text-primary" />
-                  <span className="hidden sm:inline">Feedback Management</span>
-                </a>
-
-                <div className="text-xs lg:text-md font-medium text-black uppercase tracking-wider mb-3 mt-6">
-                  QUICK ACTIONS
-                </div>
-                <a
-                  href="#"
-                  className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base"
-                >
-                  <Plus className="w-5 h-5 text-primary" />
-                  <span className="hidden sm:inline">Add New Job</span>
-                </a>
-                <a
-                  href="#"
-                  className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base"
-                >
-                  <Calendar className="w-5 h-5 text-primary" />
-                  <span className="hidden sm:inline">Schedule Report</span>
-                </a>
-              </nav>
-            </div>
-          </div>
-        </div>
+        <Sidebar sidebarOpen={sidebarOpen} />
         <div className="flex-1 p-4 lg:p-8 lg:ml-0">
           <div className="mb-6 lg:mb-8 mt-12 lg:mt-0">
             <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">

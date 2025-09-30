@@ -16,8 +16,8 @@ class User(Base):
 
     jobs=relationship("Job", back_populates="employer")
     applications= relationship("Application", back_populates="applicant", cascade="all, delete-orphan")
-    profile = relationship("Profile", back_populates="user", uselist=False)
+    profile = relationship("Profile", back_populates="user", uselist=False, cascade="all, delete-orphan")
     notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
     saved_jobs = relationship("SavedJob", back_populates="employee")
-    is_approved = Column(Boolean, default=False)
+    is_approved = Column(Boolean, default=False, nullable=True)
     search_history = relationship("SearchHistory", back_populates="user", cascade="all, delete-orphan")

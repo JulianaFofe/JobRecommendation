@@ -1,16 +1,8 @@
 import React from "react";
-import {
-  TrendingUp,
-  Plus,
-  Calendar,
-  Briefcase,
-  User,
-  Menu,
-  X,
-  MessageSquare,
-} from "lucide-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Sidebar from "../dashboardView/sidebar";
+import { Menu, X } from "lucide-react";
 
 const Button = React.forwardRef<
   HTMLButtonElement,
@@ -60,8 +52,10 @@ Button.displayName = "Button";
 
 type Job = {
   id: number;
+  salary: number;
   title: string;
-  company_name: string;
+  location: string;
+  description: string;
   is_approved: boolean;
   created_at: string;
 };
@@ -118,134 +112,86 @@ function Jobstate() {
     }
   };
 
+  const rejectJob = async (jobId: number) => {
+    try {
+      const token = localStorage.getItem("access_token");
+
+      if (!token) {
+        console.error("No token found. Please log in again.");
+        return;
+      }
+
+      await axios.put(
+        `http://127.0.0.1:8000/admin/jobs/reject/${jobId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setJobs((prev) => prev.filter((u) => u.id !== jobId));
+    } catch (err) {
+      console.error("Error approving job:", err);
+    }
+  };
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
-    <div className="flex gap-10">
-      <div className="lg:hidden fixed top-4 left-4 z-50">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="bg-white/70 backdrop-blur-sm shadow-lg"
-        >
-          {sidebarOpen ? (
-            <X className="w-5 h-5" />
-          ) : (
-            <Menu className="w-5 h-5" />
-          )}
-        </Button>
-      </div>
+    <div className="h-screen flex flex-col bg-gray-50 font-sans">
+      <div className="flex h-screen">
+        {/* Sidebar (fixed width) */}
+        <Sidebar sidebarOpen={sidebarOpen} />
 
-      <div>
-        {/* Sidebar */}
-        <div
-          className={`
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
-          lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 
-          w-64 bg-white/70 backdrop-blur-sm shadow-lg rounded-lg 
-          m-2 lg:m-4 mr-0 transition-transform duration-300 ease-in-out
-        `}
-        >
-          <div className="p-4 lg:p-6">
-            <div className="flex flex-col items-center gap-1 mb-6 lg:mb-8">
-              <a href="/jobstate">
-                <img
-                  src="WhatsApp_Image_2025-09-03_at_12.18.10-removebg-preview.png"
-                  alt="SmartHire Logo"
-                  className="w-32 lg:w-45 h-auto object-cover"
-                />
-              </a>
-              <p className="text-xs lg:text-sm text-gray-500 mt-1">
-                Admin Portal
-              </p>
-            </div>
-
-            <nav className="space-y-2">
-              <div className="text-xs lg:text-md font-medium text-black uppercase tracking-wider mb-3">
-                MAIN MENU
-              </div>
-
-              <a
-                href="dashview"
-                className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base"
+        {/* Main content */}
+        <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
+          <button
+              className="lg:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-md shadow"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
               >
-                <TrendingUp className="w-5 h-5 text-primary" />
-                <span className="hidden sm:inline">Dashboard Overview</span>
-              </a>
-              <a
-                href="/jobmanagement"
-                className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
-              >
-                <Briefcase className="w-5 h-5 text-primary" />
-                <span className="hidden sm:inline">Job Management</span>
-              </a>
-              <a
-                href="management"
-                className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
-              >
-                <User className="w-5 h-5 text-primary" />
-                <span className="hidden sm:inline">User Management</span>
-              </a>
-              <a
-                href="/feedadmins"
-                className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
-              >
-                <MessageSquare className="w-5 h-5 text-primary" />
-                <span className="hidden sm:inline">Feedback Management</span>
-              </a>
-
-              <div className="text-xs lg:text-md font-medium text-black uppercase tracking-wider mb-3 mt-6">
-                QUICK ACTIONS
-              </div>
-              <a
-                href="/jobstate"
-                className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base"
-              >
-                <Plus className="w-5 h-5 text-primary" />
-                <span className="hidden sm:inline">Approve Jobs</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base"
-              >
-                <Calendar className="w-5 h-5 text-primary" />
-                <span className="hidden sm:inline">Schedule Report</span>
-              </a>
-            </nav>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-h-139 overflow-y-auto pr-2 w-full mt-10 mb-10">
-        {jobs.map((job) => (
-          <div
-            key={job.id}
-            className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-md shadow-slate-400 ml-4 sm:ml-7 p-4 sm:p-7 rounded mt-4"
-          >
-            <div>
-              <h1 className="font-semibold">{job.title}</h1>
-              <p className="text-sm text-gray-600">{job.company_name}</p>
-              <span
-                className={`${
-                  job.is_approved ? "text-green-600" : "text-yellow-600"
-                } font-medium`}
-              >
-                {job.is_approved ? "Approved" : "Pending"}
-              </span>
-              <p className="text-xs text-gray-500">{job.created_at}</p>
-            </div>
-            <div className="flex gap-3">
-              {!job.is_approved && (
-                <button
-                  onClick={() => approveJob(job.id)}
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+              {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+          {jobs.map((job) => (
+            <div
+              key={job.id}
+              className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-md shadow-slate-200 p-4 sm:p-7 rounded mb-4"
+            >
+              <div>
+                <h1 className="font-semibold">{job.title}</h1>
+                <p className="text-sm text-gray-600">{job.description}</p>
+                <p className="text-sm text-gray-600">{job.location}</p>
+                <p className="text-sm text-gray-600">{job.salary}</p>
+                <span
+                  className={`${
+                    job.is_approved ? "text-green-600" : "text-yellow-600"
+                  } font-medium`}
                 >
-                  Approve
-                </button>
-              )}
+                  {job.is_approved ? "Approved" : "Pending"}
+                </span>
+                <p className="text-xs text-gray-500">{job.created_at}</p>
+              </div>
+              <div className="flex gap-3">
+                {!job.is_approved && (
+                  <button
+                    onClick={() => approveJob(job.id)}
+                    className="bg-primary text-white px-4 py-2 rounded hover:bg-green-600 transition"
+                  >
+                    Approve
+                  </button>
+                )}
+                {!job.is_approved && (
+                  <button
+                    onClick={() => rejectJob(job.id)}
+                    className="bg-red-400 text-white px-4 py-2 rounded hover:bg-red-500 transition"
+                  >
+                    Reject
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

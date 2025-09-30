@@ -4,5 +4,6 @@ export interface SidebarItem {
   id: string;
   title: string;
   path: string;
-  icon: ElementType; // e.g. Home from lucide-react
+  icon: ElementType;
+  section?: "MAIN MENU" | "QUICK ACTIONS";
 }
