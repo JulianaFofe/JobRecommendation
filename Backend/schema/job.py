@@ -28,7 +28,7 @@ class JobCreate(JobBase):#input model(when creating a job to post)
 
 class Job(JobBase):#output model(how the job reaches the job seeker)
     id:int
-    employer_id:int
+    employer_id: Optional[int]
     posted_at:datetime
     is_approved: bool
 

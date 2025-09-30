@@ -43,7 +43,6 @@ def signup(user: schema.UserCreate, db: Session = Depends(get_db)):
             "is_approved":new_user.is_approved
         }
     }
-
 @router.post("/login")
 def login(user: schema.LoginRequest, db: Session = Depends(get_db)):
     db_user = user_crud.loginUser(db, user.email, user.password)

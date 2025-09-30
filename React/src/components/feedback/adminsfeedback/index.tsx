@@ -1,15 +1,9 @@
-// src/components/AdminFeedback.tsx
 import { useEffect, useState } from "react";
 import {
   Menu,
   X,
-  TrendingUp,
-  Briefcase,
-  User,
-  Plus,
-  Calendar,
-  MessageSquare,
 } from "lucide-react";
+import Sidebar from "../../dashboardView/sidebar";
 
 interface Feedback {
   id: number;
@@ -24,7 +18,7 @@ const AdminFeedback = () => {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
     const fetchFeedback = async () => {
@@ -50,79 +44,10 @@ const AdminFeedback = () => {
   return (
     <div className="flex">
       {/* Sidebar */}
-      <div
-        className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white/70 backdrop-blur-sm shadow-lg rounded-lg m-2 transform transition-transform duration-300 ease-in-out 
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
-      >
-        <div className="p-4 lg:p-6">
-          <div className="flex flex-col items-center gap-1 mb-6 lg:mb-8">
-            <a href="/">
-              <img
-                src="WhatsApp_Image_2025-09-03_at_12.18.10-removebg-preview.png"
-                alt="SmartHire Logo"
-                className="w-32 h-auto object-cover"
-              />
-            </a>
-            <p className="text-xs lg:text-sm text-gray-500 mt-1">Admin Portal</p>
-          </div>
-
-          <nav className="space-y-2">
-            <div className="text-xs lg:text-md font-medium text-black uppercase tracking-wider mb-3">
-              MAIN MENU
-            </div>
-
-            <a
-              href="/dashview"
-              className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base"
-            >
-              <TrendingUp className="w-5 h-5 text-primary" />
-              <span className="hidden sm:inline">Dashboard Overview</span>
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
-            >
-              <Briefcase className="w-5 h-5 text-primary" />
-              <span className="hidden sm:inline">Job Management</span>
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
-            >
-              <User className="w-5 h-5 text-primary" />
-              <span className="hidden sm:inline">User Management</span>
-            </a>
-            <a
-              href="/feedadmins"
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base"
-            >
-              <MessageSquare className="w-5 h-5 text-primary" />
-              <span className="hidden sm:inline">Feedback Management</span>
-            </a>
-
-            <div className="text-xs lg:text-md font-medium text-black uppercase tracking-wider mb-3 mt-6">
-              QUICK ACTIONS
-            </div>
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base"
-            >
-              <Plus className="w-5 h-5 text-primary" />
-              <span className="hidden sm:inline">Add New Job</span>
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base"
-            >
-              <Calendar className="w-5 h-5 text-primary" />
-              <span className="hidden sm:inline">Schedule Report</span>
-            </a>
-          </nav>
-        </div>
-      </div>
+      <Sidebar sidebarOpen={sidebarOpen} />
 
       {/* Main content */}
-      <div className="flex-1 p-6 bg-gray-100 min-h-screen">
+      <div className="flex-1 p-6 bg-gray-50 min-h-screen">
         <button
           className="lg:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-md shadow"
           onClick={() => setSidebarOpen(!sidebarOpen)}

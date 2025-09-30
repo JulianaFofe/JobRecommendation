@@ -77,7 +77,6 @@ def get_job_by_id(db: Session, job_id: int):
 
 # crud/employees_crud.py
 
-
 def get_all_employees(db: Session):
     return db.query(User).options(
         joinedload(User.profile),       

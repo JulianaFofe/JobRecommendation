@@ -18,17 +18,15 @@ import {
   FileText,
   Clock,
   Award,
-  Plus,
-  Calendar,
   Briefcase,
   User,
   ShieldCheck,
   Menu,
   X,
   Trash2,
-  MessageSquare,
 } from 'lucide-react';
 import axios from 'axios';
+import Sidebar from './sidebar';
 
 // ----- TypeScript Interfaces -----
 interface Stats {
@@ -192,7 +190,7 @@ Button.displayName = 'Button';
 // ----- Dashboard Component -----
 
 function DashView() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [stats, setStats] = useState<Stats>({
     total_jobs: 0,
     total_users: 0,
@@ -512,110 +510,7 @@ function DashView() {
 
       <div className="flex">
         {/* Sidebar */}
-        <div
-          className={`
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
-          lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50 
-          w-64 bg-white/70 backdrop-blur-sm shadow-lg rounded-lg 
-          m-2 lg:m-4 mr-0 transition-transform duration-300 ease-in-out
-        `}
-        >
-          <div className="p-4 lg:p-6">
-            <div className="flex flex-col items-center gap-1 mb-6 lg:mb-8">
-              <a href="/" aria-label="SmartHire Home">
-                <img
-                  src="WhatsApp_Image_2025-09-03_at_12.18.10-removebg-preview.png"
-                  alt="SmartHire Logo"
-                  className="w-32 lg:w-45 h-auto object-cover"
-                />
-              </a>
-              <p className="text-xs lg:text-sm text-gray-500 mt-1">
-                Admin Portal
-              </p>
-            </div>
-
-            <nav
-              className="space-y-2"
-              role="navigation"
-              aria-label="Main navigation"
-            >
-              <div className="text-xs lg:text-md font-medium text-black uppercase tracking-wider mb-3">
-                MAIN MENU
-              </div>
-
-              <a
-                href="dashview"
-                className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                aria-label="Dashboard Overview"
-              >
-                <TrendingUp
-                  className="w-5 h-5 text-primary"
-                  aria-hidden="true"
-                />
-                <span className="hidden sm:inline">Dashboard Overview</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                aria-label="Job Management"
-              >
-                <Briefcase
-                  className="w-5 h-5 text-primary"
-                  aria-hidden="true"
-                />
-                <span className="hidden sm:inline">Job Management</span>
-              </a>
-              <a
-                href="management"
-                className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                aria-label="User Management"
-              >
-                <User className="w-5 h-5 text-primary" aria-hidden="true" />
-                <span className="hidden sm:inline">User Management</span>
-              </a>
-              <a
-                href="/feedadmins"
-                className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-secondary rounded-lg text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                aria-label="Feedback Management"
-              >
-                <MessageSquare
-                  className="w-5 h-5 text-primary"
-                  aria-hidden="true"
-                />
-                <span className="hidden sm:inline">Feedback Management</span>
-              </a>
-
-              <div className="text-xs lg:text-md font-medium text-black uppercase tracking-wider mb-3 mt-6">
-                QUICK ACTIONS
-              </div>
-              <a
-                href="/jobstate"
-                className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                aria-label="Add New Job"
-              >
-                <Plus className="w-5 h-5 text-primary" aria-hidden="true" />
-                <span className="hidden sm:inline">Approve Job</span>
-              </a>
-              <a
-                href="/adminReport"
-                className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                aria-label="Schedule Report"
-              >
-                <Calendar className="w-5 h-5 text-primary" aria-hidden="true" />
-                <span className="hidden sm:inline">Schedule Report</span>
-              </a>
-
-              <a
-                href="/pending-users"
-                className="flex items-center gap-3 px-3 text-gray-600 hover:text-secondary py-2 rounded-lg text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                aria-label="Schedule Report"
-              >
-                <Calendar className="w-5 h-5 text-primary" aria-hidden="true" />
-                <span className="hidden sm:inline">Approve Accounts</span>
-              </a>
-            </nav>
-          </div>
-        </div>
+        <Sidebar sidebarOpen={sidebarOpen} />
 
         {/* Main Content */}
         <main className="flex-1 p-4 lg:p-8 lg:ml-0">
