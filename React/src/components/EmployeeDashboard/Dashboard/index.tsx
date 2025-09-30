@@ -16,6 +16,12 @@ export default function Dashboard() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [searchResults, setSearchResults] = useState<Job[] | null>(null);
   const [recommendedJobs, setRecommendedJobs] = useState<Job[] | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+
+  const token = localStorage.getItem("access_token");
+
+  // Form & application state
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<FormDataType>({
     name: "",
