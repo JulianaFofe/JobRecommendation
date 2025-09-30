@@ -16,12 +16,6 @@ export default function Dashboard() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [searchResults, setSearchResults] = useState<Job[] | null>(null);
   const [recommendedJobs, setRecommendedJobs] = useState<Job[] | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  
-
-  const token = localStorage.getItem("access_token");
-
-  // Form & application state
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<FormDataType>({
     name: "",
@@ -129,33 +123,6 @@ export default function Dashboard() {
           showForm ? "blur-sm pointer-events-none select-none" : ""
         }`}
       >
-  };
-
-  // Save job
-  const saveJob = async (jobId: number) => {
-    try {
-      await axios.post(
-        `http://127.0.0.1:8000/saved-jobs/${jobId}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      setMessage("Job saved successfully");
-      setTimeout(() => setMessage(null), 3000);
-    } catch (err: any) {
-      console.error("Error saving job:", err);
-      if (err.response?.data?.detail) {
-        setMessage(err.response.data.detail); // e.g., "Job already saved"
-      } else {
-        setMessage("Failed to save job");
-      }
-      setTimeout(() => setMessage(null), 3000);
-    }
-  };
-
-  return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
-      <div className="flex-1 flex flex-col">
         <Navbar
           onSearchResults={handleSearchResults}
           onRecommendedJobs={handleRecommendedJobs}
