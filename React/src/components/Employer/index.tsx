@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Menu, User, AppWindow, Briefcase, Send, Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import m from "../../assets/images/img.png?url";
 import type { Job } from "../../types/jobposting";
 import type { Application } from "../../types/application";
 import { jwtDecode } from "jwt-decode";
@@ -84,8 +83,6 @@ function Employer() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  
 
   // Mark notification as read
   const markAsRead = async (id: number) => {
@@ -234,8 +231,14 @@ function Employer() {
       {/* Sidebar */}
       <div className="w-64 bg-white shadow-lg p-6 flex flex-col fixed h-full">
         <div className="flex flex-col items-start mb-8">
-          <img src={m} alt="logo" className="w-full object-contain mb-4" />
-          <h1 className="text-primary font-bold text-xl">Employer</h1>
+          <a href="/">
+            <img
+              src="WhatsApp_Image_2025-09-03_at_12.18.10-removebg-preview.png"
+              alt="SmartHire Logo"
+              className="w-32 h-auto object-cover"
+            />
+          </a>
+          <h1 className="text-xs lg:text-sm text-primary font-bold mt-3">Employer</h1>
         </div>
         <nav className="flex flex-col gap-4">
           {[
