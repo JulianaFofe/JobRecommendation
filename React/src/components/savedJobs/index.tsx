@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import type { Job } from "../../../types/jobposting";
+import type { Job } from "../../types/savedJobs";
 
 type SavedJob = {
   id: number;         // saved job record ID

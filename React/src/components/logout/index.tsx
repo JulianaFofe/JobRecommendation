@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Logout = () => {
@@ -6,7 +6,7 @@ const Logout = () => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    setShow(true); // trigger animation on mount
+    setShow(true); 
   }, []);
 
   const handleLogout = () => {
