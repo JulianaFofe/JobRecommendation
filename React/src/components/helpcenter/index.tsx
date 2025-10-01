@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import axios from "axios";
 import logo from "../../assets/images/img.png";
 import type { SidebarItem } from "../../types/sidebar";
 import SidebarWrapper from "../EmployeeDashboard/hamburger";
+//import NavBar from "../EmployeeDashboard/Navbar";
 import { Home, FileText, Users, UserCircle, Settings, LogOut } from "lucide-react";
 
 type ProfileData = {
@@ -74,6 +75,7 @@ export default function PublicProfile() {
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
       <SidebarWrapper items={sidebarItems} />
       <div className="flex-1 flex flex-col">
+        
         <div className="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex justify-center items-start p-6">
           <div className="bg-white shadow-2xl rounded-2xl w-full max-w-3xl p-8 md:p-10">
             {/* Logo */}
