@@ -1,9 +1,12 @@
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import os
 
 # MySQL URL format: "mysql+mysqlconnector://user:password@host:port/dbname"
-DATABASE_URL = "mysql+mysqlconnector://root:@127.0.0.1:3306/JobRecommendation"
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(DATABASE_URL, echo=True)
 #echo=True, enables the sql commands to be logged on the console
