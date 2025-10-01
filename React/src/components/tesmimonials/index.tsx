@@ -14,6 +14,7 @@ import Faq from "../../assets/images/photo.jpg"
 import Navbar from "../../containers/navbar"
 import { useState } from "react"
 import { motion } from "framer-motion"
+import Footer from "../../containers/footer"
 
 const IMAGES = [slide1, slide2, slide3, slide4, slide5, slide6]
 
@@ -166,6 +167,7 @@ const Testimonials = () => {
           <img src={Faq} alt="faq" className="hidden md:block lg:flex-1 object-cover w-full md:w-1/2 h-64 md:h-auto" />
         </motion.section>
       </div>
+      <Footer />
     </>
   )
 }

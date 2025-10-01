@@ -23,15 +23,15 @@ const Footer = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <p className="font-inter text-sm md:text-base">
-            Smart Hire is an innovative career technology platform supported by
+          <p className="font-inter text-sm md:text-base font-bold">
+            SmartHire is an innovative career technology platform supported by
             leading recruitment experts, and AI driven analytics helping job
             seekers find opportunities that match their skills and ambitions.
           </p>
         </div>
 
         {/* Links Sections */}
-        <div className="flex-1 flex flex-col sm:flex-row sm:justify-between gap-10 w-full">
+        <div className="flex-1 flex flex-col sm:flex-row sm:justify-between gap-10 w-full font-bold">
           <div className="flex-1 text-center sm:text-left mb-6 sm:mb-0">
             <h3 className="text-footerHead font-lalezar mb-3">Company</h3>
             <div className="flex flex-col gap-1">
@@ -98,7 +98,7 @@ const Footer = () => {
         </div>
 
         {/* Contact Section */}
-        <div className="flex-1 text-center lg:text-left mt-8 lg:mt-0">
+        <div className="flex-1 text-center lg:text-left mt-8 lg:mt-0 font-bold">
           <h3 className="text-footerHead font-lalezar mb-3">Contact Us</h3>
           <div className="flex justify-center lg:justify-start items-center gap-2 mb-2">
             <IoCall size={20} className="text-secondary" />

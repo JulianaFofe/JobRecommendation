@@ -228,6 +228,17 @@ function Employer() {
 
   return (
     <div className="flex min-h-screen relative">
+      {feedback && (
+  <div
+    className={`fixed top-4 right-4 px-4 py-2 rounded-md shadow-lg text-white transition-all duration-300 z-50 ${
+      feedback.action === "approve" ? "bg-green-500" : "bg-red-500"
+    }`}
+  >
+    {feedback.action === "approve"
+      ? " Application approved successfully!"
+      : " Application rejected."}
+  </div>
+)}
       {/* Sidebar */}
       <div className="w-64 bg-white shadow-lg p-6 flex flex-col fixed h-full">
         <div className="flex flex-col items-start mb-8">

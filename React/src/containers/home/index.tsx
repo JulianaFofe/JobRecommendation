@@ -18,10 +18,10 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: "easeOut" }}
           >
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondary">
+            <h1 className="text-3xl md:text-4xl lg:text-8xl font-bold text-secondary">
               Find Your Dream Job Smarter
             </h1>
-            <p className="text-lg md:text-xl font-semibold text-primary pt-4">
+            <p className="text-lg md:text-4xl font-semibold text-primary pt-4">
               We recommend opportunities that align with your career aspirations
             </p>
           </motion.div>
@@ -44,17 +44,17 @@ const Home = () => {
       </main>
 
       {/* How it Works Section */}
-      <section className="bg-secondary rounded-tl-4xl rounded-br-4xl px-6 pt-16 pb-12 mb-20 relative">
+      <section className="bg-[url('/haike.png')] bg-cover bg-center rounded-tl-4xl rounded-br-4xl px-6 pt-16 pb-12 mb-20 relative">
         {/* Social Icons floating at the top edge */}
         <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 flex gap-4 flex-wrap z-10">
-          <FaFacebookF size={24} className="text-primary hover:text-footerHead" />
-          <FaYoutube size={24} className="text-primary hover:text-footerHead" />
-          <FaInstagramSquare size={24} className="text-primary hover:text-footerHead" />
-          <FaLinkedinIn size={24} className="text-primary hover:text-footerHead" />
-          <RiTwitterXLine size={24} className="text-primary hover:text-footerHead" />
+          <FaFacebookF size={24} className="text-secondary hover:text-footerHead" />
+          <FaYoutube size={24} className="text-secondary hover:text-footerHead" />
+          <FaInstagramSquare size={24} className="text-secondary hover:text-footerHead" />
+          <FaLinkedinIn size={24} className="text-secondary hover:text-footerHead" />
+          <RiTwitterXLine size={24} className="text-secondary hover:text-footerHead" />
         </div>
 
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-start lg:items-center gap-10 pt-8">
+        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-start lg:items-center gap-40 pt-8">
           {/* Steps */}
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
@@ -70,33 +70,33 @@ const Home = () => {
 
             <div className="space-y-6">
               {/* Step 1 */}
-              <div className="flex gap-3 items-start bg-white rounded-lg p-4 shadow-md">
+              <div className="flex gap-3 items-start bg-background rounded-lg p-4 shadow-md">
                 <span className="font-bold text-footerHead text-lg">01</span>
                 <div>
                   <h3 className="font-bold text-lg text-secondary">Sign Up and Log In</h3>
-                  <p className="text-gray-700 text-sm">
+                  <p className="text-gray-700 text-sm font-bold">
                     Either as an Employer, Employee, or Admin
                   </p>
                 </div>
               </div>
 
               {/* Step 2 */}
-              <div className="flex gap-3 items-start bg-white rounded-lg p-4 shadow-md">
+              <div className="flex gap-3 items-start bg-background rounded-lg p-4 shadow-md">
                 <span className="font-bold text-footerHead text-lg">02</span>
                 <div>
                   <h3 className="font-bold text-lg text-secondary">Connect & Discover Opportunities</h3>
-                  <p className="text-gray-700 text-sm">
+                  <p className="text-gray-700 text-sm font-bold">
                     Job seekers get personalized job recommendations. Employers can post openings and instantly reach qualified candidates.
                   </p>
                 </div>
               </div>
 
               {/* Step 3 */}
-              <div className="flex gap-3 items-start bg-white rounded-lg p-4 shadow-md">
+              <div className="flex gap-3 items-start bg-background rounded-lg p-4 shadow-md">
                 <span className="font-bold text-footerHead text-lg">03</span>
                 <div>
                   <h3 className="font-bold text-lg text-secondary">Apply, Hire and Grow</h3>
-                  <p className="text-gray-700 text-sm">
+                  <p className="text-gray-700 text-sm font-bold">
                     Job seekers apply and track applications, while employers review applicants, schedule interviews, and build their teams—all in one place.
                   </p>
                 </div>
@@ -113,9 +113,9 @@ const Home = () => {
             className="flex-1 flex justify-center mt-10 lg:mt-0"
           >
             <img
-              src="hire.png"
+              src="hirenow.png"
               alt="Hire illustration"
-              className="w-full max-w-sm md:max-w-md lg:max-w-lg object-contain"
+              className="w-full max-w-sm md:max-w-md lg:max-w-xl object-contain"
             />
           </motion.div>
         </div>

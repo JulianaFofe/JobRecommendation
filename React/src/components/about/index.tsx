@@ -1,6 +1,7 @@
 
 import {BriefcaseBusiness,Globe, Award, TrendingUp} from "lucide-react"
 import Navbar from '../../containers/navbar'
+import Footer from "../../containers/footer"
 
 const About = () => {
   return (
@@ -54,6 +55,7 @@ const About = () => {
       </div>
       </div>
     </div>
+    <Footer />
     </>
   )
 }
