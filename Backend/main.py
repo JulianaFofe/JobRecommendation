@@ -23,11 +23,19 @@ from sqlalchemy.orm import Session
 from security import hash_password, verify_password
 from datetime import datetime
 from routers import review
+import os
+import uvicorn
 
 
+
+if __name__=="__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
 
 # Create tables
 userModel.Base.metadata.create_all(bind=engine)
+
+
 
 app = FastAPI()
 
@@ -35,11 +43,8 @@ app = FastAPI()
 
 
 # CORS setup
-allow_origins=[
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5174"
-]
+allow_origins=["https://job-recommendation-pi.vercel.app/"]
+ #will replace with the url of the deployed frontend
 
 app.add_middleware(
     CORSMiddleware,
