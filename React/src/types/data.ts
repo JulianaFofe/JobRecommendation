@@ -22,10 +22,4 @@ export const NavProps:NavBarProps[]=[
         title:"Customer Stories",
         path:"/stories"
     },
-    {
-        id:4,
-        title:"Our Blog",
-        path:"/blog"
-
-    }
 ]
