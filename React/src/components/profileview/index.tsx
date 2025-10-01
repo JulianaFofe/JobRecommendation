@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import logo from "../../assets/images/img.png";
 import type { SidebarItem } from "../../types/sidebar";
 import SidebarWrapper from "../EmployeeDashboard/hamburger";
-import NavBar from "../EmployeeDashboard/Navbar";
 import { Home, FileText, Users, UserCircle, Settings, LogOut } from "lucide-react";
 
 type ProfileData = {
