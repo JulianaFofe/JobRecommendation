@@ -73,6 +73,7 @@ const NavBar = () => {
               </li>
             ))}
           </ul>
+          <NavLink to="/signup">
           <motion.button 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -81,6 +82,7 @@ const NavBar = () => {
           className="py-2 px-6 bg-white hover:bg-primary text-primary border border-primary rounded-sm transition-transform duration-300 hover:scale-105">
             Get Started
           </motion.button>
+          </NavLink>
         </div>
       )}
     </nav>
