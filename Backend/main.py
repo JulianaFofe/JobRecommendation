@@ -25,6 +25,8 @@ from datetime import datetime
 from routers import review
 import os
 import uvicorn
+from config import DATABASE_URL
+
 
 
 
